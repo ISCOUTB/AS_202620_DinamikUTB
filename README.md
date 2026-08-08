@@ -18,3 +18,4 @@
 - Gillianis Perez Revolledo
 - Esteban Ramírez Rios
 - Luis Daniel Padilla Leottau
+- Juan José Vargas Pérez

@@ -126,7 +126,7 @@ El estudiante podrá consultar el estado de cada requisito necesario para gradua
  
 ##  Disponibilidad vs. Consistencia
 
-DinamikUTB debe mantener un equilibrio entre la disponibilidad del sistema y la consistencia de la información.
+**DinamikUTB** debe mantener un equilibrio entre la disponibilidad del sistema y la consistencia de la información.
 
 - **Disponibilidad:** El sistema debe permanecer accesible incluso ante fallas parciales o alta demanda.
 - **Consistencia:** La información sobre los requisitos de grado debe ser correcta y coherente.

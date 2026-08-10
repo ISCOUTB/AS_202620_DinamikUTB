@@ -70,11 +70,12 @@
 
 
 ## Aspecto A-06
-**Para:** institución y futuros estudiantes de otros programas.
+**Para:** Institución y futuros estudiantes de otros programas.
 
-**Cuestión:** el alcance inicial se limita a un programa académico, pero la solución debería poder crecer posteriormente.
+**Cuestión:** El alcance inicial se limita a un programa académico, pero la solución debería poder crecer posteriormente.
 
-La ficha establece explícitamente que la línea base contempla un programa específico con posibilidad de ampliación a otros programas en fases posteriores.
+**Valor:** Permitir que **DinamikUTB** pueda crecer sin tener que reconstruir completamente el sistema.
 
-**Valor:** permitir que DinamikUTB pueda crecer sin tener que reconstruir completamente el sistema.
 **Deber:** La arquitectura debe permitir incorporar nuevos programas académicos sin modificar la lógica principal de evaluación de requisitos.
+
+---

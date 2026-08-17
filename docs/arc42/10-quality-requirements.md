@@ -47,3 +47,80 @@ DinamikUTB
 │
 └── Mantenibilidad
     └── Incorporación de nuevos requisitos y programas académicos
+```
+
+---
+
+### Priorización del árbol
+
+Los atributos ubicados en los primeros niveles representan las principales preocupaciones de calidad del sistema.
+
+La exactitud y consistencia tienen la mayor prioridad debido a que un error en la información de requisitos podría afectar directamente las decisiones académicas del estudiante.
+
+La seguridad ocupa el segundo nivel debido a que DinamikUTB manejará información académica asociada a estudiantes y diferentes roles de usuario.
+
+La usabilidad ocupa el tercer nivel porque el sistema debe permitir que los estudiantes comprendan rápidamente su situación académica.
+
+---
+
+## 10.3 Quality Scenarios
+
+### Escenario Q-01 — Exactitud de la información académica
+
+| Elemento | Descripción |
+|---|---|
+| **Fuente** | Estudiante |
+| **Estímulo** | El estudiante consulta su estado de requisitos de graduación. |
+| **Artefacto** | Módulo de seguimiento de requisitos de DinamikUTB. |
+| **Entorno** | Sistema en funcionamiento con información académica registrada en la base de datos. |
+| **Respuesta** | El sistema consulta la información correspondiente al estudiante y muestra el estado de cada requisito de acuerdo con los datos registrados. |
+| **Medida** | El **100 % de los datos mostrados** debe corresponder con la información registrada para el estudiante. Cualquier información incorrecta se considera un incidente crítico. |
+
+**Prioridad:** Alta  
+**Atributo:** Exactitud / Consistencia
+
+---
+
+### Escenario Q-02 — Seguridad y aislamiento de la información
+
+| Elemento | Descripción |
+|---|---|
+| **Fuente** | Usuario autenticado |
+| **Estímulo** | El usuario intenta consultar información académica mediante DinamikUTB. |
+| **Artefacto** | Módulo de autenticación y control de acceso. |
+| **Entorno** | Sistema en funcionamiento con múltiples estudiantes y usuarios con diferentes roles. |
+| **Respuesta** | El sistema autentica al usuario y permite acceder únicamente a la información correspondiente a sus permisos. |
+| **Medida** | En las pruebas de acceso autorizadas y no autorizadas, el **100 % de los intentos no autorizados** debe ser rechazado y ningún estudiante debe poder consultar información académica perteneciente a otro estudiante. |
+
+**Prioridad:** Alta  
+**Atributo:** Seguridad
+
+---
+
+### Escenario Q-03 — Facilidad de comprensión de la información
+
+| Elemento | Descripción |
+|---|---|
+| **Fuente** | Estudiante |
+| **Estímulo** | El estudiante ingresa a su pantalla principal para consultar su progreso. |
+| **Artefacto** | Interfaz principal de DinamikUTB. |
+| **Entorno** | Usuario autenticado utilizando la aplicación. |
+| **Respuesta** | El sistema presenta el porcentaje de avance, los requisitos cumplidos y los requisitos pendientes de forma clara y organizada. |
+| **Medida** | Al menos el **80 % de los usuarios evaluados** debe poder identificar correctamente sus requisitos pendientes y su porcentaje de avance en una prueba de uso sin asistencia. |
+
+**Prioridad:** Alta  
+**Atributo:** Usabilidad
+
+---
+
+## 10.4 Relación entre escenarios y aspectos
+
+Los escenarios de calidad se relacionan con los aspectos definidos en `docs/aspectos.md`.
+
+| Escenario | Atributo | Aspecto relacionado |
+|---|---|---|
+| Q-01 | Exactitud / Consistencia | A-01 Seguimiento del cumplimiento de requisitos |
+| Q-02 | Seguridad | A-05 Protección y control de acceso a la información académica |
+| Q-03 | Usabilidad | A-01 Seguimiento del cumplimiento de requisitos |
+
+Estos escenarios podrán ser refinados posteriormente a medida que se implementen los componentes del sistema y se definan las pruebas correspondientes.

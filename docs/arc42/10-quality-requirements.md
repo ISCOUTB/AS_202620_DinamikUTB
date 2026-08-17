@@ -20,7 +20,7 @@ La prioridad se establece considerando el impacto que tendría una falla sobre e
 
 ---
 
-## 10.2 Árbol de utilidad
+## 10.2 utility tree
 
 El árbol de utilidad organiza los atributos de calidad de acuerdo con su importancia para DinamikUTB.
 

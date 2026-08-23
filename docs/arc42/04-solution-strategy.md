@@ -156,7 +156,7 @@ DinamikUTB
 
 ---
 
-### 4.6 Decision
+## 4.6 Decision
 
 Después de comparar las alternativas, se selecciona el **Monolito Modular** como estrategia arquitectónica inicial para DinamikUTB.
 
@@ -173,7 +173,7 @@ Esta alternativa responde especialmente bien a las condiciones actuales del proy
 
 ---
 
-### 4.7 Future Evolution
+## 4.7 Future Evolution
 
 La elección del Monolito Modular no impide adoptar posteriormente mecanismos de mayor desacoplamiento.
 
@@ -187,7 +187,7 @@ Esta evolución deberá estar respaldada por nuevas decisiones arquitectónicas 
 
 ---
 
-### 4.8 Quality Attributes Relationship
+## 4.8 Quality Attributes Relationship
 
 La decisión se relaciona principalmente con los atributos de calidad priorizados durante S2:
 
@@ -203,7 +203,7 @@ La decisión se relaciona principalmente con los atributos de calidad priorizado
 
 ---
 
-### 4.9 Decision Summary
+## 4.9 Decision Summary
 
 | Elemento | Decisión |
 | :--- | :--- |

@@ -134,6 +134,20 @@ El estudiante podrá consultar el estado de cada requisito necesario para gradua
 
 Se prioriza la consistencia porque mostrar información incorrecta podría afectar las decisiones del estudiante sobre su graduación.
 
+##  Usabilidad  vs. Funcionalidad
+
+Se plantea implementar una interfaz organizada por módulos, donde las funcionalidades se agrupen según la necesidad de los usuarios. 
+
+- **Usabilidad:** El sistema debe ser sencillo, intuitivo y permitir que los estudiantes encuentres rápidamente la información que necesitan.
+- **Funcionalidades:** El sistema debe ofrecer los herramientas pasa consultar:
+   - **Mi progreso:** Cursos aprobados, pendientes y porcentaje de avance.
+   - **Requisitos de grado:** Requisitos cumplidos y pendientes.
+   - **Plan Académico:** Cursos requeridos de la carrera, recomendados o electivos.
+   - **Perfil:** Información del estudiante.
+ -**Prioridad:** Usabilidad > Funcionalidad
+
+De esta manera, **DinamikUTB** pueda priorizar la usabilidad sin saturar una pantalla de demasiadas funcionalidades y no afectar la experiencia del estudiante.
+
 ---
 
 # Equipo

@@ -1,36 +1,36 @@
 ---
 id: ADR-0001
-title: Selección de Monolito Modular como Arquitectura Inicial
-status: Accepted
+title: Selección de monolito modular como modelo arquitectónico
+status: Aceptado
 date: 2026-08-23
-deciders: Equipo de Arquitectura DinamikUTB
+deciders: Equipo de arquitectura DinamikUTB
 ---
 
-# ADR-0001: Selección de Monolito Modular como Arquitectura Inicial
+# ADR-0001: Selección de monolito modular como modelo arquitectónico
 
-![Status: Accepted](https://img.shields.io/badge/Status-Accepted-brightgreen?style=flat-square)
+![Status: Aceptado](https://img.shields.io/badge/Status-Accepted-brightgreen?style=flat-square)
 ![Date: 2026--08--23](https://img.shields.io/badge/Date-2026--08--23-blue?style=flat-square)
-![Scope: Core Architecture](https://img.shields.io/badge/Scope-Core%20Architecture-orange?style=flat-square)
+![Scope: Core architecture](https://img.shields.io/badge/Scope-Core%20Architecture-orange?style=flat-square)
 
 ---
 
-## 1. Contexto y Descripción del Problema
+## 1. Contexto y descripción del problema
 
 **DinamikUTB** requiere una arquitectura que permita desarrollar inicialmente un sistema con un enfoque controlado y acotado, manteniendo una estructura clara y sencilla de implementar durante el proyecto.
 
 El sistema gestionará información crítica sobre:
 * **Estudiantes:** Perfil académico y avance.
-* **Requisitos de Grado:** Validación de créditos y electivas.
-* **Programas Académicos:** Mapeo de mallas curriculares.
-* **Centro de Ayuda:** Soporte e iteración con el usuario.
+* **Requisitos de grado:** Validación de créditos y electivas.
+* **Programas académicos:** Mapeo de mallas curriculares.
+* **Centro de ayuda:** Soporte e iteración con el usuario.
 
 Aunque la solución iniciará con un núcleo funcional simplificado, se proyecta su evolución para incorporar más módulos e integraciones con sistemas universitarios.
 
 ---
 
-## 2. Decision Drivers
+## 2. Factores de decisión
 
-| Driver | Descripción |
+| Factor | Descripción |
 | :--- | :--- |
 | **Simplicidad inicial** | Evitar sobreingeniería y complejidad arquitectónica innecesaria. |
 | **Organización** | Funcionalidades delimitadas mediante módulos independientes. |
@@ -41,23 +41,23 @@ Aunque la solución iniciará con un núcleo funcional simplificado, se proyecta
 
 ---
 
-## 3. Alternativas Consideradas
+## 3. Alternativas consideradas
 
-### 3.1 Layered Architecture
+### 3.1 Arquitectura en capas
 
 La arquitectura en capas organiza el sistema en diferentes niveles de responsabilidad, como presentación, aplicación, lógica de negocio y persistencia.
 
 * **Ventajas:** Estructura sencilla, ampliamente conocida y de rápida implementación inicial.
 * **Desventajas:** Puede producir mayor acoplamiento entre las capas y dificultar la evolución a medida que aumenten las funcionalidades.
 
-### 3.2 Hexagonal Architecture
+### 3.2 Arquitectura hexagonal
 
 La arquitectura hexagonal separa el núcleo de la aplicación de los elementos externos mediante puertos y adaptadores.
 
 * **Ventajas:** Alto nivel de desacoplamiento, excelente testabilidad e independencia tecnológica.
 * **Desventajas:** Introduce mayor complejidad estructural (*boilerplate*) que resulta innecesaria para el alcance inicial.
 
-### 3.3 Modular Monolith
+### 3.3 Arquitectura monolítico modular
 
 El monolito modular mantiene la aplicación como una única unidad desplegable, pero organiza internamente sus funcionalidades en módulos con responsabilidades claramente delimitadas.
 
@@ -65,38 +65,38 @@ El monolito modular mantiene la aplicación como una única unidad desplegable, 
 * **Desventajas:** Los módulos forman parte de una misma aplicación y requiere rigor para mantener límites claros entre ellos.
 
 > [!Note]
-> **¿Por qué destaca para nuestro proyecto?** Proporciona la sencillez operativa de un monolito convencional con la disciplina de diseño de un sistema distribuido.
+> **¿Por qué destaca para nuestro proyecto?** Proporciona la sencillez operativa de un monolito convencional, manteniendo una organización modular que facilita el crecimiento y el desacoplamiento progresivo.
 
 ---
 
 ## 4. Decisión
 
-Se selecciona **Modular Monolith (Monolito Modular)** como la estrategia arquitectónica base para **DinamikUTB**.
+Se selecciona **modular monolith (monolito modular)** como la estrategia arquitectónica base para **DinamikUTB**.
 
-> **Estrategia Seleccionada:** Desarrollo de una única aplicación estructurada internamente en módulos independientes y débilmente acoplados.
+> **Estrategia seleccionada:** Desarrollo de una única aplicación estructurada internamente en módulos independientes y débilmente acoplados.
 
 Esta alternativa satisface el balance deseado:
 1. **Desarrollo fluido:** Sin la sobrecarga de gestionar múltiples servicios o capas de abstracción complejas.
-2. **Evolución progresiva:** Permite desacoplar módulos o migrarlos a Microservicios / Hexagonal solo cuando el dominio lo exija.
+2. **Evolución progresiva:** Permite desacoplar módulos o migrarlos a Hexagonal solo cuando el dominio lo exija.
 
 ---
 
 ## 5. Consecuencias
 
-### Consecuencias Positivas
+### Consecuencias positivas
 
 * **Despliegue unificado:** Operaciones e infraestructura de bajo costo inicial.
 * **Límites claros:** Aislamiento del código por contexto de negocio.
 * **Evolución sin reescritura:** Crecimiento modular ordenado.
 
-### Consecuencias Negativas
+### Consecuencias negativas
 
 * **Punto único de fallo:** Un error crítico no capturado afecta a la aplicación completa.
 * **Disciplina de equipo:** Requiere rigor para evitar dependencias cruzadas indebidas entre módulos.
 
 ---
 
-## 6. Estructura Arquitectónica
+## 6. Estructura arquitectónica
 
 ```text
 DinamikUTB
@@ -114,7 +114,7 @@ Los límites entre módulos deberán mantenerse claros para evitar dependencias 
 
 ---
 
-## 7. Consideraciones Futuras
+## 7. Consideraciones futuras
 
 La selección del monolito modular no impide una evolución arquitectónica posterior. Si el crecimiento del sistema genera necesidades de mayor desacoplamiento, determinados módulos podrán incorporar principios de arquitectura hexagonal o evolucionar de forma independiente.
 
@@ -122,9 +122,9 @@ La selección del monolito modular no impide una evolución arquitectónica post
 
 ---
 
-## 8. Relación con Atributos de Calidad
+## 8. Relación con atributos de calidad
 
-| Atributo | Relación con la Decisión |
+| Atributo | Relación con la decisión |
 | :--- | :--- |
 | **Exactitud / Consistencia** | Los módulos permiten mantener responsabilidades claras sobre la información académica y su procesamiento. |
 | **Seguridad** | La separación de responsabilidades facilita organizar autenticación, autorización y gestión de usuarios. |
@@ -135,7 +135,7 @@ La selección del monolito modular no impide una evolución arquitectónica post
 
 ---
 
-## 9. Estado de la Decisión
+## 9. Estado de la decisión
 
 **Aceptado.**
 

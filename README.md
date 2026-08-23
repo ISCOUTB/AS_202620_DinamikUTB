@@ -150,7 +150,36 @@ De esta manera, **DinamikUTB** pueda priorizar la usabilidad sin saturar una pan
 
 ---
 
-# Equipo
+# **Ejecución del Proyecto**
+
+**DinamikUTB** utiliza una arquitectura de **monolito modular**, con un backend desarrollado en **FastAPI** y un frontend desarrollado en **Flutter**.
+
+
+## Requisitos Previos
+
+Antes de ejecutar el proyecto, se debe contar con las siguientes herramientas instaladas:
+
+* **Python 3.12** o superior
+* **Flutter SDK**
+* **Git**
+* **Google Chrome**
+
+
+## Inicio Rápido
+
+Desde la raíz del repositorio, ejecuta el siguiente script:
+
+> [IMPORTANTE]
+> **Comando de inicio:**
+> ```cmd
+> start.bat
+> ```
+
+
+
+
+
+## Equipo
 
     - Gillianis Perez Revolledo
     - Esteban Ramírez Rios

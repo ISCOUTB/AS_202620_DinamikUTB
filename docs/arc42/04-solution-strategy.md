@@ -1,4 +1,4 @@
-# Solution Strategy
+# 4. Solution Strategy
 
 La estrategia de solución de **DinamikUTB** se define considerando el alcance actual del proyecto, sus atributos de calidad prioritarios y la necesidad de permitir una evolución progresiva del sistema.
 
@@ -8,7 +8,7 @@ Para definir la estrategia arquitectónica se compararon tres alternativas: **ar
 
 ---
 
-## 1. Contexto
+## 4.1 Context
 
 Para definir la estrategia arquitectónica de **DinamikUTB** se analizaron tres alternativas:
 
@@ -24,7 +24,7 @@ Por esta razón, la selección no busca utilizar la arquitectura más compleja, 
 
 ---
 
-## 2. Criterios de evaluación
+## 4.2 Evaluation Criteria
 
 | Criterio | Descripción |
 |---|---|
@@ -38,7 +38,7 @@ Por esta razón, la selección no busca utilizar la arquitectura más compleja, 
 
 ---
 
-## 3. Escala de valoración
+## 4.3 Rating Scale
 
 Para realizar la comparación se utiliza una escala de **1 a 5**:
 
@@ -54,7 +54,7 @@ Las valoraciones representan la adecuación de cada alternativa al contexto espe
 
 ---
 
-## 4. Matriz comparativa
+## 4.4 Comparison Matrix
 
 | Criterio | Capas | Hexagonal | Monolito modular |
 |---|---:|---:|---:|
@@ -71,9 +71,9 @@ Las valoraciones representan la adecuación de cada alternativa al contexto espe
 
 ---
 
-## 5. Análisis de las alternativas
+## 4.5 Alternatives Analysis
 
-### 5.1 Arquitectura en capas
+### 4.5.1 Arquitectura en capas
 
 La arquitectura en capas organiza el sistema en diferentes niveles de responsabilidad, por ejemplo, presentación, aplicación, lógica de negocio y persistencia.
 
@@ -97,7 +97,7 @@ Es una alternativa válida para DinamikUTB y presenta una excelente relación en
 
 ---
 
-### 5.2 Arquitectura hexagonal
+### 4.5.2 Arquitectura hexagonal
 
 La arquitectura hexagonal busca mantener el núcleo de la aplicación independiente de elementos externos mediante puertos y adaptadores.
 
@@ -120,7 +120,7 @@ Es una alternativa técnicamente sólida y proporciona buenas posibilidades de e
 
 ---
 
-### 5.3 Monolito modular
+### 4.5.3 Monolito modular
 
 El monolito modular mantiene la aplicación como una única unidad desplegable, pero organiza internamente sus funcionalidades en módulos con responsabilidades bien definidas.
 
@@ -156,7 +156,7 @@ DinamikUTB
 
 ---
 
-### 5. Decisión
+### 4.6 Decision
 
 Después de comparar las alternativas, se selecciona el **Monolito Modular** como estrategia arquitectónica inicial para DinamikUTB.
 
@@ -173,7 +173,7 @@ Esta alternativa responde especialmente bien a las condiciones actuales del proy
 
 ---
 
-### 6. Evolución futura
+### 4.7 Future Evolution
 
 La elección del Monolito Modular no impide adoptar posteriormente mecanismos de mayor desacoplamiento.
 
@@ -187,7 +187,7 @@ Esta evolución deberá estar respaldada por nuevas decisiones arquitectónicas 
 
 ---
 
-### 7. Relación con los atributos de calidad
+### 4.8 Quality Attributes Relationship
 
 La decisión se relaciona principalmente con los atributos de calidad priorizados durante S2:
 
@@ -203,7 +203,7 @@ La decisión se relaciona principalmente con los atributos de calidad priorizado
 
 ---
 
-### 8. Resumen de la decisión
+### 4.9 Decision Summary
 
 | Elemento | Decisión |
 | :--- | :--- |

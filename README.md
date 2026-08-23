@@ -138,8 +138,8 @@ Se prioriza la consistencia porque mostrar información incorrecta podría afect
 
 Se plantea implementar una interfaz organizada por módulos, donde las funcionalidades se agrupen según la necesidad de los usuarios. 
 
-- **Usabilidad:** El sistema debe ser sencillo, intuitivo y permitir que los estudiantes encuentres rápidamente la información que necesitan.
-- **Funcionalidades:** El sistema debe ofrecer los herramientas pasa consultar:
+- **Usabilidad:** El sistema debe ser sencillo, intuitivo y permitir que los estudiantes encuentren rápidamente la información que necesitan.
+- **Funcionalidades:** El sistema debe ofrecer las herramientas pasa consultar:
    - **Mi progreso:** Cursos aprobados, pendientes y porcentaje de avance.
    - **Requisitos de grado:** Requisitos cumplidos y pendientes.
    - **Plan Académico:** Cursos requeridos de la carrera, recomendados o electivos.
@@ -169,8 +169,9 @@ Antes de ejecutar el proyecto, se debe contar con las siguientes herramientas in
 
 Desde la raíz del repositorio, ejecuta el siguiente script:
 
-> [IMPORTANTE]
+> [!IMPORTANT]
 > **Comando de inicio:**
+> 
 > ```cmd
 > start.bat
 > ```
@@ -187,20 +188,20 @@ Este comando automatiza el entorno de desarrollo ejecutando las siguientes accio
 
 | Componente | Tecnología | Propósito |
 | :--- | :--- | :--- |
-| **Backend** | FastAPI | Servicios y API REST de DinamikUTB |
+| **Backend** | FastAPI | API base y estructura inicial del backend |
 | **Frontend** | Flutter | Interfaz de usuario multiplataforma |
-| **Pruebas Backend** | Pytest | Validación y pruebas automatizadas del servidor |
+| **Pruebas Backend** | Pytest | Validación automatizada del backend |
 | **Pruebas Frontend** | Flutter Test | Pruebas unitarias y de componentes de la UI |
 
 ---
 
 ## URLs de Desarrollo
 
-Una vez iniciado el sistema, se puede acceder a los siguientes endpoints locales:
+Una vez iniciado el sistema:
 
-* **API Base:** `http://127.0.0.1:8000`
-* **Documentación interactiva (Swagger):** `http://127.0.0.1:8000/docs`
-* **Frontend Web:** Se abre automáticamente en el navegador Google Chrome.
+- **API:** `http://127.0.0.1:8000`
+- **Documentación de la API:** `http://127.0.0.1:8000/docs`
+- **Frontend:** se abre automáticamente en Google Chrome.
 
 ---
 

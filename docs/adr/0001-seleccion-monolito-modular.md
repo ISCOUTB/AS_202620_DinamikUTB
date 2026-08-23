@@ -64,7 +64,7 @@ El monolito modular mantiene la aplicación como una única unidad desplegable, 
 * **Ventajas:** Mantiene un despliegue sencillo, separa las funcionalidades principales, permite la evolución progresiva y evita la sobreingeniería inicial.
 * **Desventajas:** Los módulos forman parte de una misma aplicación y requiere rigor para mantener límites claros entre ellos.
 
-> [!TIP]
+> [!Note]
 > **¿Por qué destaca para nuestro proyecto?** Proporciona la sencillez operativa de un monolito convencional con la disciplina de diseño de un sistema distribuido.
 
 ---
@@ -73,7 +73,6 @@ El monolito modular mantiene la aplicación como una única unidad desplegable, 
 
 Se selecciona **Modular Monolith (Monolito Modular)** como la estrategia arquitectónica base para **DinamikUTB**.
 
-> [!NOTE]
 > **Estrategia Seleccionada:** Desarrollo de una única aplicación estructurada internamente en módulos independientes y débilmente acoplados.
 
 Esta alternativa satisface el balance deseado:
@@ -108,6 +107,7 @@ DinamikUTB
 ├── programas/      # Mallas curriculares y planes de estudio
 └── ayuda/          # Módulo de soporte y FAQ
 
+```
 Esta estructura podrá modificarse durante el desarrollo si aparecen nuevas responsabilidades o se requiere dividir alguno de los módulos existentes.
 
 Los límites entre módulos deberán mantenerse claros para evitar dependencias innecesarias.

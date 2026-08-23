@@ -175,9 +175,57 @@ Desde la raíz del repositorio, ejecuta el siguiente script:
 > start.bat
 > ```
 
+Este comando automatiza el entorno de desarrollo ejecutando las siguientes acciones:
 
+1. Levanta el servicio del backend en **FastAPI**.
+2. Inicia el cliente del frontend en **Flutter**.
+3. Despliega la interfaz de usuario directamente en **Google Chrome**.
 
+---
 
+## Componentes del Sistema
+
+| Componente | Tecnología | Propósito |
+| :--- | :--- | :--- |
+| **Backend** | FastAPI | Servicios y API REST de DinamikUTB |
+| **Frontend** | Flutter | Interfaz de usuario multiplataforma |
+| **Pruebas Backend** | Pytest | Validación y pruebas automatizadas del servidor |
+| **Pruebas Frontend** | Flutter Test | Pruebas unitarias y de componentes de la UI |
+
+---
+
+## URLs de Desarrollo
+
+Una vez iniciado el sistema, se puede acceder a los siguientes endpoints locales:
+
+* **API Base:** `http://127.0.0.1:8000`
+* **Documentación interactiva (Swagger):** `http://127.0.0.1:8000/docs`
+* **Frontend Web:** Se abre automáticamente en el navegador Google Chrome.
+
+---
+
+## Ejecución de pruebas y análisis
+
+Para ejecutar las pruebas del backend:
+
+```bash
+cd backend
+pytest
+```
+
+Para ejecutar las pruebas del frontend:
+
+```bash
+cd frontend
+flutter test
+```
+
+Para verificar el código Flutter:
+
+```bash
+cd frontend
+flutter analyze
+```
 
 ## Equipo
 

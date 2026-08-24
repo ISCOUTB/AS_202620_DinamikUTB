@@ -155,7 +155,7 @@ Se plantea implementar una interfaz organizada por módulos, donde las funcional
    - **Requisitos de grado:** Requisitos cumplidos y pendientes.
    - **Plan Académico:** Cursos requeridos de la carrera, recomendados o electivos.
    - **Perfil:** Información del estudiante.
- -**Prioridad:** Usabilidad > Funcionalidad
+- **Prioridad:** Usabilidad > Funcionalidad
 
 De esta manera, **DinamikUTB** pueda priorizar la usabilidad sin saturar una pantalla de demasiadas funcionalidades y no afectar la experiencia del estudiante.
 

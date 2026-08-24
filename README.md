@@ -152,7 +152,6 @@ De esta manera, **DinamikUTB** pueda priorizar la usabilidad sin saturar una pan
 
 ---
 
-# Equipo
 
 # **Ejecución del Proyecto**
 
@@ -232,7 +231,6 @@ cd frontend
 flutter analyze
 ```
 
-## Equipo
 
 # Estructura del proyecto
 
@@ -277,83 +275,7 @@ AS_202620_DinamikUTB/
 La organización refleja la arquitectura de monolito modular: cada módulo agrupa una responsabilidad funcional dentro del backend y del frontend.
 
 ---
-# Ejecución del Proyecto
 
-**DinamikUTB** utiliza una arquitectura de **monolito modular**, con un backend desarrollado en **FastAPI** y un frontend desarrollado en **Flutter**.
-
-
-## Requisitos Previos
-
-Antes de ejecutar el proyecto, se debe contar con las siguientes herramientas instaladas:
-
-* **Python 3.12** o superior
-* **Flutter SDK**
-* **Git**
-* **Google Chrome**
-
-
-## Inicio Rápido
-
-Desde la raíz del repositorio, ejecuta el siguiente script:
-
-> [!IMPORTANT]
-> **Comando de inicio:**
-> 
-> ```cmd
-> start.bat
-> ```
-
-Este comando automatiza el entorno de desarrollo ejecutando las siguientes acciones:
-
-1. Levanta el servicio del backend en **FastAPI**.
-2. Inicia el cliente del frontend en **Flutter**.
-3. Despliega la interfaz de usuario directamente en **Google Chrome**.
-
----
-
-## Componentes del Sistema
-
-| Componente | Tecnología | Propósito |
-| :--- | :--- | :--- |
-| **Backend** | FastAPI | API base y estructura inicial del backend |
-| **Frontend** | Flutter | Interfaz de usuario multiplataforma |
-| **Pruebas Backend** | Pytest | Validación automatizada del backend |
-| **Pruebas Frontend** | Flutter Test | Pruebas unitarias y de componentes de la UI |
-
----
-
-## URLs de Desarrollo
-
-Una vez iniciado el sistema:
-
-- **API:** `http://127.0.0.1:8000`
-- **Documentación de la API:** `http://127.0.0.1:8000/docs`
-- **Frontend:** se abre automáticamente en Google Chrome.
-
----
-
-## Ejecución de pruebas y análisis
-
-Para ejecutar las pruebas del backend:
-
-```bash
-cd backend
-pytest
-```
-
-Para ejecutar las pruebas del frontend:
-
-```bash
-cd frontend
-flutter test
-```
-
-Para verificar el código Flutter:
-
-```bash
-cd frontend
-flutter analyze
-```
 
 ## Equipo
 

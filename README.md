@@ -121,7 +121,16 @@ La plataforma también podrá generar alertas cuando detecte que un requisito im
 
 ## Seguimiento de requisitos
 
-El estudiante podrá consultar el estado de cada requisito necesario para graduarse.
+El estudiante podrá consultar de manera centralizada el estado de los diferentes requisitos necesarios para completar su proceso de graduación.
+
+La plataforma permitirá identificar:
+
+- Requisitos cumplidos.
+- Requisitos pendientes.
+- Requisitos que se encuentran en proceso.
+- Progreso general hacia la graduación.
+
+Además, la información podrá organizarse de acuerdo con el programa académico del estudiante, facilitando la consulta y planificación de los requisitos que aún debe completar.
 
 --- 
 # Atributos de calidad
@@ -146,11 +155,12 @@ Se plantea implementar una interfaz organizada por módulos, donde las funcional
    - **Requisitos de grado:** Requisitos cumplidos y pendientes.
    - **Plan Académico:** Cursos requeridos de la carrera, recomendados o electivos.
    - **Perfil:** Información del estudiante.
- -**Prioridad:** Usabilidad > Funcionalidad
+- **Prioridad:** Usabilidad > Funcionalidad
 
 De esta manera, **DinamikUTB** pueda priorizar la usabilidad sin saturar una pantalla de demasiadas funcionalidades y no afectar la experiencia del estudiante.
 
 ---
+
 
 # **Ejecución del Proyecto**
 
@@ -273,6 +283,7 @@ AS_202620_DinamikUTB/
 La organización refleja la arquitectura de monolito modular: cada módulo agrupa una responsabilidad funcional dentro del backend y del frontend.
 
 ---
+
 
 ## Equipo
 

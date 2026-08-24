@@ -14,8 +14,8 @@
 - [Solución Propuesta](#solución-propuesta)
 - [Funcionalidades](#funcionalidades)
 - [Atributos de calidad](#atributos-de-calidad)
-- [Estructura del proyecto](#estructura-del-proyecto)
 - [Ejecución del Proyecto](#ejecución-del-proyecto)
+- [Estructura del proyecto](#estructura-del-proyecto)
 - [Equipo](#equipo)
 
 
@@ -239,7 +239,6 @@ Para verificar el código Flutter:
 cd frontend
 flutter analyze
 ```
-
 
 # Estructura del proyecto
 

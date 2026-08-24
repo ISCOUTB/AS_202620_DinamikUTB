@@ -75,6 +75,8 @@ La usabilidad ocupa el tercer nivel porque el sistema debe permitir que los estu
 | **Entorno** | Sistema en funcionamiento con información académica registrada en la base de datos. |
 | **Respuesta** | El sistema consulta la información correspondiente al estudiante y muestra el estado de cada requisito de acuerdo con los datos registrados. |
 | **Medida** | El **100 % de los datos mostrados** debe corresponder con la información registrada para el estudiante. Cualquier información incorrecta se considera un incidente crítico. |
+| **Herramienta** | **Pytest**, mediante pruebas automatizadas de los datos y reglas de cálculo. |
+| **Carga** | **20 casos de prueba** con diferentes estados de requisitos académicos. |
 
 **Prioridad:** Alta  
 **Atributo:** Exactitud / Consistencia
@@ -90,7 +92,9 @@ La usabilidad ocupa el tercer nivel porque el sistema debe permitir que los estu
 | **Artefacto** | Módulo de autenticación y control de acceso. |
 | **Entorno** | Sistema en funcionamiento con múltiples estudiantes y usuarios con diferentes roles. |
 | **Respuesta** | El sistema autentica al usuario y permite acceder únicamente a la información correspondiente a sus permisos. |
-| **Medida** | En las pruebas de acceso autorizadas y no autorizadas, el **100 % de los intentos no autorizados** debe ser rechazado y ningún estudiante debe poder consultar información académica perteneciente a otro estudiante. |
+| **Medida** | El **100 % de los intentos no autorizados** debe ser rechazado y ningún estudiante debe poder consultar información académica perteneciente a otro estudiante. |
+| **Herramienta** | **Pytest + FastAPI TestClient**, mediante pruebas de acceso autorizado y no autorizado. |
+| **Carga** | **20 intentos de acceso**, combinando solicitudes autorizadas y no autorizadas. |
 
 **Prioridad:** Alta  
 **Atributo:** Seguridad
@@ -107,6 +111,8 @@ La usabilidad ocupa el tercer nivel porque el sistema debe permitir que los estu
 | **Entorno** | Usuario autenticado utilizando la aplicación. |
 | **Respuesta** | El sistema presenta el porcentaje de avance, los requisitos cumplidos y los requisitos pendientes de forma clara y organizada. |
 | **Medida** | Al menos el **80 % de los usuarios evaluados** debe poder identificar correctamente sus requisitos pendientes y su porcentaje de avance en una prueba de uso sin asistencia. |
+| **Herramienta** | **Prueba de usabilidad**, mediante una tarea guiada y observación de resultados. |
+| **Carga** | **5 usuarios evaluados** realizando la tarea de consultar su progreso sin asistencia. |
 
 **Prioridad:** Alta  
 **Atributo:** Usabilidad

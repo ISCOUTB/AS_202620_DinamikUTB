@@ -131,6 +131,7 @@ La plataforma permitirá identificar:
 - Progreso general hacia la graduación.
 
 Además, la información podrá organizarse de acuerdo con el programa académico del estudiante, facilitando la consulta y planificación de los requisitos que aún debe completar.
+
 --- 
 # Atributos de calidad
  

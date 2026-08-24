@@ -152,8 +152,6 @@ De esta manera, **DinamikUTB** pueda priorizar la usabilidad sin saturar una pan
 
 ---
 
-# Equipo
-
 # **Ejecución del Proyecto**
 
 **DinamikUTB** utiliza una arquitectura de **monolito modular**, con un backend desarrollado en **FastAPI** y un frontend desarrollado en **Flutter**.
@@ -231,8 +229,6 @@ Para verificar el código Flutter:
 cd frontend
 flutter analyze
 ```
-
-## Equipo
 
 # Estructura del proyecto
 

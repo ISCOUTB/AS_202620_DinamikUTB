@@ -121,8 +121,16 @@ La plataforma también podrá generar alertas cuando detecte que un requisito im
 
 ## Seguimiento de requisitos
 
-El estudiante podrá consultar el estado de cada requisito necesario para graduarse.
+El estudiante podrá consultar de manera centralizada el estado de los diferentes requisitos necesarios para completar su proceso de graduación.
 
+La plataforma permitirá identificar:
+
+- Requisitos cumplidos.
+- Requisitos pendientes.
+- Requisitos que se encuentran en proceso.
+- Progreso general hacia la graduación.
+
+Además, la información podrá organizarse de acuerdo con el programa académico del estudiante, facilitando la consulta y planificación de los requisitos que aún debe completar.
 --- 
 # Atributos de calidad
  

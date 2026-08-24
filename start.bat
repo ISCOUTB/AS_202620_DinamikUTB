@@ -1,8 +1,6 @@
 @echo off
 
-echo ==========================================
 echo        DinamikUTB - Development Start
-echo ==========================================
 echo.
 
 echo [1/2] Starting FastAPI...

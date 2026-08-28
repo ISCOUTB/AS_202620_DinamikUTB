@@ -26,48 +26,41 @@ Por esta razón, la selección no busca utilizar la arquitectura más compleja, 
 
 ## 4.2 Evaluation Criteria
 
-| Criterio | Descripción |
-|---|---|
-| **Simplicidad inicial** | Facilidad para comprender, desarrollar y mantener la solución durante el proyecto. |
-| **Organización interna** | Capacidad para separar responsabilidades y mantener una estructura clara. |
-| **Evolución del sistema** | Facilidad para incorporar nuevas funcionalidades y programas académicos. |
-| **Independencia tecnológica** | Facilidad para realizar cambios en tecnologías como persistencia, interfaz o servicios externos. |
-| **Testabilidad** | Facilidad para realizar pruebas sobre las diferentes partes del sistema. |
-| **Integraciones futuras** | Facilidad para incorporar posteriormente servicios o sistemas externos. |
-| **Adecuación al proyecto** | Qué tan apropiada resulta la alternativa para el tamaño y alcance actual de DinamikUTB. |
+La comparación entre las tres alternativas se realiza contra los escenarios de calidad priorizados en `docs/arc42/10-quality-requirements.md`, en lugar de contra criterios genéricos independientes del proyecto. Esto permite que la elección de estilo arquitectónico responda directamente a lo que el sistema necesita cumplir, y no a una valoración abstracta de cada patrón.
+
+| Escenario | Atributo evaluado | Medida de referencia |
+|---|---|---|
+| Q-01 | Exactitud / Consistencia | 100 % de los datos correctos, 20 casos de Pytest |
+| Q-02 | Seguridad | 100 % de accesos no autorizados rechazados, 20 intentos |
+| Q-03 | Usabilidad | 4 de 5 usuarios identifican su progreso sin asistencia |
+
+La sección 4.5 complementa esta evaluación con un análisis cualitativo de ventajas y limitaciones de cada alternativa, más allá de los tres escenarios priorizados.
 
 ---
 
 ## 4.3 Rating Scale
 
-Para realizar la comparación se utiliza una escala de **1 a 5**:
+Para la comparación de la sección 4.4 se usa una escala de tres valores, en vez de un puntaje numérico, porque lo que interesa no es qué tan buena es una arquitectura en abstracto sino si ayuda o no a cumplir la medida concreta de cada escenario:
 
 | Valor | Interpretación |
-|---:|---|
-| **1** | Muy desfavorable |
-| **2** | Desfavorable |
-| **3** | Aceptable |
-| **4** | Favorable |
-| **5** | Muy favorable |
-
-Las valoraciones representan la adecuación de cada alternativa al contexto específico de **DinamikUTB**, no una clasificación absoluta de las arquitecturas.
+|---|---|
+| **Mejora** | El estilo facilita cumplir la medida del escenario mediante un mecanismo identificable. |
+| **No incide** | El escenario se resuelve en una capa que el estilo arquitectónico del backend no afecta. |
+| **Empeora** | El estilo dificulta cumplir la medida, o exige un esfuerzo adicional para compensar una debilidad propia del patrón. |
 
 ---
 
 ## 4.4 Comparison Matrix
 
-| Criterio | Capas | Hexagonal | Monolito modular |
-|---|---:|---:|---:|
-| Simplicidad inicial | 5 | 3 | 5 |
-| Organización interna | 4 | 5 | 5 |
-| Evolución del sistema | 3 | 5 | 5 |
-| Independencia tecnológica | 3 | 5 | 3 |
-| Testabilidad | 3 | 5 | 4 |
-| Integraciones futuras | 3 | 5 | 4 |
-| Adecuación al proyecto | 5 | 3 | 5 |
-| **Total** | **26** | **31** | **31** |
+La comparación inicial puntuaba criterios genéricos (simplicidad, organización, evolución, testabilidad) sin relacionarlos con los escenarios priorizados. Esta versión compara los tres estilos directamente contra los escenarios de `docs/arc42/10-quality-requirements.md`, usando la escala de la sección 4.3.
 
-> **Nota:** El resultado numérico no determina por sí solo la decisión arquitectónica. La selección también considera el contexto, las restricciones y el nivel de complejidad que resulta razonable para el proyecto.
+| Escenario | Capas | Hexagonal | Monolito modular |
+| :--- | :--- | :--- | :--- |
+| **Q-01** — Exactitud (100 % de los datos, 20 casos Pytest) | Sin un módulo dueño del cálculo, es fácil que dos capas terminen calculando el mismo estado de forma distinta. | El puerto de dominio obliga a que exista una única implementación del cálculo, aislada y más fácil de probar. | El módulo `requisitos/` concentra el cálculo; el límite de módulo desalienta duplicar la lógica en otro lado. |
+| **Q-02** — Seguridad (100 % de accesos rechazados, 20 intentos) | La autenticación tiende a repetirse por capa o por endpoint si no se centraliza explícitamente, lo que aumenta el riesgo de dejar alguno sin protección. | Un adaptador de autenticación único, testeable de forma aislada del resto del dominio. | El módulo `usuarios/` permite inyectar la autenticación como dependencia en todos los routers desde un solo punto. |
+| **Q-03** — Usabilidad (4 de 5 usuarios sin asistencia) | No incide: el atributo depende de la interfaz en Flutter, no del estilo elegido para el backend. | No incide, por la misma razón. | No incide, por la misma razón. |
+
+Q-03 queda sin diferencia entre los tres estilos porque se resuelve en `frontend/lib/`, no en la elección arquitectónica del backend. Se deja así en vez de forzar una distinción que no corresponde a ninguno de los tres.
 
 ---
 
@@ -144,7 +137,6 @@ DinamikUTB
 * Es apropiado para el tamaño inicial del proyecto.
 * Permite evolucionar progresivamente la arquitectura.
 * No obliga a introducir múltiples aplicaciones o servicios desde el inicio.
-
 
 **Limitaciones**
 

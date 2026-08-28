@@ -8,12 +8,12 @@
 
 | ID | Aspecto | Requisito | Escenario de calidad | C4 | ADR | Código | Pruebas | Evidencia |
 |---|---|---|---|---|---|---|---|---|
-| A-01 | Seguimiento del cumplimiento de requisitos | RF-01 | [Q-01](arc42/10-quality-requirements.md#escenario-q-01--exactitud-de-la-información-académica), [Q-03](arc42/10-quality-requirements.md#escenario-q-03--facilidad-de-comprensión-de-la-información) | Pendiente | Pendiente | Pendiente | Pendiente | Pendiente |
-| A-02 | Cálculo correcto del estado de graduación | RF-02 | [Q-01](arc42/10-quality-requirements.md#escenario-q-01--exactitud-de-la-información-académica) | Pendiente | Pendiente | Pendiente | Pendiente | Pendiente |
+| A-01 | Seguimiento del cumplimiento de requisitos | RF-01 | [Q-01](arc42/10-quality-requirements.md#escenario-q-01--exactitud-de-la-información-académica), [Q-03](arc42/10-quality-requirements.md#escenario-q-03--facilidad-de-comprensión-de-la-información) | Pendiente | [ADR-0001](adr/0001-seleccion-monolito-modular.md) | Pendiente | Pendiente | Pendiente |
+| A-02 | Cálculo correcto del estado de graduación | RF-02 | [Q-01](arc42/10-quality-requirements.md#escenario-q-01--exactitud-de-la-información-académica) | Pendiente | [ADR-0001](adr/0001-seleccion-monolito-modular.md) | Pendiente | Pendiente | Pendiente |
 | A-03 | Alertas tempranas de requisitos pendientes | RF-03 | Pendiente | Pendiente | Pendiente | Pendiente | Pendiente | Pendiente |
-| A-04 | Disponibilidad del sistema | RF-04 | Pendiente | Pendiente | Pendiente | Pendiente | Pendiente | Pendiente |
-| A-05 | Protección y control de acceso a la información académica | RF-05 | [Q-02](arc42/10-quality-requirements.md#escenario-q-02--seguridad-y-aislamiento-de-la-información) | Pendiente | Pendiente | Pendiente | Pendiente | Pendiente |
-| A-06 | Extensibilidad para múltiples programas académicos | RF-06 | Pendiente | Pendiente | Pendiente | Pendiente | Pendiente | Pendiente |
+| A-04 | Disponibilidad del sistema | RF-04 | Pendiente | Pendiente | [ADR-0001](adr/0001-seleccion-monolito-modular.md) | Pendiente | Pendiente | Pendiente |
+| A-05 | Protección y control de acceso a la información académica | RF-05 | [Q-02](arc42/10-quality-requirements.md#escenario-q-02--seguridad-y-aislamiento-de-la-información) | Pendiente | [ADR-0001](adr/0001-seleccion-monolito-modular.md) | Pendiente | Pendiente | Pendiente |
+| A-06 | Extensibilidad para múltiples programas académicos | RF-06 | Pendiente | Pendiente | [ADR-0001](adr/0001-seleccion-monolito-modular.md) | Pendiente | Pendiente | Pendiente |
 
 ---
 
@@ -111,4 +111,4 @@
 | [Q-02](arc42/10-quality-requirements.md#escenario-q-02--seguridad-y-aislamiento-de-la-información) | Seguridad | A-05 |
 | [Q-03](arc42/10-quality-requirements.md#escenario-q-03--facilidad-de-comprensión-de-la-información) | Usabilidad | A-01 |
 
-> Los campos C4, ADR, código, pruebas y evidencia se encuentran pendientes porque todavía no existen los elementos correspondientes. Se actualizarán a medida que avance la implementación del sistema.
+> El ADR-0001 ya existe y se enlaza desde los aspectos que sustenta directamente (A-01, A-02, A-04, A-05, A-06). A-03 queda pendiente porque ninguna decisión documentada define todavía dónde vive el mecanismo de alertas. Los campos C4, código, pruebas y evidencia siguen pendientes porque esos elementos aún no existen en el repositorio; se actualizarán a medida que avance la implementación.

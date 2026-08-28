@@ -121,12 +121,12 @@ La usabilidad ocupa el tercer nivel porque el sistema debe permitir que los estu
 
 ## 10.4 Relación entre escenarios y aspectos
 
-Los escenarios de calidad se relacionan con los aspectos definidos en `docs/aspectos.md`.
+Los escenarios de calidad se relacionan con los aspectos definidos en `docs/aspectos.md` y con la decisión arquitectónica que los sustenta.
 
-| Escenario | Atributo | Aspecto relacionado |
-|---|---|---|
-| Q-01 | Exactitud / Consistencia | A-01 Seguimiento del cumplimiento de requisitos |
-| Q-02 | Seguridad | A-05 Protección y control de acceso a la información académica |
-| Q-03 | Usabilidad | A-01 Seguimiento del cumplimiento de requisitos |
+| Escenario | Atributo | Aspecto relacionado | ADR |
+|---|---|---|---|
+| Q-01 | Exactitud / Consistencia | A-01 Seguimiento del cumplimiento de requisitos | [ADR-0001](../adr/0001-seleccion-monolito-modular.md) |
+| Q-02 | Seguridad | A-05 Protección y control de acceso a la información académica | [ADR-0001](../adr/0001-seleccion-monolito-modular.md) |
+| Q-03 | Usabilidad | A-01 Seguimiento del cumplimiento de requisitos | No aplica: se resuelve en la interfaz, no en la arquitectura del backend (ver `04-solution-strategy.md`, sección 4.4). |
 
 Estos escenarios podrán ser refinados posteriormente a medida que se implementen los componentes del sistema y se definan las pruebas correspondientes.

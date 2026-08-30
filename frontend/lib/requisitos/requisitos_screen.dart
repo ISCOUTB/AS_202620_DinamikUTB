@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'models.dart';
 import 'requisitos_service.dart';
+import '../main.dart' show colorGranate, colorNegro, colorTextoSecundario;
 
 class RequisitosScreen extends StatefulWidget {
   const RequisitosScreen({
@@ -24,6 +25,17 @@ class _RequisitosScreenState extends State<RequisitosScreen> {
   void initState() {
     super.initState();
     _futureRequisitos = widget.service.obtenerRequisitos(widget.estudianteId);
+  }
+
+  Color _colorPorEstado(String estado) {
+    switch (estado) {
+      case 'pendiente':
+        return colorGranate;
+      case 'cumplido':
+        return colorNegro;
+      default:
+        return colorTextoSecundario;
+    }
   }
 
   @override
@@ -53,9 +65,27 @@ class _RequisitosScreenState extends State<RequisitosScreen> {
             itemCount: requisitos.length,
             itemBuilder: (context, index) {
               final requisito = requisitos[index];
-              return ListTile(
-                title: Text(requisito.nombre),
-                subtitle: Text(requisito.estado),
+              return Container(
+                margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                decoration: BoxDecoration(
+                  border: Border(
+                    left: BorderSide(
+                      color: _colorPorEstado(requisito.estado),
+                      width: 4,
+                    ),
+                  ),
+                  color: Colors.white,
+                ),
+                child: ListTile(
+                  title: Text(
+                    requisito.nombre,
+                    style: const TextStyle(color: colorNegro),
+                  ),
+                  subtitle: Text(
+                    requisito.estado,
+                    style: const TextStyle(color: colorTextoSecundario),
+                  ),
+                ),
               );
             },
           );

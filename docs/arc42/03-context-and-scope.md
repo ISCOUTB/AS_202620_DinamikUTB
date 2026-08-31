@@ -1,6 +1,6 @@
 # 3. Context and Scope
 
-Esta sección describe el contexto de DinamikUTB, sus usuarios principales y los límites del sistema.
+Esta sección describe el contexto de **DinamikUTB**, sus usuarios principales y los límites del sistema.
 
 DinamikUTB es una plataforma para el seguimiento de los requisitos necesarios para la graduación universitaria. El sistema centraliza la información necesaria para que los estudiantes puedan consultar su progreso y los usuarios autorizados puedan gestionar la información correspondiente.
 
@@ -24,11 +24,11 @@ Utiliza el sistema para consultar su progreso hacia la graduación, conocer los 
 
 El estudiante podrá:
 
-- Consultar su porcentaje de avance.
-- Consultar sus requisitos de graduación.
-- Identificar requisitos cumplidos y pendientes.
-- Consultar información relacionada con créditos, idioma, prácticas, opción de grado y otros requisitos establecidos para su programa.
-- Enviar solicitudes mediante el centro de ayuda cuando detecte una posible inconsistencia.
+- Consultar su porcentaje de avance. [[RF-02]](01-introduction-and-goals.md)
+- Consultar sus requisitos de graduación. [[RF-01]](01-introduction-and-goals.md)
+- Identificar requisitos cumplidos y pendientes. [[RF-01]](01-introduction-and-goals.md)
+- Consultar información relacionada con créditos, idioma, prácticas, opción de grado y otros requisitos establecidos para su programa. [[RF-01]](01-introduction-and-goals.md)
+- Enviar solicitudes mediante el centro de ayuda cuando detecte una posible inconsistencia. [RF-07](01-introduction-and-goals.md)
 
 El estudiante **no modifica directamente su información académica**.
 
@@ -39,12 +39,12 @@ El coordinador académico es un usuario autorizado responsable de gestionar y co
 Podrá:
 
 - Consultar estudiantes pertenecientes a su programa.
-- Gestionar los requisitos correspondientes a su programa académico.
-- Atender solicitudes enviadas por estudiantes.
+- Gestionar los requisitos correspondientes a su programa académico. [[RF-06]](01-introduction-and-goals.md)*
+- Atender solicitudes enviadas por estudiantes. [[RF-07]](01-introduction-and-goals.md)
 - Realizar modificaciones autorizadas sobre la información correspondiente.
-- Consultar el historial de cambios relacionado con la información que gestiona.
+- Consultar el historial de cambios relacionado con la información que gestiona. [[RF-08]](01-introduction-and-goals.md)
 
-El acceso del coordinador estará limitado a las responsabilidades y permisos definidos para su programa.
+El acceso del coordinador estará limitado a las responsabilidades y permisos definidos para su programa. [[RF-05]](01-introduction-and-goals.md)
 
 ### Administrador
 
@@ -53,9 +53,9 @@ El administrador es un usuario con permisos generales sobre la plataforma.
 Entre sus responsabilidades se encuentran:
 
 - Crear y administrar las cuentas de los estudiantes.
-- Gestionar usuarios y permisos.
-- Crear y administrar programas académicos.
-- Gestionar los requisitos asociados a los programas.
+- Gestionar usuarios y permisos. [[RF-05]](01-introduction-and-goals.md)
+- Crear y administrar programas académicos. [[RF-06]](01-introduction-and-goals.md)
+- Gestionar los requisitos asociados a los programas. [[RF-06]](01-introduction-and-goals.md)
 - Administrar la configuración general del sistema.
 - Consultar información académica cuando sus permisos lo permitan.
 
@@ -89,7 +89,7 @@ En la primera versión, DinamikUTB **no será responsable de consultar directame
 
 El siguiente diagrama representa el contexto de DinamikUTB y las interacciones principales entre el sistema y sus usuarios.
 
-![C4 Context Diagram](../c4/contexto.png)
+[C4 Context Diagram](../c4/contexto.puml)
 
 ### Relaciones principales
 
@@ -119,7 +119,7 @@ El centro de ayuda también formará parte de DinamikUTB, por lo que no se consi
 
 La información necesaria para el funcionamiento de DinamikUTB será almacenada en una base de datos propia.
 
-La tecnología específica de la base de datos aún no ha sido definida y será seleccionada posteriormente como parte de las decisiones de arquitectura.
+La tecnología específica de la base de datos aún no ha sido definida y será seleccionada posteriormente como parte de las decisiones de arquitectura (`docs/arc42/09-architecture-decisions.md`).
 
 ---
 
@@ -129,17 +129,17 @@ El límite inicial del sistema comprende las siguientes responsabilidades:
 
 **Dentro de DinamikUTB:**
 
-- Autenticación y autorización.
-- Gestión de usuarios.
-- Gestión de roles.
-- Gestión de programas académicos.
-- Gestión de requisitos.
-- Seguimiento del progreso académico.
-- Cálculo del porcentaje de avance.
-- Consulta de requisitos pendientes.
-- Centro de ayuda.
-- Historial de cambios.
-- Almacenamiento de información en la base de datos propia.
+
+| Responsabilidad | Módulo |
+|---|---|
+| Autenticación y autorización | `usuarios/` |
+| Gestión de usuarios y roles | `usuarios/` |
+| Información y avance académico del estudiante | `estudiantes/` |
+| Gestión de requisitos y cálculo de estado/avance | `requisitos/` |
+| Gestión de programas académicos y mallas | `programas/` |
+| Centro de ayuda y gestión de solicitudes | `ayuda/` |
+| Historial de cambios | `requisitos/` y `estudiantes/` |
+| Almacenamiento de información en la base de datos propia | `core/` |
 
 **Fuera de DinamikUTB:**
 

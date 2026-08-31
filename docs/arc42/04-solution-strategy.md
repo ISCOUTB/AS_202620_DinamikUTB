@@ -201,6 +201,40 @@ La decisión se relaciona principalmente con los atributos de calidad priorizado
 | **Trazabilidad** | La separación modular facilita identificar dónde se realizan determinadas operaciones y cambios. |
 | **Mantenibilidad** | La división en módulos permite modificar y ampliar funcionalidades manteniendo responsabilidades delimitadas. |
 
+## 4.8.1 Tácticas por escenario de calidad
+
+La sección 4.8 relaciona la decisión con los atributos de calidad, pero sin bajar a mecanismos concretos. En esta parte se liga cada escenario priorizado con la táctica que lo sostiene, dónde queda esa táctica en el código y con qué prueba se comprueba contra la medida definida en `docs/arc42/10-quality-requirements.md`.
+
+### Q-01 — Exactitud de la información académica
+
+Medida: 100 % de los datos correctos, verificado con 20 casos de Pytest.
+
+| Táctica | Dónde vive | Cómo se verifica |
+| :--- | :--- | :--- |
+| El cálculo del estado de un requisito ocurre en un solo lugar del módulo `requisitos/`. El frontend no recalcula nada por su cuenta, solo consume lo que devuelve la API. | `backend/app/requisitos/`, en la capa de servicio, no en el router | Los 20 casos de Q-01 comparan el resultado del servicio contra datos de fixture con estado conocido. |
+| Pydantic rechaza cualquier estado inválido antes de que llegue a persistirse, para que un dato corrupto no termine contando como "correcto" simplemente porque ya está guardado. | `backend/app/requisitos/schemas.py` | Casos que envían payloads inválidos y verifican que el servicio los rechace, dentro del mismo lote de 20. |
+| Las actualizaciones que tocan varios campos del requisito van dentro de una sola transacción, para no dejar el registro a medio escribir si algo falla a mitad de camino. | Capa de servicio de `requisitos/`, alrededor del `commit()` | Prueba que simula una falla a mitad de una actualización múltiple y revisa que el estado final no quede parcial. |
+
+### Q-02 — Seguridad y aislamiento
+
+Medida: 100 % de accesos no autorizados rechazados, sobre 20 intentos con FastAPI TestClient.
+
+| Táctica | Dónde vive | Cómo se verifica |
+| :--- | :--- | :--- |
+| La autenticación se resuelve una sola vez, como dependencia de FastAPI, y se inyecta en los routers que la necesitan. Así no depende de que cada endpoint la implemente por su cuenta. | `backend/app/usuarios/`, inyectado en `requisitos/` y `estudiantes/` | De los 20 intentos, los que no llevan token válido deben devolver 401 en todos los casos, probado con TestClient sin credenciales. |
+| El endpoint de requisitos compara el `student_id` del token contra el del recurso pedido, para que un estudiante no pueda ver datos de otro cambiando el ID en la URL. | Dependencia de autorización dentro de `requisitos/` | Caso donde el usuario A pide el recurso de B: debe volver 403 o 404, nunca los datos de B. |
+| Cada rol tiene acceso solo a lo que le corresponde, resuelto desde `usuarios/` hacia el resto de los módulos. | `backend/app/usuarios/` | Casos con rol estudiante intentando pegarle a endpoints de coordinación o administración. |
+
+### Q-03 — Facilidad de comprensión
+
+Medida: al menos 4 de 5 usuarios identifican su progreso sin ayuda.
+
+| Táctica | Dónde vive | Cómo se verifica |
+| :--- | :--- | :--- |
+| La pantalla de progreso es la primera que ve el estudiante al entrar, sin que tenga que navegar para llegar al dato más importante. | `frontend/lib/estudiantes/` (pantalla principal) | Prueba de usabilidad guiada: se observa si el usuario llega al porcentaje sin instrucciones. |
+| La navegación se mantiene en los cuatro módulos ya definidos (progreso, requisitos, plan, perfil), sin pantallas intermedias que compliquen el camino. | Estructura de navegación en `frontend/lib/` | Se cuenta cuántos toques necesita cada usuario para llegar al dato pedido. |
+| Cada llamada a la API muestra su estado real (cargando, error, listo), para que nadie confunda una pantalla en carga con "no tengo pendientes". | Widgets de `frontend/lib/requisitos/` | Parte de la misma tarea guiada: se anota si algún usuario malinterpreta un estado de carga. |
+
 ---
 
 ## 4.9 Decision Summary

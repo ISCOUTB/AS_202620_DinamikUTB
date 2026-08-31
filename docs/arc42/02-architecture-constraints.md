@@ -20,13 +20,12 @@ Para el **frontend** se podrá utilizar una de las siguientes tecnologías:
 - **Flutter**
 - **Next.js**
 
-La elección definitiva de las tecnologías se documentará posteriormente como una decisión de arquitectura.
 
 ### Base de datos propia
 
 Inicialmente, DinamikUTB utilizará una base de datos propia para almacenar la información necesaria para el funcionamiento del sistema.
 
-La elección entre una base de datos SQL o NoSQL aún no ha sido definida y será determinada posteriormente de acuerdo con las necesidades del sistema.
+La elección entre una base de datos SQL o NoSQL aún no ha sido definida y será determinada posteriormente de acuerdo con las necesidades del sistema. Dado que el escenario de calidad Q-01 (exactitud) exige transacciones consistentes sobre actualizaciones de varios campos (ver `04-solution-strategy.md`, sección 4.8.1), una base de datos relacional es la opción que mejor se alinea con lo ya decidido.
 
 ### Sin integración inicial con sistemas institucionales
 
@@ -52,7 +51,7 @@ Los roles definidos inicialmente son:
 - Coordinador académico.
 - Administrador.
 
-El acceso a la información debe estar controlado de acuerdo con los permisos correspondientes a cada rol.
+El acceso a la información debe estar controlado de acuerdo con los permisos correspondientes a cada rol. Esta restricción es la que sustenta directamente el escenario Q-02 y su táctica de autenticación centralizada en el módulo `usuarios/` (ver `04-solution-strategy.md`, sección 4.8.1).
 
 ---
 
@@ -82,7 +81,7 @@ Las cuentas serán creadas previamente por el administrador y los estudiantes ac
 
 Cada tipo de usuario tendrá responsabilidades diferentes:
 
-- **Estudiante:** consulta su información académica y puede enviar solicitudes mediante el centro de ayuda. No puede modificar directamente sus datos académicos.
+- **Estudiante:** consulta su información académica y puede enviar solicitudes mediante el centro de ayuda (RF-07). No puede modificar directamente sus datos académicos.
 - **Coordinador académico:** consulta estudiantes de su programa, gestiona los requisitos correspondientes y atiende solicitudes relacionadas con posibles inconsistencias.
 - **Administrador:** gestiona usuarios, programas académicos, requisitos y permisos generales del sistema.
 
@@ -128,9 +127,9 @@ Por lo tanto, las consideraciones legales de una eventual implementación real d
 
 | Tipo | Restricción | Impacto en la arquitectura |
 |---|---|---|
-| **Técnica** | Backend limitado a NestJS o FastAPI | Condiciona la tecnología utilizada para los servicios del backend. |
-| **Técnica** | Frontend limitado a Flutter o Next.js | Condiciona la tecnología utilizada para la interfaz de usuario. |
-| **Técnica** | Base de datos propia | La información necesaria para el sistema debe ser administrada por DinamikUTB. |
+| **Técnica** | Backend limitado a NestJS o FastAPI (en la práctica: FastAPI) | Condiciona la tecnología utilizada para los servicios del backend. |
+| **Técnica** | Frontend limitado a Flutter o Next.js (en la práctica: Flutter) | Condiciona la tecnología utilizada para la interfaz de usuario. |
+| **Técnica** | Base de datos propia, motor aún no definido | La información necesaria para el sistema debe ser administrada por DinamikUTB. |
 | **Técnica** | Sin integración inicial con sistemas institucionales | Se requiere una solución independiente y preparada para futuras integraciones. |
 | **Técnica** | Soporte para múltiples programas académicos | La arquitectura debe permitir incorporar nuevas carreras y requisitos. |
 | **Técnica** | Autenticación y autorización | Se requiere control de acceso según los roles del sistema. |

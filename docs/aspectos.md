@@ -8,7 +8,6 @@
 
 | ID | Aspecto | Requisito | Escenario de calidad | C4 | ADR | Código | Pruebas | Evidencia |
 |---|---|---|---|---|---|---|---|---|
-
 | A-01 | Seguimiento del cumplimiento de requisitos | RF-01 | [Q-01](arc42/10-quality-requirements.md/#escenario-q-01--exactitud-de-la-informacion-academica), [Q-03](arc42/10-quality-requirements.md/#escenario-q-03--facilidad-de-comprension-de-la-informacion) | Pendiente | [ADR-0001](adr/0001-seleccion-monolito-modular.md) | Pendiente | Pendiente | Pendiente |
 | A-02 | Cálculo correcto del estado de graduación | RF-02 | [Q-01](arc42/10-quality-requirements.md/#escenario-q-01--exactitud-de-la-informacion-academica) | Pendiente | [ADR-0001](adr/0001-seleccion-monolito-modular.md) | Pendiente | Pendiente | Pendiente |
 | A-03 | Alertas tempranas de requisitos pendientes | RF-03 | [Q-04](arc42/10-quality-requirements.md/#escenario-q-04--alertas-tempranas-de-requisitos-pendientes) | Pendiente | Pendiente (mecanismo de disparo sin decidir) | Pendiente | Pendiente | Pendiente |

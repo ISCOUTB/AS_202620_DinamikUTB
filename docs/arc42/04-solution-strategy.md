@@ -227,8 +227,6 @@ Medida: al menos 4 de 5 usuarios identifican su progreso sin ayuda.
 | La navegación se mantiene en los cuatro módulos ya definidos (progreso, requisitos, plan, perfil), sin pantallas intermedias que compliquen el camino. | Estructura de navegación en `frontend/lib/` | Se cuenta cuántos toques necesita cada usuario para llegar al dato pedido. |
 | Cada llamada a la API muestra su estado real (cargando, error, listo), para que nadie confunda una pantalla en carga con "no tengo pendientes". | Widgets de `frontend/lib/requisitos/` | Parte de la misma tarea guiada: se anota si algún usuario malinterpreta un estado de carga. |
 
-> Estas tácticas parten del diseño ya declarado en el ADR-0001 y en la estructura de carpetas actual. Si al implementar difiere (por ejemplo, si la validación termina en el router y no en el servicio), la tabla se ajusta a lo real.
-
 ---
 
 ## 4.9 Decision Summary

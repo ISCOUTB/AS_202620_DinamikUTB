@@ -8,18 +8,32 @@
 
 | ID | Aspecto | Requisito | Escenario de calidad | C4 | ADR | Código | Pruebas | Evidencia |
 |---|---|---|---|---|---|---|---|---|
-| A-01 | Seguimiento del cumplimiento de requisitos | RF-01 | [Q-01](arc42/10-quality-requirements.md#escenario-q-01--exactitud-de-la-información-académica), [Q-03](arc42/10-quality-requirements.md#escenario-q-03--facilidad-de-comprensión-de-la-información) | Pendiente | [ADR-0001](adr/0001-seleccion-monolito-modular.md) | Pendiente | Pendiente | Pendiente |
-| A-02 | Cálculo correcto del estado de graduación | RF-02 | [Q-01](arc42/10-quality-requirements.md#escenario-q-01--exactitud-de-la-información-académica) | Pendiente | [ADR-0001](adr/0001-seleccion-monolito-modular.md) | Pendiente | Pendiente | Pendiente |
+
+| A-01 | Seguimiento del cumplimiento de requisitos | RF-01 | [Q-01](arc42/10-quality-requirements.md/#escenario-q-01--exactitud-de-la-informacion-academica), [Q-03](arc42/10-quality-requirements.md/#escenario-q-03--facilidad-de-comprension-de-la-informacion) | Pendiente | [ADR-0001](adr/0001-seleccion-monolito-modular.md) | Pendiente | Pendiente | Pendiente |
+| A-02 | Cálculo correcto del estado de graduación | RF-02 | [Q-01](arc42/10-quality-requirements.md/#escenario-q-01--exactitud-de-la-informacion-academica) | Pendiente | [ADR-0001](adr/0001-seleccion-monolito-modular.md) | Pendiente | Pendiente | Pendiente |
+| A-03 | Alertas tempranas de requisitos pendientes | RF-03 | [Q-04](arc42/10-quality-requirements.md/#escenario-q-04--alertas-tempranas-de-requisitos-pendientes) | Pendiente | Pendiente (mecanismo de disparo sin decidir) | Pendiente | Pendiente | Pendiente |
+| A-04 | Disponibilidad del sistema | RF-04 | [Q-05](arc42/10-quality-requirements.md/#escenario-q-05--disponibilidad-del-sistema) | Pendiente | [ADR-0001](adr/0001-seleccion-monolito-modular.md) | Pendiente | Pendiente | Pendiente |
+| A-05 | Protección y control de acceso a la información académica | RF-05 | [Q-02](arc42/10-quality-requirements.md/#escenario-q-02--seguridad-y-aislamiento-de-la-informacion) | Pendiente | [ADR-0001](adr/0001-seleccion-monolito-modular.md) | Pendiente | Pendiente | Pendiente |
+| A-06 | Extensibilidad para múltiples programas académicos | RF-06 | [Q-06](arc42/10-quality-requirements.md/#escenario-q-06--extensibilidad-para-multiples-programas-academicos) | Pendiente | [ADR-0001](adr/0001-seleccion-monolito-modular.md) | Pendiente | Pendiente | Pendiente |
+| A-07 | Gestión de solicitudes de estudiantes en el centro de ayuda | RF-07 | [Q-07](arc42/10-quality-requirements.md/#escenario-q-07--gestion-de-solicitudes-del-centro-de-ayuda) | Pendiente | [ADR-0001](adr/0001-seleccion-monolito-modular.md) (módulo `ayuda/`) | Pendiente | Pendiente | Pendiente |
+| A-08 | Historial de cambios sobre la información académica | RF-08 | [Q-08](arc42/10-quality-requirements.md/#escenario-q-08--historial-de-cambios-sobre-la-informacion-academica) | Pendiente | Pendiente (mecanismo de almacenamiento sin decidir) | Pendiente | Pendiente | Pendiente |
+
+| A-01 | Seguimiento del cumplimiento de requisitos | RF-01 | [Q-01](arc42/10-quality-requirements.md#escenario-q-01--exactitud-de-la-información-académica), [Q-03](arc42/10-quality-requirements.md#escenario-q-03--facilidad-de-comprensión-de-la-información) | Pendiente | Pendiente | Pendiente | Pendiente | Pendiente |
+| A-02 | Cálculo correcto del estado de graduación | RF-02 | [Q-01](arc42/10-quality-requirements.md#escenario-q-01--exactitud-de-la-información-académica) | Pendiente | Pendiente | Pendiente | Pendiente | Pendiente |
 | A-03 | Alertas tempranas de requisitos pendientes | RF-03 | Pendiente | Pendiente | Pendiente | Pendiente | Pendiente | Pendiente |
 | A-04 | Disponibilidad del sistema | RF-04 | Pendiente | Pendiente | [ADR-0001](adr/0001-seleccion-monolito-modular.md) | Pendiente | Pendiente | Pendiente |
 | A-05 | Protección y control de acceso a la información académica | RF-05 | [Q-02](arc42/10-quality-requirements.md#escenario-q-02--seguridad-y-aislamiento-de-la-información) | Pendiente | [ADR-0001](adr/0001-seleccion-monolito-modular.md) | Pendiente | Pendiente | Pendiente |
 | A-06 | Extensibilidad para múltiples programas académicos | RF-06 | Pendiente | Pendiente | [ADR-0001](adr/0001-seleccion-monolito-modular.md) | Pendiente | Pendiente | Pendiente |
 
+
 ---
 
 # Descripción de aspectos planteados
 
-## A-01 — Seguimiento del cumplimiento de requisitos
+---
+
+
+## A-01 - Seguimiento del cumplimiento de requisitos
 
 **Para:** Estudiantes universitarios.
 
@@ -29,11 +43,16 @@
 
 **Deber:** DinamikUTB debe permitir al estudiante consultar el estado de los requisitos necesarios para su graduación.
 
+**Escenarios relacionados:** [Q-01](arc42/10-quality-requirements.md/#escenario-q-01--exactitud-de-la-informacion-academica), [Q-03](arc42/10-quality-requirements.md/#escenario-q-03--facilidad-de-comprension-de-la-informacion).
+
 **Escenarios relacionados:** [Q-01](arc42/10-quality-requirements.md#escenario-q-01--exactitud-de-la-información-académica), [Q-03](arc42/10-quality-requirements.md#escenario-q-03--facilidad-de-comprensión-de-la-información).
 
+
+---
 ---
 
-## A-02 — Cálculo correcto del estado de graduación
+
+## A-02 - Calculo correcto del estado de graduacion
 
 **Para:** Estudiantes próximos a completar su programa académico.
 
@@ -43,11 +62,16 @@
 
 **Deber:** El sistema debe calcular de forma correcta y consistente el estado de cumplimiento de los requisitos de graduación.
 
+
+**Escenario relacionado:** [Q-01](arc42/10-quality-requirements.md/#escenario-q-01--exactitud-de-la-informacion-academica).
+
 **Escenario relacionado:** [Q-01](arc42/10-quality-requirements.md#escenario-q-01--exactitud-de-la-información-académica).
 
+
+---
 ---
 
-## A-03 — Alertas tempranas de requisitos pendientes
+## A-03 - Alertas tempranas de requisitos pendientes
 
 **Para:** Estudiantes que se aproximan a los últimos semestres.
 
@@ -57,11 +81,12 @@
 
 **Deber:** DinamikUTB debe identificar los requisitos pendientes que puedan afectar el proceso de graduación y proporcionar información o alertas oportunas.
 
-**Escenario relacionado:** Pendiente de definir.
+**Escenario relacionado:** [Q-04](arc42/10-quality-requirements.md/#escenario-q-04--alertas-tempranas-de-requisitos-pendientes).
 
 ---
+---
 
-## A-04 — Disponibilidad del sistema
+## A-04 - Disponibilidad del sistema
 
 **Para:** Estudiantes, coordinadores y administradores.
 
@@ -71,11 +96,12 @@
 
 **Deber:** DinamikUTB debe mantener disponible el servicio principal y minimizar las interrupciones que impidan consultar la información.
 
-**Escenario relacionado:** Pendiente de definir.
+**Escenario relacionado:** [Q-05](arc42/10-quality-requirements.md/#escenario-q-05--disponibilidad-del-sistema).
 
 ---
+---
 
-## A-05 — Protección y control de acceso a la información académica
+## A-05 - Proteccion y control de acceso a la informacion academica
 
 **Para:** Estudiantes, coordinadores y administradores autorizados.
 
@@ -85,11 +111,16 @@
 
 **Deber:** El sistema debe autenticar a los usuarios y controlar el acceso a la información académica de acuerdo con los permisos de cada rol.
 
+
+**Escenario relacionado:** [Q-02](arc42/10-quality-requirements.md/#escenario-q-02--seguridad-y-aislamiento-de-la-informacion/).
+
 **Escenario relacionado:** [Q-02](arc42/10-quality-requirements.md#escenario-q-02--seguridad-y-aislamiento-de-la-información).
 
+
+---
 ---
 
-## A-06 — Extensibilidad para múltiples programas académicos
+## A-06 - Extensibilidad para multiples programas academicos
 
 **Para:** Coordinadores y administradores, y posteriormente estudiantes de diferentes programas académicos.
 
@@ -99,16 +130,51 @@
 
 **Deber:** La arquitectura debe permitir incorporar nuevos programas y sus requisitos sin modificar la lógica principal del sistema.
 
-**Escenario relacionado:** Pendiente de definir.
+**Escenario relacionado:** [Q-06](arc42/10-quality-requirements.md/#escenario-q-06--extensibilidad-para-multiples-programas-academicos).
 
+---
+---
+
+## A-07 - Gestion de solicitudes de estudiantes en el centro de ayuda
+
+**Para:** Estudiantes que detectan una posible inconsistencia en su información académica, y coordinadores encargados de atenderla.
+
+**Cuestión:** Como el estudiante no puede modificar directamente su información académica (ver `arc42/02-architecture-constraints.md`, sección 2.2), necesita un canal formal para reportar errores y darle seguimiento hasta que se resuelvan; sin ese canal, las correcciones dependerían de gestiones informales y sin trazabilidad.
+
+**Valor:** Permitir que el estudiante reporte inconsistencias de forma centralizada y que el coordinador correspondiente las atienda dentro de su ámbito de responsabilidad, sin exponer la solicitud a coordinadores de otros programas.
+
+**Deber:** DinamikUTB debe registrar las solicitudes enviadas por los estudiantes mediante el centro de ayuda, hacerlas visibles únicamente al coordinador del programa correspondiente y permitir actualizar su estado hasta su resolución.
+
+**Escenario relacionado:** [Q-07](arc42/10-quality-requirements.md/#escenario-q-07--gestion-de-solicitudes-del-centro-de-ayuda).
+
+---
+---
+
+## A-08 - Historial de cambios sobre la informacion academica
+
+**Para:** Coordinadores y administradores responsables de modificar información académica, y para la propia institución en caso de auditar una inconsistencia.
+
+**Cuestión:** Si las modificaciones sobre requisitos o datos académicos no quedan registradas, resulta imposible determinar quién hizo un cambio, cuándo lo hizo y qué valor tenía el dato antes de modificarse, lo que dificulta investigar una inconsistencia reportada por un estudiante.
+
+**Valor:** Permitir reconstruir el historial de una modificación específica, dando soporte tanto a la resolución de solicitudes del centro de ayuda (A-07) como a la confianza general en la exactitud de la información (A-01, A-02).
+
+**Deber:** El sistema debe registrar de forma automática cada modificación realizada sobre información académica, incluyendo el usuario responsable, la fecha y los valores anterior y nuevo del dato.
+
+**Escenario relacionado:** [Q-08](arc42/10-quality-requirements.md/#escenario-q-08--historial-de-cambios-sobre-la-informacion-academica).
+
+---
 ---
 
 # Relación con los escenarios de calidad
 
 | Escenario | Atributo de calidad | Aspecto relacionado |
 |---|---|---|
-| [Q-01](arc42/10-quality-requirements.md#escenario-q-01--exactitud-de-la-información-académica) | Exactitud / Consistencia | A-01, A-02 |
-| [Q-02](arc42/10-quality-requirements.md#escenario-q-02--seguridad-y-aislamiento-de-la-información) | Seguridad | A-05 |
-| [Q-03](arc42/10-quality-requirements.md#escenario-q-03--facilidad-de-comprensión-de-la-información) | Usabilidad | A-01 |
+| [Q-01](../docs/arc42/10-quality-requirements.md/#escenario-q-01--exactitud-de-la-informacion-academica) | Exactitud / Consistencia | [A-01](#a-01---seguimiento-del-cumplimiento-de-requisitos), [A-02](#a-02---calculo-correcto-del-estado-de-graduacion) |
+| [Q-02](arc42/10-quality-requirements.md/#escenario-q-02--seguridad-y-aislamiento-de-la-información) | Seguridad | [A-05](#a-05---proteccion-y-control-de-acceso-a-la-informacion-academica) |
+| [Q-03](arc42/10-quality-requirements.md/#escenario-q-03--facilidad-de-comprension-de-la-informacion) | Usabilidad | [A-01](#a-01---seguimiento-del-cumplimiento-de-requisitos) |
+| [Q-04](arc42/10-quality-requirements.md/#escenario-q-04--alertas-tempranas-de-requisitos-pendientes) | Exactitud / Consistencia, Usabilidad | [A-03](#a-03---alertas-tempranas-de-requisitos-pendientes) |
+| [Q-05](arc42/10-quality-requirements.md/#escenario-q-05--disponibilidad-del-sistema) | Disponibilidad | [A-04](#a-04---disponibilidad-del-sistema) |
+| [Q-06](arc42/10-quality-requirements.md/#escenario-q-06--extensibilidad-para-multiples-programas-academicos) | Mantenibilidad | [A-06](#a-06---extensibilidad-para-multiples-programas-academicos) |
+| [Q-07](arc42/10-quality-requirements.md/#escenario-q-07--gestion-de-solicitudes-del-centro-de-ayuda) | Trazabilidad, Seguridad | [A-07](#a-07---gestion-de-solicitudes-de-estudiantes-en-el-centro-de-ayuda) |
+| [Q-08](arc42/10-quality-requirements.md/#escenario-q-08--historial-de-cambios-sobre-la-informacion-academica) | Trazabilidad | [A-08](#a-08---historial-de-cambios-sobre-la-informacion-academica) |
 
-> El ADR-0001 ya existe y se enlaza desde los aspectos que sustenta directamente (A-01, A-02, A-04, A-05, A-06). A-03 queda pendiente porque ninguna decisión documentada define todavía dónde vive el mecanismo de alertas. Los campos C4, código, pruebas y evidencia siguen pendientes porque esos elementos aún no existen en el repositorio; se actualizarán a medida que avance la implementación.

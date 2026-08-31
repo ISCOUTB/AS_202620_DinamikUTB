@@ -65,7 +65,7 @@ La usabilidad ocupa el tercer nivel porque el sistema debe permitir que los estu
 
 ## 10.3 Quality Scenarios
 
-### Escenario Q-01 — Exactitud de la informacion academica
+### Escenario Q-01 — Exactitud de la información académica
 
 | Elemento | Descripción |
 |---|---|
@@ -83,7 +83,7 @@ La usabilidad ocupa el tercer nivel porque el sistema debe permitir que los estu
 
 ---
 
-### Escenario Q-02 — Seguridad y aislamiento de la informacion
+### Escenario Q-02 — Seguridad y aislamiento de la información
 
 | Elemento | Descripción |
 |---|---|
@@ -101,7 +101,7 @@ La usabilidad ocupa el tercer nivel porque el sistema debe permitir que los estu
 
 ---
 
-### Escenario Q-03 — Facilidad de comprension de la informacion
+### Escenario Q-03 — Facilidad de comprensión de la información
 
 | Elemento | Descripción |
 |---|---|
@@ -156,7 +156,7 @@ La usabilidad ocupa el tercer nivel porque el sistema debe permitir que los estu
 
 ---
 
-### Escenario Q-06 — Extensibilidad para multiples programas academicos
+### Escenario Q-06 — Extensibilidad para múltiples programas académicos
 
 | Elemento | Descripción |
 |---|---|
@@ -176,7 +176,7 @@ La usabilidad ocupa el tercer nivel porque el sistema debe permitir que los estu
 
 ---
 
-### Escenario Q-07 — Gestion de solicitudes del centro de ayuda
+### Escenario Q-07 — Gestión de solicitudes del centro de ayuda
 
 | Elemento | Descripción |
 |---|---|
@@ -195,7 +195,7 @@ La usabilidad ocupa el tercer nivel porque el sistema debe permitir que los estu
 
 ---
 
-### Escenario Q-08 — Historial de cambios sobre la informacion academica
+### Escenario Q-08 — Historial de cambios sobre la información académica
 
 | Elemento | Descripción |
 |---|---|

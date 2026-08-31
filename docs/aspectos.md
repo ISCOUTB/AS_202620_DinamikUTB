@@ -10,12 +10,12 @@
 |---|---|---|---|---|---|---|---|---|
 | A-01 | Seguimiento del cumplimiento de requisitos | RF-01 | [Q-01](arc42/10-quality-requirements.md#escenario-q-01--exactitud-de-la-información-académica), [Q-03](arc42/10-quality-requirements.md#escenario-q-03--facilidad-de-comprensión-de-la-información) | [C4 Nivel 2](c4/contenedores.puml) (contenedores Backend API y Base de datos) | [ADR-0001](adr/0001-seleccion-monolito-modular.md) | `backend/app/requisitos/router.py`, `service.py`, `models.py`, `schemas.py` | `backend/tests/test_requisitos.py` | Pendiente |
 | A-02 | Cálculo correcto del estado de graduación | RF-02 | [Q-01](arc42/10-quality-requirements.md#escenario-q-01--exactitud-de-la-información-académica) | Pendiente | [ADR-0001](adr/0001-seleccion-monolito-modular.md) | Pendiente | Pendiente | Pendiente |
-| A-03 | Alertas tempranas de requisitos pendientes | RF-03 | *Q-04 — pendiente de redactar en `10-quality-requirements.md`* | Pendiente | Pendiente (mecanismo de disparo sin decidir) | Pendiente | Pendiente | Pendiente |
-| A-04 | Disponibilidad del sistema | RF-04 | *Q-05 — pendiente de redactar en `10-quality-requirements.md`* | Pendiente | [ADR-0001](adr/0001-seleccion-monolito-modular.md) | Pendiente | Pendiente | Pendiente |
+| A-03 | Alertas tempranas de requisitos pendientes | RF-03 | [Q-04](arc42/10-quality-requirements.md#escenario-q-04--alertas-tempranas-de-requisitos-pendientes) | Pendiente | Pendiente (mecanismo de disparo sin decidir) | Pendiente | Pendiente | Pendiente |
+| A-04 | Disponibilidad del sistema | RF-04 | [Q-05](arc42/10-quality-requirements.md#escenario-q-05--disponibilidad-del-sistema) | Pendiente | [ADR-0001](adr/0001-seleccion-monolito-modular.md) | Pendiente | Pendiente | Pendiente |
 | A-05 | Protección y control de acceso a la información académica | RF-05 | [Q-02](arc42/10-quality-requirements.md#escenario-q-02--seguridad-y-aislamiento-de-la-información) | Pendiente | [ADR-0001](adr/0001-seleccion-monolito-modular.md) | Pendiente | Pendiente | Pendiente |
-| A-06 | Extensibilidad para múltiples programas académicos | RF-06 | *Q-06 — pendiente de redactar en `10-quality-requirements.md`* | Pendiente | [ADR-0001](adr/0001-seleccion-monolito-modular.md) | Pendiente | Pendiente | Pendiente |
-| A-07 | Gestión de solicitudes de estudiantes en el centro de ayuda | RF-07 | *Q-07 — pendiente de redactar en `10-quality-requirements.md`* | Pendiente | [ADR-0001](adr/0001-seleccion-monolito-modular.md) (módulo `ayuda/`) | Pendiente | Pendiente | Pendiente |
-| A-08 | Historial de cambios sobre la información académica | RF-08 | *Q-08 — pendiente de redactar en `10-quality-requirements.md`* | Pendiente | Pendiente (mecanismo de almacenamiento sin decidir) | Pendiente | Pendiente | Pendiente |
+| A-06 | Extensibilidad para múltiples programas académicos | RF-06 | [Q-06](arc42/10-quality-requirements.md#escenario-q-06--extensibilidad-para-múltiples-programas-académicos) | Pendiente | [ADR-0001](adr/0001-seleccion-monolito-modular.md) | Pendiente | Pendiente | Pendiente |
+| A-07 | Gestión de solicitudes de estudiantes en el centro de ayuda | RF-07 | [Q-07](arc42/10-quality-requirements.md#escenario-q-07--gestión-de-solicitudes-del-centro-de-ayuda) | Pendiente | [ADR-0001](adr/0001-seleccion-monolito-modular.md) (módulo `ayuda/`) | Pendiente | Pendiente | Pendiente |
+| A-08 | Historial de cambios sobre la información académica | RF-08 | [Q-08](arc42/10-quality-requirements.md#escenario-q-08--historial-de-cambios-sobre-la-información-académica) | Pendiente | Pendiente (mecanismo de almacenamiento sin decidir) | Pendiente | Pendiente | Pendiente |
 
 ---
 
@@ -63,7 +63,7 @@
 
 **Deber:** DinamikUTB debe identificar los requisitos pendientes que puedan afectar el proceso de graduación y proporcionar información o alertas oportunas.
 
-**Escenario relacionado:** *Q-04 — pendiente de redactar en `10-quality-requirements.md`.*
+**Escenario relacionado:** [Q-04](arc42/10-quality-requirements.md#escenario-q-04--alertas-tempranas-de-requisitos-pendientes)
 
 ---
 
@@ -77,7 +77,7 @@
 
 **Deber:** DinamikUTB debe mantener disponible el servicio principal y minimizar las interrupciones que impidan consultar la información.
 
-**Escenario relacionado:** *Q-05 — pendiente de redactar en `10-quality-requirements.md`.*
+**Escenario relacionado:** [Q-05](arc42/10-quality-requirements.md#escenario-q-05--disponibilidad-del-sistema)
 
 ---
 
@@ -105,7 +105,7 @@
 
 **Deber:** La arquitectura debe permitir incorporar nuevos programas y sus requisitos sin modificar la lógica principal del sistema.
 
-**Escenario relacionado:** *Q-06 — pendiente de redactar en `10-quality-requirements.md`.*
+**Escenario relacionado:** [Q-06](arc42/10-quality-requirements.md#escenario-q-06--extensibilidad-para-múltiples-programas-académicos)
 
 ---
 
@@ -119,7 +119,7 @@
 
 **Deber:** DinamikUTB debe registrar las solicitudes enviadas por los estudiantes mediante el centro de ayuda, hacerlas visibles únicamente al coordinador del programa correspondiente y permitir actualizar su estado hasta su resolución.
 
-**Escenario relacionado:** *Q-07 — pendiente de redactar en `10-quality-requirements.md`.*
+**Escenario relacionado:** [Q-07](arc42/10-quality-requirements.md#escenario-q-07--gestión-de-solicitudes-del-centro-de-ayuda)
 
 ---
 
@@ -133,7 +133,7 @@
 
 **Deber:** El sistema debe registrar de forma automática cada modificación realizada sobre información académica, incluyendo el usuario responsable, la fecha y los valores anterior y nuevo del dato.
 
-**Escenario relacionado:** *Q-08 — pendiente de redactar en `10-quality-requirements.md`.*
+**Escenario relacionado:** [Q-08](arc42/10-quality-requirements.md#escenario-q-08--historial-de-cambios-sobre-la-información-académica)
 
 ---
 
@@ -144,8 +144,8 @@
 | [Q-01](arc42/10-quality-requirements.md#escenario-q-01--exactitud-de-la-información-académica) | Exactitud / Consistencia | [A-01](#a-01--seguimiento-del-cumplimiento-de-requisitos), [A-02](#a-02--cálculo-correcto-del-estado-de-graduación) |
 | [Q-02](arc42/10-quality-requirements.md#escenario-q-02--seguridad-y-aislamiento-de-la-información) | Seguridad | [A-05](#a-05--protección-y-control-de-acceso-a-la-información-académica) |
 | [Q-03](arc42/10-quality-requirements.md#escenario-q-03--facilidad-de-comprensión-de-la-información) | Usabilidad | [A-01](#a-01--seguimiento-del-cumplimiento-de-requisitos) |
-| Q-04 *(pendiente)* | Exactitud / Consistencia, Usabilidad | [A-03](#a-03--alertas-tempranas-de-requisitos-pendientes) |
-| Q-05 *(pendiente)* | Disponibilidad | [A-04](#a-04--disponibilidad-del-sistema) |
-| Q-06 *(pendiente)* | Mantenibilidad | [A-06](#a-06--extensibilidad-para-múltiples-programas-académicos) |
-| Q-07 *(pendiente)* | Trazabilidad, Seguridad | [A-07](#a-07--gestión-de-solicitudes-de-estudiantes-en-el-centro-de-ayuda) |
-| Q-08 *(pendiente)* | Trazabilidad | [A-08](#a-08--historial-de-cambios-sobre-la-información-académica) |
+| [Q-04](arc42/10-quality-requirements.md#escenario-q-04--alertas-tempranas-de-requisitos-pendientes) | Exactitud / Consistencia, Usabilidad | [A-03](#a-03--alertas-tempranas-de-requisitos-pendientes) |
+| [Q-05](arc42/10-quality-requirements.md#escenario-q-05--disponibilidad-del-sistema) | Disponibilidad | [A-04](#a-04--disponibilidad-del-sistema) |
+| [Q-06](arc42/10-quality-requirements.md#escenario-q-06--extensibilidad-para-múltiples-programas-académicos) | Mantenibilidad | [A-06](#a-06--extensibilidad-para-múltiples-programas-académicos) |
+| [Q-07](arc42/10-quality-requirements.md#escenario-q-07--gestión-de-solicitudes-del-centro-de-ayuda) | Trazabilidad, Seguridad | [A-07](#a-07--gestión-de-solicitudes-de-estudiantes-en-el-centro-de-ayuda) |
+| [Q-08](arc42/10-quality-requirements.md#escenario-q-08--historial-de-cambios-sobre-la-información-académica) | Trazabilidad | [A-08](#a-08--historial-de-cambios-sobre-la-información-académica) |

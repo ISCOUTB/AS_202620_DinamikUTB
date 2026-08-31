@@ -31,4 +31,4 @@ build/
 Thumbs.db
 
 # Bases de datos SQLite
-backend/*.db
+*.db

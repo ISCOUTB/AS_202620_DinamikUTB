@@ -14,8 +14,8 @@
 - [Solución Propuesta](#solución-propuesta)
 - [Funcionalidades](#funcionalidades)
 - [Atributos de calidad](#atributos-de-calidad)
-- [Estructura del proyecto](#estructura-del-proyecto)
 - [Ejecución del Proyecto](#ejecución-del-proyecto)
+- [Estructura del proyecto](#estructura-del-proyecto)
 - [Equipo](#equipo)
 
 
@@ -121,7 +121,16 @@ La plataforma también podrá generar alertas cuando detecte que un requisito im
 
 ## Seguimiento de requisitos
 
-El estudiante podrá consultar el estado de cada requisito necesario para graduarse.
+El estudiante podrá consultar de manera centralizada el estado de los diferentes requisitos necesarios para completar su proceso de graduación.
+
+La plataforma permitirá identificar:
+
+- Requisitos cumplidos.
+- Requisitos pendientes.
+- Requisitos que se encuentran en proceso.
+- Progreso general hacia la graduación.
+
+Además, la información podrá organizarse de acuerdo con el programa académico del estudiante, facilitando la consulta y planificación de los requisitos que aún debe completar.
 
 --- 
 # Atributos de calidad
@@ -140,65 +149,20 @@ Se prioriza la consistencia porque mostrar información incorrecta podría afect
 
 Se plantea implementar una interfaz organizada por módulos, donde las funcionalidades se agrupen según la necesidad de los usuarios. 
 
-- **Usabilidad:** El sistema debe ser sencillo, intuitivo y permitir que los estudiantes encuentres rápidamente la información que necesitan.
-- **Funcionalidades:** El sistema debe ofrecer los herramientas pasa consultar:
+- **Usabilidad:** El sistema debe ser sencillo, intuitivo y permitir que los estudiantes encuentren rápidamente la información que necesitan.
+- **Funcionalidades:** El sistema debe ofrecer las herramientas pasa consultar:
    - **Mi progreso:** Cursos aprobados, pendientes y porcentaje de avance.
    - **Requisitos de grado:** Requisitos cumplidos y pendientes.
    - **Plan Académico:** Cursos requeridos de la carrera, recomendados o electivos.
    - **Perfil:** Información del estudiante.
- -**Prioridad:** Usabilidad > Funcionalidad
+- **Prioridad:** Usabilidad > Funcionalidad
 
 De esta manera, **DinamikUTB** pueda priorizar la usabilidad sin saturar una pantalla de demasiadas funcionalidades y no afectar la experiencia del estudiante.
 
 ---
 
 
-# Equipo
-
-# Estructura del proyecto
-
-```text
-AS_202620_DinamikUTB/
-├── README.md                         # Documentación principal
-├── start.bat                         # Inicio del backend y frontend
-├── backend/                          # API desarrollada con FastAPI
-│   ├── pyproject.toml                # Configuración del proyecto Python
-│   ├── requirements.txt              # Dependencias del backend
-│   ├── app/
-│   │   ├── main.py                   # Punto de entrada de la API
-│   │   ├── core/                     # Configuración compartida
-│   │   ├── usuarios/                 # Gestión de usuarios
-│   │   ├── estudiantes/              # Información y avance académico
-│   │   ├── requisitos/               # Requisitos de grado
-│   │   ├── programas/                # Programas y planes de estudio
-│   │   └── ayuda/                    # Soporte y centro de ayuda
-│   └── tests/                        # Pruebas automatizadas del backend
-├── frontend/                         # Aplicación multiplataforma en Flutter
-│   ├── pubspec.yaml                  # Dependencias y configuración Flutter
-│   ├── lib/
-│   │   ├── main.dart                 # Punto de entrada de la aplicación
-│   │   ├── core/                     # Componentes compartidos
-│   │   ├── usuarios/                 # Funcionalidades de usuarios
-│   │   ├── estudiantes/              # Funcionalidades de estudiantes
-│   │   ├── requisitos/               # Visualización de requisitos
-│   │   ├── programas/                # Programas académicos
-│   │   └── ayuda/                    # Centro de ayuda
-│   ├── test/                         # Pruebas de Flutter
-│   └── android/, ios/, linux/        # Configuración por plataforma
-│       macos/, web/, windows/
-└── docs/                             # Documentación técnica
-  ├── adr/                          # Decisiones arquitectónicas
-  ├── arc42/                        # Documentación de arquitectura
-  ├── c4/                           # Diagramas C4
-  ├── aspectos.md                  # Aspectos generales del sistema
-  ├── fichadelproblema.md           # Descripción del problema
-  └── ia.md                         # Registro relacionado con IA
-```
-
-La organización refleja la arquitectura de monolito modular: cada módulo agrupa una responsabilidad funcional dentro del backend y del frontend.
-
----
-# Ejecución del Proyecto
+# **Ejecución del Proyecto**
 
 **DinamikUTB** utiliza una arquitectura de **monolito modular**, con un backend desarrollado en **FastAPI** y un frontend desarrollado en **Flutter**.
 
@@ -276,8 +240,52 @@ cd frontend
 flutter analyze
 ```
 
+# Estructura del proyecto
+
+```text
+AS_202620_DinamikUTB/
+├── README.md                         # Documentación principal
+├── start.bat                         # Inicio del backend y frontend
+├── backend/                          # API desarrollada con FastAPI
+│   ├── pyproject.toml                # Configuración del proyecto Python
+│   ├── requirements.txt              # Dependencias del backend
+│   ├── app/
+│   │   ├── main.py                   # Punto de entrada de la API
+│   │   ├── core/                     # Configuración compartida
+│   │   ├── usuarios/                 # Gestión de usuarios
+│   │   ├── estudiantes/              # Información y avance académico
+│   │   ├── requisitos/               # Requisitos de grado
+│   │   ├── programas/                # Programas y planes de estudio
+│   │   └── ayuda/                    # Soporte y centro de ayuda
+│   └── tests/                        # Pruebas automatizadas del backend
+├── frontend/                         # Aplicación multiplataforma en Flutter
+│   ├── pubspec.yaml                  # Dependencias y configuración Flutter
+│   ├── lib/
+│   │   ├── main.dart                 # Punto de entrada de la aplicación
+│   │   ├── core/                     # Componentes compartidos
+│   │   ├── usuarios/                 # Funcionalidades de usuarios
+│   │   ├── estudiantes/              # Funcionalidades de estudiantes
+│   │   ├── requisitos/               # Visualización de requisitos
+│   │   ├── programas/                # Programas académicos
+│   │   └── ayuda/                    # Centro de ayuda
+│   ├── test/                         # Pruebas de Flutter
+│   └── android/, ios/, linux/        # Configuración por plataforma
+│       macos/, web/, windows/
+└── docs/                             # Documentación técnica
+  ├── adr/                          # Decisiones arquitectónicas
+  ├── arc42/                        # Documentación de arquitectura
+  ├── c4/                           # Diagramas C4
+  ├── aspectos.md                  # Aspectos generales del sistema
+  ├── fichadelproblema.md           # Descripción del problema
+  └── ia.md                         # Registro relacionado con IA
+```
+
+La organización refleja la arquitectura de monolito modular: cada módulo agrupa una responsabilidad funcional dentro del backend y del frontend.
+
+---
+
+
 ## Equipo
->>>>>>> Stashed changes
 
     - Gillianis Perez Revolledo
     - Esteban Ramírez Rios

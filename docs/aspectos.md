@@ -8,6 +8,7 @@
 
 | ID | Aspecto | Requisito | Escenario de calidad | C4 | ADR | Código | Pruebas | Evidencia |
 |---|---|---|---|---|---|---|---|---|
+
 | A-01 | Seguimiento del cumplimiento de requisitos | RF-01 | [Q-01](arc42/10-quality-requirements.md/#escenario-q-01--exactitud-de-la-informacion-academica), [Q-03](arc42/10-quality-requirements.md/#escenario-q-03--facilidad-de-comprension-de-la-informacion) | Pendiente | [ADR-0001](adr/0001-seleccion-monolito-modular.md) | Pendiente | Pendiente | Pendiente |
 | A-02 | Cálculo correcto del estado de graduación | RF-02 | [Q-01](arc42/10-quality-requirements.md/#escenario-q-01--exactitud-de-la-informacion-academica) | Pendiente | [ADR-0001](adr/0001-seleccion-monolito-modular.md) | Pendiente | Pendiente | Pendiente |
 | A-03 | Alertas tempranas de requisitos pendientes | RF-03 | [Q-04](arc42/10-quality-requirements.md/#escenario-q-04--alertas-tempranas-de-requisitos-pendientes) | Pendiente | Pendiente (mecanismo de disparo sin decidir) | Pendiente | Pendiente | Pendiente |
@@ -16,6 +17,14 @@
 | A-06 | Extensibilidad para múltiples programas académicos | RF-06 | [Q-06](arc42/10-quality-requirements.md/#escenario-q-06--extensibilidad-para-multiples-programas-academicos) | Pendiente | [ADR-0001](adr/0001-seleccion-monolito-modular.md) | Pendiente | Pendiente | Pendiente |
 | A-07 | Gestión de solicitudes de estudiantes en el centro de ayuda | RF-07 | [Q-07](arc42/10-quality-requirements.md/#escenario-q-07--gestion-de-solicitudes-del-centro-de-ayuda) | Pendiente | [ADR-0001](adr/0001-seleccion-monolito-modular.md) (módulo `ayuda/`) | Pendiente | Pendiente | Pendiente |
 | A-08 | Historial de cambios sobre la información académica | RF-08 | [Q-08](arc42/10-quality-requirements.md/#escenario-q-08--historial-de-cambios-sobre-la-informacion-academica) | Pendiente | Pendiente (mecanismo de almacenamiento sin decidir) | Pendiente | Pendiente | Pendiente |
+
+| A-01 | Seguimiento del cumplimiento de requisitos | RF-01 | [Q-01](arc42/10-quality-requirements.md#escenario-q-01--exactitud-de-la-información-académica), [Q-03](arc42/10-quality-requirements.md#escenario-q-03--facilidad-de-comprensión-de-la-información) | Pendiente | Pendiente | Pendiente | Pendiente | Pendiente |
+| A-02 | Cálculo correcto del estado de graduación | RF-02 | [Q-01](arc42/10-quality-requirements.md#escenario-q-01--exactitud-de-la-información-académica) | Pendiente | Pendiente | Pendiente | Pendiente | Pendiente |
+| A-03 | Alertas tempranas de requisitos pendientes | RF-03 | Pendiente | Pendiente | Pendiente | Pendiente | Pendiente | Pendiente |
+| A-04 | Disponibilidad del sistema | RF-04 | Pendiente | Pendiente | Pendiente | Pendiente | Pendiente | Pendiente |
+| A-05 | Protección y control de acceso a la información académica | RF-05 | [Q-02](arc42/10-quality-requirements.md#escenario-q-02--seguridad-y-aislamiento-de-la-información) | Pendiente | Pendiente | Pendiente | Pendiente | Pendiente |
+| A-06 | Extensibilidad para múltiples programas académicos | RF-06 | Pendiente | Pendiente | Pendiente | Pendiente | Pendiente | Pendiente |
+
 
 ---
 
@@ -36,6 +45,9 @@
 
 **Escenarios relacionados:** [Q-01](arc42/10-quality-requirements.md/#escenario-q-01--exactitud-de-la-informacion-academica), [Q-03](arc42/10-quality-requirements.md/#escenario-q-03--facilidad-de-comprension-de-la-informacion).
 
+**Escenarios relacionados:** [Q-01](arc42/10-quality-requirements.md#escenario-q-01--exactitud-de-la-información-académica), [Q-03](arc42/10-quality-requirements.md#escenario-q-03--facilidad-de-comprensión-de-la-información).
+
+
 ---
 ---
 
@@ -50,7 +62,11 @@
 
 **Deber:** El sistema debe calcular de forma correcta y consistente el estado de cumplimiento de los requisitos de graduación.
 
+
 **Escenario relacionado:** [Q-01](arc42/10-quality-requirements.md/#escenario-q-01--exactitud-de-la-informacion-academica).
+
+**Escenario relacionado:** [Q-01](arc42/10-quality-requirements.md#escenario-q-01--exactitud-de-la-información-académica).
+
 
 ---
 ---
@@ -95,7 +111,11 @@
 
 **Deber:** El sistema debe autenticar a los usuarios y controlar el acceso a la información académica de acuerdo con los permisos de cada rol.
 
+
 **Escenario relacionado:** [Q-02](arc42/10-quality-requirements.md/#escenario-q-02--seguridad-y-aislamiento-de-la-informacion/).
+
+**Escenario relacionado:** [Q-02](arc42/10-quality-requirements.md#escenario-q-02--seguridad-y-aislamiento-de-la-información).
+
 
 ---
 ---

@@ -22,6 +22,7 @@ class ClienteFalso extends http.BaseClient {
       headers: {'content-type': 'application/json; charset=utf-8'},
     );
   }
+}
 
 void main() {
   testWidgets('Muestra los requisitos del estudiante', (WidgetTester tester) async {

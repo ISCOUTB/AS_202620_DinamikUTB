@@ -21,9 +21,9 @@
 | A-01 | Seguimiento del cumplimiento de requisitos | RF-01 | [Q-01](arc42/10-quality-requirements.md#escenario-q-01--exactitud-de-la-información-académica), [Q-03](arc42/10-quality-requirements.md#escenario-q-03--facilidad-de-comprensión-de-la-información) | Pendiente | Pendiente | Pendiente | Pendiente | Pendiente |
 | A-02 | Cálculo correcto del estado de graduación | RF-02 | [Q-01](arc42/10-quality-requirements.md#escenario-q-01--exactitud-de-la-información-académica) | Pendiente | Pendiente | Pendiente | Pendiente | Pendiente |
 | A-03 | Alertas tempranas de requisitos pendientes | RF-03 | Pendiente | Pendiente | Pendiente | Pendiente | Pendiente | Pendiente |
-| A-04 | Disponibilidad del sistema | RF-04 | Pendiente | Pendiente | Pendiente | Pendiente | Pendiente | Pendiente |
-| A-05 | Protección y control de acceso a la información académica | RF-05 | [Q-02](arc42/10-quality-requirements.md#escenario-q-02--seguridad-y-aislamiento-de-la-información) | Pendiente | Pendiente | Pendiente | Pendiente | Pendiente |
-| A-06 | Extensibilidad para múltiples programas académicos | RF-06 | Pendiente | Pendiente | Pendiente | Pendiente | Pendiente | Pendiente |
+| A-04 | Disponibilidad del sistema | RF-04 | Pendiente | Pendiente | [ADR-0001](adr/0001-seleccion-monolito-modular.md) | Pendiente | Pendiente | Pendiente |
+| A-05 | Protección y control de acceso a la información académica | RF-05 | [Q-02](arc42/10-quality-requirements.md#escenario-q-02--seguridad-y-aislamiento-de-la-información) | Pendiente | [ADR-0001](adr/0001-seleccion-monolito-modular.md) | Pendiente | Pendiente | Pendiente |
+| A-06 | Extensibilidad para múltiples programas académicos | RF-06 | Pendiente | Pendiente | [ADR-0001](adr/0001-seleccion-monolito-modular.md) | Pendiente | Pendiente | Pendiente |
 
 
 ---

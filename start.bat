@@ -21,6 +21,7 @@ timeout /t 3 /nobreak >nul
 echo [3/4] Cargando datos de ejemplo si hace falta...
 python -m app.seed
 
-echo [4/4] Iniciando Flutter...
+echo [4/4] Preparando e iniciando Flutter...
 cd /d "%~dp0frontend"
-flutter run -d chrome
+call flutter pub get
+call flutter run -d chrome

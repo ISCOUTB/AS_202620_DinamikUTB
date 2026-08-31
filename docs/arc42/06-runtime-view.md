@@ -5,6 +5,13 @@ Esta sección describe cómo colaboran los bloques definidos en `05-building-blo
 
 ---
 
+> **Estado de implementación:** de los tres escenarios siguientes, solo una parte de 6.1
+> está implementada hoy: el endpoint `GET /requisitos/{estudiante_id}` (sin autenticación
+> todavía) que consulta el estado de los requisitos desde SQLite y lo muestra en la
+> pantalla de Flutter (`frontend/lib/requisitos/`). Los pasos de login/token en 6.1, y los
+> escenarios 6.2 y 6.3 completos, describen el diseño previsto para los módulos `usuarios/`
+> y `ayuda/`, que todavía no tienen código.
+
 ## 6.1 Escenario: Estudiante consulta su progreso de graduación
 
 Relacionado con **[RF-01](../arc42/01-introduction-and-goals.md/#funcionalidades-principales)**, **[RF-02](../arc42/01-introduction-and-goals.md/#funcionalidades-principales)** y los escenarios **Q-01** (exactitud) y **Q-03** (usabilidad).

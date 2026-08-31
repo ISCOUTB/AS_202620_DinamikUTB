@@ -9,7 +9,7 @@ Esta sección descompone **DinamikUTB** en sus bloques de construcción, siguien
 **DinamikUTB** está compuesto por dos aplicaciones desplegables de forma independiente que se comunican mediante una API HTTP/JSON:
 
 ```text
-┌─────────────────────────┐        HTTPS / JSON          ┌─────────────────────────┐
+┌─────────────────────────┐         HTTP / JSON           ┌─────────────────────────┐
 │                         │ ───────────────────────────▶ │                         │
 │   Frontend (Flutter)    │                              │   Backend (FastAPI)      │
 │                         │ ◀─────────────────────────── │   Monolito modular      │
@@ -17,8 +17,8 @@ Esta sección descompone **DinamikUTB** en sus bloques de construcción, siguien
                                                                       │
                                                                       ▼
                                                           ┌─────────────────────────┐
-                                                          │   Base de datos propia   │
-                                                          │  (motor por definir)     │
+                                                          │      Base de datos       │
+                                                          │  SQLite (vía SQLAlchemy) │
                                                           └─────────────────────────┘
 ```
 
@@ -26,7 +26,7 @@ Esta sección descompone **DinamikUTB** en sus bloques de construcción, siguien
 |---|---|---|
 | **Frontend** | Presentar la información al usuario según su rol y capturar sus interacciones (consultas, solicitudes al centro de ayuda). | Flutter |
 | **Backend** | Concentrar la lógica de negocio: autenticación, cálculo de requisitos, gestión de programas y centro de ayuda. Expone la API que consume el frontend. | FastAPI (Python) |
-| **Base de datos** | Persistir usuarios, estudiantes, requisitos, programas y solicitudes. | Por definir (ver `09-architecture-decisions.md`, decisión pendiente) |
+| **Base de datos** | Persistir usuarios, estudiantes, requisitos, programas y solicitudes. | SQLite, a través de SQLAlchemy (ver `backend/app/core/database.py`) |
 
 El backend es, internamente, un **monolito modular**: se despliega como una sola aplicación, pero está dividido en módulos con responsabilidades delimitadas, descritos en el nivel 2.
 

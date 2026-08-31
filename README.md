@@ -14,8 +14,8 @@
 - [Solución Propuesta](#solución-propuesta)
 - [Funcionalidades](#funcionalidades)
 - [Atributos de calidad](#atributos-de-calidad)
-- [Estructura del proyecto](#estructura-del-proyecto)
 - [Ejecución del Proyecto](#ejecución-del-proyecto)
+- [Estructura del proyecto](#estructura-del-proyecto)
 - [Equipo](#equipo)
 
 
@@ -89,21 +89,24 @@ Desarrollar una plataforma digital que permita a los estudiantes consultar y rea
 
 # Usuarios
 
-El sistema estará orientado principalmente a:
+El sistema está orientado a tres roles principales, alineados con los stakeholders definidos en `docs/arc42/01-introduction-and-goals.md`:
 
 ### Estudiantes
 
-Serán los usuarios principales de la plataforma.
+Usuarios principales de la plataforma. Consultan su progreso hacia la graduación: requisitos cumplidos, pendientes y porcentaje de avance.
 
-Podrán consultar su progreso académico y conocer los requisitos que todavía necesitan cumplir.
+### Coordinadores Académicos
 
-### Coordinaciones Académicas
-
-Podrán beneficiarse indirectamente de la reducción de consultas repetitivas relacionadas con requisitos de graduación.
+Supervisan y gestionan la información de los estudiantes de su programa. Consultan estudiantes de su carrera, gestionan requisitos y atienden solicitudes relacionadas con inconsistencias.
 
 ### Administradores
 
-En futuras versiones podrán encargarse de gestionar los requisitos correspondientes a cada programa académico.
+Gestionan el funcionamiento general del sistema: usuarios, programas académicos, requisitos y permisos.
+
+> **Estado de implementación:** el corte vertical actual (semana 4) implementa únicamente
+> la consulta de requisitos para el rol Estudiante. Los flujos de Coordinador Académico y
+> Administrador forman parte del alcance del sistema definido en la sección de Stakeholders
+> y en el C4, y se implementarán en semanas posteriores.
 
 ---
 
@@ -164,7 +167,7 @@ De esta manera, **DinamikUTB** pueda priorizar la usabilidad sin saturar una pan
 
 # **Ejecución del Proyecto**
 
-**DinamikUTB** utiliza una arquitectura de **monolito modular**, con un backend desarrollado en **FastAPI** y un frontend desarrollado en **Flutter**.
+**DinamikUTB** utiliza una arquitectura de **monolito modular**, con un backend desarrollado en **FastAPI** y un frontend desarrollado en **Flutter**. La persistencia se maneja con **SQLite** a través de **SQLAlchemy**.
 
 
 ## Requisitos Previos
@@ -196,14 +199,29 @@ Este comando automatiza el entorno de desarrollo ejecutando las siguientes accio
 
 ---
 
+## Datos de ejemplo
+
+La base de datos se crea vacía la primera vez que se levanta el backend. Para cargar datos de ejemplo y poder ver la pantalla de requisitos con contenido:
+
+```bash
+cd backend
+python -m app.seed
+```
+
+El script no duplica datos si ya existen registros en la base.
+
+---
+
 ## Componentes del Sistema
 
 | Componente | Tecnología | Propósito |
 | :--- | :--- | :--- |
 | **Backend** | FastAPI | API base y estructura inicial del backend |
+| **Persistencia** | SQLite + SQLAlchemy | Almacenamiento de la información académica |
 | **Frontend** | Flutter | Interfaz de usuario multiplataforma |
 | **Pruebas Backend** | Pytest | Validación automatizada del backend |
 | **Pruebas Frontend** | Flutter Test | Pruebas unitarias y de componentes de la UI |
+| **Integración continua** | GitHub Actions | Ejecución automatizada de pruebas en cada push |
 
 ---
 
@@ -240,22 +258,30 @@ cd frontend
 flutter analyze
 ```
 
-
 # Estructura del proyecto
 
 ```text
 AS_202620_DinamikUTB/
 ├── README.md                         # Documentación principal
 ├── start.bat                         # Inicio del backend y frontend
+├── .github/
+│   └── workflows/
+│       └── ci.yml                    # Pipeline de integración continua
 ├── backend/                          # API desarrollada con FastAPI
 │   ├── pyproject.toml                # Configuración del proyecto Python
 │   ├── requirements.txt              # Dependencias del backend
 │   ├── app/
 │   │   ├── main.py                   # Punto de entrada de la API
-│   │   ├── core/                     # Configuración compartida
+│   │   ├── seed.py                   # Datos de ejemplo para desarrollo local
+│   │   ├── core/
+│   │   │   └── database.py           # Conexión SQLite y sesión de SQLAlchemy
 │   │   ├── usuarios/                 # Gestión de usuarios
 │   │   ├── estudiantes/              # Información y avance académico
 │   │   ├── requisitos/               # Requisitos de grado
+│   │   │   ├── models.py             # Modelo Requisito (SQLAlchemy)
+│   │   │   ├── schemas.py            # Esquemas de entrada/salida (Pydantic)
+│   │   │   ├── service.py            # Lógica de consulta
+│   │   │   └── router.py             # Endpoint GET /requisitos/{estudiante_id}
 │   │   ├── programas/                # Programas y planes de estudio
 │   │   └── ayuda/                    # Soporte y centro de ayuda
 │   └── tests/                        # Pruebas automatizadas del backend
@@ -266,7 +292,10 @@ AS_202620_DinamikUTB/
 │   │   ├── core/                     # Componentes compartidos
 │   │   ├── usuarios/                 # Funcionalidades de usuarios
 │   │   ├── estudiantes/              # Funcionalidades de estudiantes
-│   │   ├── requisitos/               # Visualización de requisitos
+│   │   ├── requisitos/               # Consulta y visualización de requisitos
+│   │   │   ├── models.dart           # Modelo Requisito
+│   │   │   ├── requisitos_service.dart  # Cliente HTTP hacia el backend
+│   │   │   └── requisitos_screen.dart   # Pantalla de consulta
 │   │   ├── programas/                # Programas académicos
 │   │   └── ayuda/                    # Centro de ayuda
 │   ├── test/                         # Pruebas de Flutter
@@ -276,6 +305,8 @@ AS_202620_DinamikUTB/
   ├── adr/                          # Decisiones arquitectónicas
   ├── arc42/                        # Documentación de arquitectura
   ├── c4/                           # Diagramas C4
+  │   ├── contexto.puml             # Nivel 1: contexto
+  │   └── contenedores.puml         # Nivel 2: contenedores
   ├── aspectos.md                  # Aspectos generales del sistema
   ├── fichadelproblema.md           # Descripción del problema
   └── ia.md                         # Registro relacionado con IA

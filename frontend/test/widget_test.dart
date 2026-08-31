@@ -16,9 +16,12 @@ class ClienteFalso extends http.BaseClient {
   @override
   Future<http.StreamedResponse> send(http.BaseRequest request) async {
     final bytes = utf8.encode(_respuesta);
-    return http.StreamedResponse(Stream.value(bytes), _statusCode);
+    return http.StreamedResponse(
+      Stream.value(bytes),
+      _statusCode,
+      headers: {'content-type': 'application/json; charset=utf-8'},
+    );
   }
-}
 
 void main() {
   testWidgets('Muestra los requisitos del estudiante', (WidgetTester tester) async {

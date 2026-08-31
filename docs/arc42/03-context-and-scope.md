@@ -28,7 +28,7 @@ El estudiante podrá:
 - Consultar sus requisitos de graduación. [[RF-01]](01-introduction-and-goals.md)
 - Identificar requisitos cumplidos y pendientes. [[RF-01]](01-introduction-and-goals.md)
 - Consultar información relacionada con créditos, idioma, prácticas, opción de grado y otros requisitos establecidos para su programa. [[RF-01]](01-introduction-and-goals.md)
-- Enviar solicitudes mediante el centro de ayuda cuando detecte una posible inconsistencia. [RF-07](01-introduction-and-goals.md)
+- Enviar solicitudes mediante el centro de ayuda cuando detecte una posible inconsistencia. [[RF-07]](01-introduction-and-goals.md)
 
 El estudiante **no modifica directamente su información académica**.
 
@@ -39,7 +39,7 @@ El coordinador académico es un usuario autorizado responsable de gestionar y co
 Podrá:
 
 - Consultar estudiantes pertenecientes a su programa.
-- Gestionar los requisitos correspondientes a su programa académico. [[RF-06]](01-introduction-and-goals.md)*
+- Gestionar los requisitos correspondientes a su programa académico. [[RF-06]](01-introduction-and-goals.md)
 - Atender solicitudes enviadas por estudiantes. [[RF-07]](01-introduction-and-goals.md)
 - Realizar modificaciones autorizadas sobre la información correspondiente.
 - Consultar el historial de cambios relacionado con la información que gestiona. [[RF-08]](01-introduction-and-goals.md)

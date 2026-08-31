@@ -127,7 +127,6 @@ Los principales interesados identificados para DinamikUTB son:
 | **Estudiante** | Conocer su progreso hacia la graduación | Consultar requisitos cumplidos, pendientes y porcentaje de avance de forma clara y segura. |
 | **Coordinador académico** | Supervisar y gestionar la información de los estudiantes de su programa | Consultar estudiantes de su carrera, gestionar requisitos y atender solicitudes relacionadas con inconsistencias. |
 | **Administrador** | Gestionar el funcionamiento general del sistema | Administrar usuarios, programas académicos, requisitos y permisos del sistema. |
-| **Equipo de desarrollo** | Construir y mantener la solución | Contar con una arquitectura clara, mantenible y extensible. |
 
 ---
 

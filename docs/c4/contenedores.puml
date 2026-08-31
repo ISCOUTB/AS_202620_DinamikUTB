@@ -1,1 +1,24 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
 
+title DinamikUTB — C4 Nivel 2: Contenedores
+caption Diagrama de contenedores del sistema — Agosto 2026
+
+Person(estudiante, "Estudiante", "Consulta su progreso de graduación, requisitos pendientes, historial y envía solicitudes.")
+Person(coordinador, "Coordinador académico", "Consulta estudiantes de sus programas, atiende solicitudes y actualiza información autorizada.")
+Person(administrador, "Administrador", "Administra usuarios, programas, requisitos y la configuración general del sistema.")
+
+System_Boundary(dinamik, "DinamikUTB") {
+    Container(frontend, "Frontend Flutter", "Flutter / Dart", "Interfaz de usuario multiplataforma para consultar y gestionar la información del sistema.")
+    Container(backend, "Backend API", "FastAPI / Python", "API principal del sistema. Implementa la lógica y los módulos de usuarios, estudiantes, requisitos, programas y ayuda.")
+    ContainerDb(database, "Base de datos", "SQLite", "Almacena la información persistente de usuarios, estudiantes, requisitos y programas.")
+}
+
+Rel(estudiante, frontend, "Utiliza", "HTTP")
+Rel(coordinador, frontend, "Utiliza", "HTTP")
+Rel(administrador, frontend, "Utiliza", "HTTP")
+Rel(frontend, backend, "Consume la API", "HTTP/JSON")
+Rel(backend, database, "Lee y escribe información", "SQLAlchemy")
+
+SHOW_LEGEND()
+@enduml

@@ -22,14 +22,14 @@ El sistema estará diseñado para manejar diferentes programas académicos, perm
  
 | ID | Funcionalidad | Aspecto relacionado | Escenario de calidad |
 |---|---|---|---|
-| RF-01 | Consultar el estado de los requisitos de graduación (cumplidos, pendientes o en proceso). | [A-01](../aspectos.md/#a-01---seguimiento-del-cumplimiento-de-requisitos) | [Q-01](./10-quality-requirements.md/#escenario-q-01--exactitud-de-la-informacion-academica), [Q-03](./10-quality-requirements.md/#escenario-q-03--facilidad-de-comprension-de-la-informacion) |
-| RF-02 | Calcular y mostrar un porcentaje de avance hacia la graduación. | [A-02](../aspectos.md/#a-02---calculo-correcto-del-estado-de-graduacion) | [Q-01](./10-quality-requirements.md/#escenario-q-01--exactitud-de-la-informacion-academica) |
-| RF-03 | Identificar y mostrar los requisitos que requieren atención (alertas tempranas). | [A-03](../aspectos.md/#a-03---alertas-tempranas-de-requisitos-pendientes) | [Q-04](./10-quality-requirements.md/#escenario-q-04--alertas-tempranas-de-requisitos-pendientes) |
-| RF-04 | Mantener el sistema disponible para la consulta de información. | [A-04](../aspectos.md/#a-04---disponibilidad-del-sistema) | [Q-05](./10-quality-requirements.md/#escenario-q-05--disponibilidad-del-sistema) |
-| RF-05 | Consultar información académica de acuerdo con los permisos de cada usuario. | [A-05](../aspectos.md/#a-05---proteccion-y-control-de-acceso-a-la-informacion-academica) | [Q-02](./10-quality-requirements.md/#escenario-q-02--seguridad-y-aislamiento-de-la-informacion)|
-| RF-06 | Permitir la incorporación de nuevos programas académicos y sus requisitos. | [A-06](../aspectos.md/#a-06---extensibilidad-para-multiples-programas-academicos) | [Q-06](./10-quality-requirements.md/#escenario-q-06--extensibilidad-para-multiples-programas-academicos) |
-| RF-07 | Gestionar solicitudes relacionadas con posibles errores en la información, mediante el centro de ayuda. | [A-07](../aspectos.md/#a-07---gestion-de-solicitudes-de-estudiantes-en-el-centro-de-ayuda) | [Q-07](./10-quality-requirements.md/#escenario-q-07--gestion-de-solicitudes-del-centro-de-ayuda) |
-| RF-08 | Mantener un historial de cambios sobre la información académica y los requisitos. | [A-08](../aspectos.md/#a-08---historial-de-cambios-sobre-la-informacion-academica) | [Q-08](./10-quality-requirements.md/#escenario-q-08--historial-de-cambios-sobre-la-informacion-academica) |
+| RF-01 | Consultar el estado de los requisitos de graduación (cumplidos, pendientes o en proceso). | [A-01](../aspectos.md#a-01--seguimiento-del-cumplimiento-de-requisitos) | [Q-01](./10-quality-requirements.md#escenario-q-01--exactitud-de-la-información-académica), [Q-03](./10-quality-requirements.md#escenario-q-03--facilidad-de-comprensión-de-la-información) |
+| RF-02 | Calcular y mostrar un porcentaje de avance hacia la graduación. | [A-02](../aspectos.md#a-02--cálculo-correcto-del-estado-de-graduación) | [Q-01](./10-quality-requirements.md#escenario-q-01--exactitud-de-la-información-académica) |
+| RF-03 | Identificar y mostrar los requisitos que requieren atención (alertas tempranas). | [A-03](../aspectos.md#a-03--alertas-tempranas-de-requisitos-pendientes) | Q-04 *(pendiente de redactar)* |
+| RF-04 | Mantener el sistema disponible para la consulta de información. | [A-04](../aspectos.md#a-04--disponibilidad-del-sistema) | Q-05 *(pendiente de redactar)* |
+| RF-05 | Consultar información académica de acuerdo con los permisos de cada usuario. | [A-05](../aspectos.md#a-05--protección-y-control-de-acceso-a-la-información-académica) | [Q-02](./10-quality-requirements.md#escenario-q-02--seguridad-y-aislamiento-de-la-información) |
+| RF-06 | Permitir la incorporación de nuevos programas académicos y sus requisitos. | [A-06](../aspectos.md#a-06--extensibilidad-para-múltiples-programas-académicos) | Q-06 *(pendiente de redactar)* |
+| RF-07 | Gestionar solicitudes relacionadas con posibles errores en la información, mediante el centro de ayuda. | [A-07](../aspectos.md#a-07--gestión-de-solicitudes-de-estudiantes-en-el-centro-de-ayuda) | Q-07 *(pendiente de redactar)* |
+| RF-08 | Mantener un historial de cambios sobre la información académica y los requisitos. | [A-08](../aspectos.md#a-08--historial-de-cambios-sobre-la-información-académica) | Q-08 *(pendiente de redactar)* |
  
 En el alcance inicial, DinamikUTB se enfocará principalmente en la **consulta y seguimiento de la información**, evitando que los estudiantes puedan modificar directamente sus datos académicos.
 

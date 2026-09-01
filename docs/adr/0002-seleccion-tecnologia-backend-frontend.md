@@ -120,3 +120,13 @@ No introduce ninguna tecnología fuera de las permitidas por el curso.
  
 Esta decisión formaliza una tecnología que el equipo ya venía utilizando en el desarrollo (ver `README.md`). Cualquier cambio posterior de tecnología de backend o frontend deberá registrarse mediante un nuevo ADR.
  
+---
+
+## 9. Trazabilidad
+
+| Elemento | Referencia |
+| :--- | :--- |
+| **Aspectos que sustenta** | [A-01](../aspectos.md#a-01--seguimiento-del-cumplimiento-de-requisitos), [A-02](../aspectos.md#a-02--cálculo-correcto-del-estado-de-graduación), [A-05](../aspectos.md#a-05--protección-y-control-de-acceso-a-la-información-académica) |
+| **Elemento C4** | Contenedores `Frontend Flutter` y `Backend API` en `docs/c4/contenedores.puml` |
+| **Commits que lo implementan** | `308ec02` a `d951eb8` (FastAPI en `backend/app/requisitos/`); `308ec02` a `a4be897` (Flutter en `frontend/lib/requisitos/` y `frontend/lib/main.dart`) 
+| **Pruebas que lo cubren** | `backend/tests/test_requisitos.py`, `frontend/test/widget_test.dart` |

@@ -77,8 +77,7 @@ Esta decisión no reemplaza al [ADR-0001](0001-seleccion-monolito-modular.md) ni
 
 * **Cero infraestructura adicional:** el equipo y los evaluadores del curso pueden ejecutar el sistema completo con `start.bat`, sin instalar ni configurar un servidor de base de datos separado.
 * **Soporte directo a Q-01:** al ser un motor relacional con transacciones ACID, sostiene la táctica ya documentada de agrupar actualizaciones múltiples en una sola operación.
-* **Coherencia entre documentación y código:** cierra la brecha entre lo que `02-architecture-constraints.md` y `03-context-and-scope.md` describían como "pendiente" y lo que ya estaba implementado y reflejado en el C4 de contenedores.
-* **Camino de migración razonable:** el uso de SQLAlchemy como capa de acceso a datos reduce el costo de una futura migración de motor.
+
 
 ### Consecuencias negativas
 
@@ -122,8 +121,8 @@ Esta decisión formaliza un motor que el equipo ya venía utilizando en el desar
 
 | Elemento | Referencia |
 | :--- | :--- |
-| **Aspectos que sustenta** | [A-01](../aspectos.md#a-01--seguimiento-del-cumplimiento-de-requisitos) — necesita persistencia relacional confiable; [A-02](../aspectos.md#a-02--cálculo-correcto-del-estado-de-graduación) — el cálculo depende de transacciones consistentes sobre el motor; [A-06](../aspectos.md#a-06--extensibilidad-para-múltiples-programas-académicos) — un motor relacional permite modelar nuevos programas y requisitos sin cambiar la lógica de `requisitos/`; [A-08](../aspectos.md#a-08--historial-de-cambios-sobre-la-información-académica) — **relación parcial**: este ADR provee el motor transaccional sobre el que se apoyará el historial, pero el mecanismo concreto de almacenamiento permanece pendiente de un ADR adicional. |
+| **Aspectos que sustenta** | [A-01](../aspectos.md#a-01--seguimiento-del-cumplimiento-de-requisitos), [A-02](../aspectos.md#a-02--cálculo-correcto-del-estado-de-graduación), [A-06](../aspectos.md#a-06--extensibilidad-para-múltiples-programas-académicos), [A-08](../aspectos.md#a-08--historial-de-cambios-sobre-la-información-académica). |
 | **Escenarios de calidad** | [Q-01](../arc42/10-quality-requirements.md#escenario-q-01--exactitud-de-la-información-académica) (principal); [Q-05](../arc42/10-quality-requirements.md#escenario-q-05--disponibilidad-del-sistema) (riesgo documentado en la sección 5); [Q-06](../arc42/10-quality-requirements.md#escenario-q-06--extensibilidad-para-múltiples-programas-académicos) (soporte del modelo relacional) |
-| **Elemento C4** | `ContainerDb` "Base de datos" (SQLite) en `docs/c4/contenedores.puml`, ya reflejado en el diagrama antes de esta formalización |
-| **Commits que lo implementan** | Implementación ya presente desde los commits iniciales de `backend/app/core/database.py` (previos a esta formalización); este ADR documenta una decisión ya efectiva en el código, no un cambio de código nuevo |
+| **Elemento C4** | `ContainerDb` "Base de datos" (SQLite) en `docs/c4/contenedores.puml`, ya reflejado en el diagrama |
+| **Commits que lo implementan** | Implementación presente en el commits `backend/app/core/database.py`. |
 | **Pruebas que lo cubren** | `backend/tests/test_requisitos.py`, que ejercita la persistencia real contra SQLite en los dos casos existentes (consulta con datos, consulta sin datos) |

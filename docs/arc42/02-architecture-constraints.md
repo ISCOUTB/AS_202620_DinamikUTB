@@ -129,7 +129,7 @@ Por lo tanto, las consideraciones legales de una eventual implementación real d
 |---|---|---|
 | **Técnica** | Backend limitado a NestJS o FastAPI (en la práctica: FastAPI) | Condiciona la tecnología utilizada para los servicios del backend. |
 | **Técnica** | Frontend limitado a Flutter o Next.js (en la práctica: Flutter) | Condiciona la tecnología utilizada para la interfaz de usuario. |
-| **Técnica** | Base de datos propia, motor aún no definido | La información necesaria para el sistema debe ser administrada por DinamikUTB. |
+| **Técnica** | Base de datos propia, motor definido como SQLite ([ADR-0003](../adr/0003-seleccion-motor-de-base-de-datos.md)) | La información necesaria para el sistema es administrada por DinamikUTB mediante un motor relacional que sostiene las transacciones exigidas por [Q-01](./10-quality-requirements.md#escenario-q-01--exactitud-de-la-información-académica). |
 | **Técnica** | Sin integración inicial con sistemas institucionales | Se requiere una solución independiente y preparada para futuras integraciones. |
 | **Técnica** | Soporte para múltiples programas académicos | La arquitectura debe permitir incorporar nuevas carreras y requisitos. |
 | **Técnica** | Autenticación y autorización | Se requiere control de acceso según los roles del sistema. |

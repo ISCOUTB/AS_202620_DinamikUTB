@@ -119,7 +119,7 @@ El centro de ayuda también formará parte de DinamikUTB, por lo que no se consi
 
 La información necesaria para el funcionamiento de DinamikUTB será almacenada en una base de datos propia.
 
-La tecnología específica de la base de datos aún no ha sido definida y será seleccionada posteriormente como parte de las decisiones de arquitectura (`docs/arc42/09-architecture-decisions.md`).
+El motor específico —**SQLite**, accedido mediante SQLAlchemy— quedó formalizado en [ADR-0003](../adr/0003-seleccion-motor-de-base-de-datos.md) (ver `docs/arc42/09-architecture-decisions.md`).
 
 ---
 

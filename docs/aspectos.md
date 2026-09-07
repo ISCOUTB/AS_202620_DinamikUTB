@@ -8,14 +8,14 @@
 
 | ID | Aspecto | Requisito | Escenario de calidad | C4 | ADR | Código | Pruebas | Evidencia |
 |---|---|---|---|---|---|---|---|---|
-| A-01 | Seguimiento del cumplimiento de requisitos | RF-01 | [Q-01](arc42/10-quality-requirements.md#escenario-q-01--exactitud-de-la-información-académica), [Q-03](arc42/10-quality-requirements.md#escenario-q-03--facilidad-de-comprensión-de-la-información) | [C4 Nivel 2](c4/contenedores.puml) (contenedores Backend API y Base de datos) | [ADR-0001](adr/0001-seleccion-monolito-modular.md), [ADR-0002](adr/0002-seleccion-tecnologia-backend-frontend.md) | `backend/app/requisitos/router.py`, `service.py`, `models.py`, `schemas.py` | `backend/tests/test_requisitos.py`, `frontend/test/widget_test.dart`  [run en verde](https://github.com/ISCOUTB/AS_202620_DinamikUTB/actions/runs/33475979818) | Pendiente |
-| A-02 | Cálculo correcto del estado de graduación | RF-02 | [Q-01](arc42/10-quality-requirements.md#escenario-q-01--exactitud-de-la-información-académica) | Pendiente | [ADR-0001](adr/0001-seleccion-monolito-modular.md) | Pendiente | Pendiente | Pendiente |
+| A-01 | Seguimiento del cumplimiento de requisitos | RF-01 | [Q-01](arc42/10-quality-requirements.md#escenario-q-01--exactitud-de-la-información-académica), [Q-03](arc42/10-quality-requirements.md#escenario-q-03--facilidad-de-comprensión-de-la-información) | [C4 Nivel 2](c4/contenedores.puml) (contenedores Backend API y Base de datos) | [ADR-0001](adr/0001-seleccion-monolito-modular.md), [ADR-0002](adr/0002-seleccion-tecnologia-backend-frontend.md), [ADR-0003](adr/0003-seleccion-motor-de-base-de-datos.md) | `backend/app/requisitos/router.py`, `service.py`, `models.py`, `schemas.py` | `backend/tests/test_requisitos.py`, `frontend/test/widget_test.dart`  [run en verde](https://github.com/ISCOUTB/AS_202620_DinamikUTB/actions/runs/33475979818) | Pendiente |
+| A-02 | Cálculo correcto del estado de graduación | RF-02 | [Q-01](arc42/10-quality-requirements.md#escenario-q-01--exactitud-de-la-información-académica) | Pendiente | [ADR-0001](adr/0001-seleccion-monolito-modular.md), [ADR-0002](adr/0002-seleccion-tecnologia-backend-frontend.md), [ADR-0003](adr/0003-seleccion-motor-de-base-de-datos.md) | Pendiente | Pendiente | Pendiente |
 | A-03 | Alertas tempranas de requisitos pendientes | RF-03 | [Q-04](arc42/10-quality-requirements.md#escenario-q-04--alertas-tempranas-de-requisitos-pendientes) | Pendiente | Pendiente (mecanismo de disparo sin decidir) | Pendiente | Pendiente | Pendiente |
 | A-04 | Disponibilidad del sistema | RF-04 | [Q-05](arc42/10-quality-requirements.md#escenario-q-05--disponibilidad-del-sistema) | Pendiente | [ADR-0001](adr/0001-seleccion-monolito-modular.md) | Pendiente | Pendiente | Pendiente |
-| A-05 | Protección y control de acceso a la información académica | RF-05 | [Q-02](arc42/10-quality-requirements.md#escenario-q-02--seguridad-y-aislamiento-de-la-información) | Pendiente | [ADR-0001](adr/0001-seleccion-monolito-modular.md) | Pendiente | Pendiente | Pendiente |
-| A-06 | Extensibilidad para múltiples programas académicos | RF-06 | [Q-06](arc42/10-quality-requirements.md#escenario-q-06--extensibilidad-para-múltiples-programas-académicos) | Pendiente | [ADR-0001](adr/0001-seleccion-monolito-modular.md) | Pendiente | Pendiente | Pendiente |
+| A-05 | Protección y control de acceso a la información académica | RF-05 | [Q-02](arc42/10-quality-requirements.md#escenario-q-02--seguridad-y-aislamiento-de-la-información) | Pendiente | [ADR-0001](adr/0001-seleccion-monolito-modular.md), [ADR-0002](adr/0002-seleccion-tecnologia-backend-frontend.md) | Pendiente | Pendiente | Pendiente |
+| A-06 | Extensibilidad para múltiples programas académicos | RF-06 | [Q-06](arc42/10-quality-requirements.md#escenario-q-06--extensibilidad-para-múltiples-programas-académicos) | Pendiente | [ADR-0001](adr/0001-seleccion-monolito-modular.md), [ADR-0003](adr/0003-seleccion-motor-de-base-de-datos.md) | Pendiente | Pendiente | Pendiente |
 | A-07 | Gestión de solicitudes de estudiantes en el centro de ayuda | RF-07 | [Q-07](arc42/10-quality-requirements.md#escenario-q-07--gestión-de-solicitudes-del-centro-de-ayuda) | Pendiente | [ADR-0001](adr/0001-seleccion-monolito-modular.md) (módulo `ayuda/`) | Pendiente | Pendiente | Pendiente |
-| A-08 | Historial de cambios sobre la información académica | RF-08 | [Q-08](arc42/10-quality-requirements.md#escenario-q-08--historial-de-cambios-sobre-la-información-académica) | Pendiente | Pendiente (mecanismo de almacenamiento sin decidir) | Pendiente | Pendiente | Pendiente |
+| A-08 | Historial de cambios sobre la información académica | RF-08 | [Q-08](arc42/10-quality-requirements.md#escenario-q-08--historial-de-cambios-sobre-la-información-académica) | Pendiente | [ADR-0003](adr/0003-seleccion-motor-de-base-de-datos.md) (motor transaccional, **parcial**); mecanismo de almacenamiento del historial pendiente de un ADR adicional | Pendiente | Pendiente | Pendiente |
 
 ---
 
@@ -134,6 +134,8 @@
 **Deber:** El sistema debe registrar de forma automática cada modificación realizada sobre información académica, incluyendo el usuario responsable, la fecha y los valores anterior y nuevo del dato.
 
 **Escenario relacionado:** [Q-08](arc42/10-quality-requirements.md#escenario-q-08--historial-de-cambios-sobre-la-información-académica)
+
+**Estado de la decisión:** [ADR-0003](adr/0003-seleccion-motor-de-base-de-datos.md) fija el motor transaccional (SQLite vía SQLAlchemy) sobre el que se apoyará este historial.
 
 ---
 

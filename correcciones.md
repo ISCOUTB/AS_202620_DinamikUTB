@@ -1,6 +1,6 @@
 # Correcciones — DinamikUTB
 
-**Estado calificado de este corte:** `af1d7e399c82babb805c4caede9376475f2472fc` · 2026-09-07T21:53:03-05:00 — sin etiqueta `corte-1` por instrucción del docente. Pipeline en verde para este commit: [run de GitHub Actions](https://github.com/ISCOUTB/AS_202620_DinamikUTB/actions/runs/34181593340).
+**Estado calificado de este corte:** `86870bf06d409c499f56fdcf9c7a9593090540c5` · 2026-09-07T22:25:30-05:00 — sin etiqueta `corte-1` por instrucción del docente. Pipeline en verde para este commit: [run de GitHub Actions](https://github.com/ISCOUTB/AS_202620_DinamikUTB/actions/runs/34183463552).
 
 Este archivo responde de forma trazable a los hallazgos publicados en las evidencias S1 a S4 y en la revisión preliminar de S5 (`semana-05-corte1`). Cada fila cita la evidencia verificable en el repositorio; no es evidencia por sí solo, es un índice hacia ella.
 

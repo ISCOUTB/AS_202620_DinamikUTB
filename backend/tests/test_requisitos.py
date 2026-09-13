@@ -1,36 +1,10 @@
-import pytest
 from fastapi.testclient import TestClient
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
 
-from app.core.database import Base, get_db
 from app.main import app
 from app.requisitos.models import Requisito
+from tests.conftest import TestingSessionLocal
 
-SQLALCHEMY_TEST_DATABASE_URL = "sqlite:///./test_dinamikutb.db"
-
-engine = create_engine(
-    SQLALCHEMY_TEST_DATABASE_URL, connect_args={"check_same_thread": False}
-)
-TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
-
-def override_get_db():
-    db = TestingSessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
-
-app.dependency_overrides[get_db] = override_get_db
-
-
-@pytest.fixture(autouse=True)
-def preparar_base_de_datos():
-    Base.metadata.create_all(bind=engine)
-    yield
-    Base.metadata.drop_all(bind=engine)
+client = TestClient(app)
 
 
 def test_consultar_requisitos_de_un_estudiante():
@@ -45,7 +19,6 @@ def test_consultar_requisitos_de_un_estudiante():
     db.commit()
     db.close()
 
-    client = TestClient(app)
     response = client.get("/requisitos/T000123456")
 
     assert response.status_code == 200
@@ -56,8 +29,50 @@ def test_consultar_requisitos_de_un_estudiante():
 
 
 def test_estudiante_sin_requisitos_devuelve_lista_vacia():
-    client = TestClient(app)
     response = client.get("/requisitos/T999999999")
 
     assert response.status_code == 200
     assert response.json() == []
+
+
+def test_actualizar_estado_de_un_requisito():
+    db = TestingSessionLocal()
+    requisito = Requisito(
+        estudiante_id="T000123456", nombre="Práctica profesional", estado="pendiente"
+    )
+    db.add(requisito)
+    db.commit()
+    db.refresh(requisito)
+    requisito_id = requisito.id
+    db.close()
+
+    response = client.put(
+        f"/requisitos/{requisito_id}/estado", json={"estado": "cumplido"}
+    )
+
+    assert response.status_code == 200
+    assert response.json()["estado"] == "cumplido"
+
+
+def test_actualizar_con_estado_invalido_es_rechazado():
+    db = TestingSessionLocal()
+    requisito = Requisito(
+        estudiante_id="T000123456", nombre="Electiva", estado="pendiente"
+    )
+    db.add(requisito)
+    db.commit()
+    db.refresh(requisito)
+    requisito_id = requisito.id
+    db.close()
+
+    response = client.put(
+        f"/requisitos/{requisito_id}/estado", json={"estado": "no_es_un_estado_valido"}
+    )
+
+    assert response.status_code == 422
+
+
+def test_actualizar_requisito_inexistente_devuelve_404():
+    response = client.put("/requisitos/99999/estado", json={"estado": "cumplido"})
+
+    assert response.status_code == 404

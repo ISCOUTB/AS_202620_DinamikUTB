@@ -7,3 +7,9 @@ class RequisitoOut(BaseModel):
     id: int
     nombre: str
     estado: str
+
+from typing import Literal
+
+
+class RequisitoEstadoUpdate(BaseModel):
+    estado: Literal["cumplido", "pendiente", "en_proceso"]

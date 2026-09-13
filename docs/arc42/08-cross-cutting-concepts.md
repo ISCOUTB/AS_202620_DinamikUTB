@@ -37,8 +37,8 @@ Términos del dominio compartidos entre el equipo, el código y la documentació
 | Relación | Tipo | Descripción |
 |---|---|---|
 | `usuarios/` → todos los demás | Núcleo compartido | Autenticación y resolución de rol, consumida sin duplicar lógica (ver `05-building-block-view.md`, sección 5.2, "Reglas de dependencia entre módulos"). |
-| `estudiantes/` → `requisitos/` | Cliente-Proveedor | `requisitos/` consulta el avance registrado en `estudiantes/` para calcular el estado de un requisito (A-02). `estudiantes/` no conoce ni depende de `requisitos/`. |
-| `programas/` → `requisitos/` | Cliente-Proveedor | `requisitos/` consulta qué requisitos aplican según el programa académico del estudiante. `programas/` no depende de `requisitos/`. |
+| `estudiantes/` → `requisitos/` | Cliente-Proveedor | `requisitos/` consulta el avance registrado en `estudiantes/` para calcular el estado de un requisito (A-02). Ambos módulos ya tienen código propio (`Estudiante` y `Requisito`), pero `requisitos/` todavía no consulta datos de `estudiantes/` en tiempo de ejecución — la relación existe en el diseño, la consulta cruzada real queda para una siguiente iteración. `estudiantes/` no conoce ni depende de `requisitos/`. |
+| `programas/` → `requisitos/` | Cliente-Proveedor | `requisitos/` consulta qué requisitos aplican según el programa académico del estudiante. `programas/` no depende de `requisitos/`. Sin código todavía en ninguno de los dos lados de esta relación específica. |
 | `estudiantes/` → `ayuda/` | Cliente-Proveedor | `ayuda/` necesita identificar al estudiante que envía una solicitud. |
 | *(ninguno)* → externo | Capa anticorrupción | No aplica: el alcance actual no integra sistemas externos. Se documentará cuando exista una integración real. |
 
@@ -48,20 +48,21 @@ Siguiendo la misma disciplina de honestidad aplicada en el resto de la documenta
 
 | Contexto | Diseñado desde | Código real |
 |---|---|---|
-| `requisitos/` | S2 (ADR-0001) | Sí — modelo, servicio, router, esquema (S4) |
-| `usuarios/`, `estudiantes/`, `programas/`, `ayuda/` | S2 (ADR-0001) | No — solo estructura de carpetas |
+| `requisitos/` | S2 (ADR-0001) | Sí — modelo, servicio, router, esquema, incluyendo consulta y actualización de estado (S4, S6) |
+| `estudiantes/` | S2 (ADR-0001) | Sí — modelo, servicio, router de consulta (S6) |
+| `usuarios/`, `programas/`, `ayuda/` | S2 (ADR-0001) | No — solo estructura de carpetas |
 
 ## 8.4 Propiedad de datos por módulo
 
 | Módulo (dueño) | Entidad | Ubicación en código | Quién más la lee (vía servicio, no acceso directo) |
 |---|---|---|---|
-| `requisitos/` | `Requisito` | `backend/app/requisitos/models.py` | Ninguno todavía, solo el propio módulo escribe y lee. |
-| `estudiantes/` | *(sin entidad implementada)* | — | — |
+| `requisitos/` | `Requisito` | `backend/app/requisitos/models.py` | Ninguno — solo el propio módulo lee y escribe. |
+| `estudiantes/` | `Estudiante` | `backend/app/estudiantes/models.py` | Ninguno todavía — `requisitos/` está diseñado para consultarlo (ver 8.2), pero el código actual no hace esa llamada cruzada. |
 | `programas/` | *(sin entidad implementada)* | — | — |
 | `usuarios/` | *(sin entidad implementada)* | — | — |
 | `ayuda/` | *(sin entidad implementada)* | — | — |
 
-Solo existe una entidad real hoy (`Requisito`), con un único dueño (`requisitos/`) y sin ningún otro módulo escribiéndola — condición de dueño único trivialmente satisfecha porque no hay contención posible todavía. Esta tabla se ampliará a medida que se implementen los demás módulos.
+Cada entidad tiene un único dueño y, en el código actual, un único módulo que la escribe o la lee — condición de dueño único satisfecha en ambos casos.
 
 ## 8.5 Violaciones de propiedad de datos detectadas
 
@@ -71,16 +72,28 @@ Solo existe una entidad real hoy (`Requisito`), con un único dueño (`requisito
 git grep -nIE "(INSERT INTO|UPDATE |session\.add\(|session\.commit\(|db\.add\(|db\.commit\()" -- backend/app
 ```
 
-**Resultado:** backend/app/seed.py:39: db.commit()
+**Resultado:** 
+backend/app/requisitos/service.py:18: db.commit()
+backend/app/seed.py:39: db.commit()
 
 
-**Conclusión:** no se detectaron violaciones de propiedad de datos, porque no hay contención posible todavía: solo existe una escritura real en todo el backend, y está en `backend/app/seed.py`, un script de datos de ejemplo para desarrollo local, no parte del flujo de la aplicación. El endpoint implementado (`GET /requisitos/{estudiante_id}`) es de solo lectura; no existe todavía ningún endpoint que escriba un `Requisito` desde la API, y ningún otro módulo (`estudiantes/`, `programas/`, `usuarios/`, `ayuda/`) tiene entidades ni lógica de persistencia implementada.
+**Conclusión:** no se detectaron violaciones de propiedad de datos. Las dos escrituras encontradas son:
 
-Esta ausencia de violaciones no es una garantía futura: en cuanto se implemente el endpoint de creación/actualización de requisitos (necesario para A-02, cálculo del avance) o cualquier lógica en los módulos vacíos, esta verificación debe repetirse, es la primera acción del plan de corrección declarado más abajo, aunque hoy no exista una violación real que corregir.
+- `requisitos/service.py:18` — dentro de la función de servicio del propio módulo dueño de `Requisito`, disparada por el endpoint `PUT /requisitos/{requisito_id}/estado`. Es la escritura correcta en el lugar correcto.
+- `seed.py:39` — script de datos de ejemplo para desarrollo local, fuera del flujo normal de la aplicación; no representa un módulo escribiendo la entidad de otro.
 
-**Plan de corrección (preventivo, no reactivo):** dado que hoy no hay violaciones, el plan no es de corrección sino de prevención, para que no aparezcan cuando se implementen los módulos restantes:
+`estudiantes/` no aparece en el resultado porque hoy es de solo lectura (no tiene endpoint de creación), y ningún módulo escribe la tabla `estudiantes` desde fuera de su propio servicio.
+
+Esta ausencia de violaciones no es una garantía futura: en cuanto se implemente el endpoint que consulte `estudiantes/` desde `requisitos/` (para completar A-02), o se agreguen `programas/`, `usuarios/` y `ayuda/`, esta verificación debe repetirse.
+
+**Plan de corrección (preventivo, no reactivo):**
 
 | Acción preventiva | Cuándo aplica |
 |---|---|
-| Ningún módulo accede directamente a `session`/`db` de otro módulo; toda escritura pasa por la función de servicio del módulo dueño de la entidad. | Ya vigente en el único módulo con código (`requisitos/`); se debe mantener al implementar `estudiantes/`, `programas/`, `usuarios/`, `ayuda/`. |
-| Repetir el comando de verificación de esta sección antes de cada corte, no solo en la semana 6. | A partir de ahora, como parte del checklist de cada entrega. |
+| Ningún módulo accede directamente a `session`/`db` de otro módulo; toda escritura pasa por la función de servicio del módulo dueño de la entidad. | Ya vigente en `requisitos/` y `estudiantes/`; se debe mantener al implementar `programas/`, `usuarios/`, `ayuda/`, y al conectar `requisitos/` con `estudiantes/` como lectura cruzada. |
+| Cuando `requisitos/` consulte datos de `estudiantes/`, debe hacerlo llamando a una función de `estudiantes/service.py`, nunca importando `Estudiante` y consultando la tabla directamente desde `requisitos/`. | Antes de implementar la lectura cruzada para A-02. |
+| Repetir el comando de verificación de esta sección antes de cada corte. | A partir de ahora, como parte del checklist de cada entrega. |
+
+## 8.6 C4 nivel 3 y ADR de reajuste
+
+No aplica esta semana. Los cinco contextos del mapa (8.2) son los mismos definidos desde el ADR-0001 (S2): no hubo cambio en los límites entre contextos, solo incorporación de código dentro de límites ya existentes. La ficha de esta semana exime del C4 nivel 3 y del ADR de reajuste cuando los límites no cambian respecto al corte anterior.

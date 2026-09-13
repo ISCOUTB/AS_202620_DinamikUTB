@@ -97,3 +97,18 @@ Esta ausencia de violaciones no es una garantía futura: en cuanto se implemente
 ## 8.6 C4 nivel 3 y ADR de reajuste
 
 No aplica esta semana. Los cinco contextos del mapa (8.2) son los mismos definidos desde el ADR-0001 (S2): no hubo cambio en los límites entre contextos, solo incorporación de código dentro de límites ya existentes. La ficha de esta semana exime del C4 nivel 3 y del ADR de reajuste cuando los límites no cambian respecto al corte anterior.
+## 8.7 Correspondencia entre aspectos y contextos
+
+| Aspecto | Contexto(s) del mapa | Observación |
+|---|---|---|
+| A-01 — Seguimiento de requisitos | `requisitos/` | Correspondencia directa y clara. |
+| A-02 — Cálculo del estado de graduación | `requisitos/` (cliente), `estudiantes/` (proveedor) | Correspondencia clara; requiere la relación cliente-proveedor documentada en 8.2, todavía no implementada en código (ver 8.4). |
+| A-05 — Protección y control de acceso | `usuarios/` | Correspondencia directa; `usuarios/` es el núcleo compartido que resuelve este aspecto para todos los demás contextos. |
+| A-06 — Extensibilidad para múltiples programas | `programas/` | Correspondencia directa. |
+| A-07 — Gestión de solicitudes del centro de ayuda | `ayuda/` | Correspondencia directa. |
+| A-03 — Alertas tempranas de requisitos pendientes | **Sin contexto asignado** | No se ha decidido si esta lógica vive dentro de `requisitos/` (como una extensión del cálculo de estado) o si merece su propio contexto. Pendiente de una decisión explícita, igual que ya está anotado en `docs/aspectos.md` ("mecanismo de disparo sin decidir"). |
+| A-04 — Disponibilidad del sistema | **Transversal, no asignable a un solo contexto** | Es un atributo de calidad de infraestructura y despliegue (ver ADR-0001, sección 8), no una responsabilidad de dominio que pertenezca a un contexto delimitado específico. No se fuerza una asignación artificial. |
+| A-08 — Historial de cambios | **Sin contexto asignado** | Afecta a todos los contextos que modifican datos (`requisitos/`, y a futuro `estudiantes/`, `programas/`), pero no tiene un dueño único definido — podría requerir su propio contexto ("auditoría") o resolverse de forma transversal. `docs/aspectos.md` ya lo marca como parcialmente resuelto por el ADR-0003, sin mecanismo de almacenamiento decidido. |
+
+**Conclusión:** 5 de 8 aspectos corresponden con claridad a uno de los cinco contextos del mapa. Los tres restantes (A-03, A-04, A-08) no tienen esa correspondencia, dos por falta de una decisión explícita todavía (A-03, A-08), y uno porque su naturaleza es transversal y no de dominio (A-04). Ninguno de los tres se fuerza a un contexto para completar la tabla artificialmente.
+

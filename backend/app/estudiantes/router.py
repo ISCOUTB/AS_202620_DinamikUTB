@@ -8,7 +8,11 @@ from app.estudiantes.schemas import EstudianteOut
 router = APIRouter(prefix="/estudiantes", tags=["estudiantes"])
 
 
-@router.get("/{codigo_estudiantil}", response_model=EstudianteOut)
+@router.get(
+    "/{codigo_estudiantil}",
+    response_model=EstudianteOut,
+    responses={404: {"description": "Estudiante no encontrado"}},
+)
 def consultar_estudiante(codigo_estudiantil: str, db: Session = Depends(get_db)):
     estudiante = service.obtener_estudiante(db, codigo_estudiantil)
     if estudiante is None:

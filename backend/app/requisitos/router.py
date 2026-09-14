@@ -13,7 +13,11 @@ def consultar_requisitos(estudiante_id: str, db: Session = Depends(get_db)):
     return service.obtener_requisitos_por_estudiante(db, estudiante_id)
 
 
-@router.put("/{requisito_id}/estado", response_model=RequisitoOut)
+@router.put(
+    "/{requisito_id}/estado",
+    response_model=RequisitoOut,
+    responses={404: {"description": "Requisito no encontrado"}},
+)
 def actualizar_estado(
     requisito_id: int, payload: RequisitoEstadoUpdate, db: Session = Depends(get_db)
 ):

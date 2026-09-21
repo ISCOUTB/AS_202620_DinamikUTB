@@ -24,7 +24,7 @@ jobs:
           python-version: "3.12"
 
       - name: Install dependencies
-        run: pip install --require-hashes -r requirements.txt
+        run: pip install --only-binary :all: -r requirements.txt
 
       - name: Run tests
         run: pytest

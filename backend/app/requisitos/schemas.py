@@ -7,6 +7,7 @@ class RequisitoOut(BaseModel):
     id: int
     nombre: str
     estado: str
+    creditos: int = 0
 
 class RequisitoEstadoUpdate(BaseModel):
     estado: Literal["cumplido", "pendiente", "en_proceso"]

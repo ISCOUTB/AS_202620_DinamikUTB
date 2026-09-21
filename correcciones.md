@@ -85,6 +85,13 @@ El docente indicó explícitamente que no se crearan etiquetas de git para este 
 | `correcciones.md` anterior era una autoevaluación genérica sin evidencia citable | Se reconstruyó este archivo completo, citando hallazgo, acción, evidencia verificable y estado por cada fila | Este archivo | Corregida |
 
 ---
+## S7 — Hallazgos y su estado actual
+
+| Hallazgo esperado (semana-07-evidencia-s7) | Acción realizada | Evidencia | Estado |
+|---|---|---|---|
+| SonarCloud con scanner invocado desde el pipeline y Quality Gate público | Se agregó el job `sonarcloud` a `.github/workflows/ci.yml` con la acción oficial de SonarSource pineada por SHA, y `sonar-project.properties` con Project Key y Organization Key confirmados desde la interfaz de SonarCloud. El job falla con "Not authorized or project not found" al intentar autenticar. Se intentó: (1) desactivar Automatic Analysis desde `/project/analysis_method`, con error de acceso para los cuatro integrantes del equipo; (2) generar un Personal Token (`dinamikutb-ci`) y configurarlo como secreto `SONAR_TOKEN` en GitHub, confirmado como correctamente guardado y usado por el workflow (`Last used < 1 hour ago` en SonarCloud), pero rechazado por falta de autorización sobre el proyecto. | `.github/workflows/ci.yml` (job `sonarcloud`); `sonar-project.properties`; log del run fallido en GitHub Actions; `docs/deuda-tecnica.md` | No verificado — bloqueado por permisos de administración del proyecto en SonarCloud, no identificados dentro del equipo. Requiere intervención de un Administrator del proyecto (posiblemente el docente o monitor del curso). |
+
+---
 
 ## Concentración de commits (seguimiento consolidado, S2–S4)
 

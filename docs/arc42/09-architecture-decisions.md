@@ -1,5 +1,8 @@
+# 9. Architecture Decisions
+
 
 # 9. Architecture Decisions
+
 
 Esta sección funciona como índice de las decisiones arquitectónicas (ADR) de DinamikUTB. Cada ADR completo se documenta en docs/adr/; aquí se resume su alcance y se deja constancia de las decisiones que todavía no se han formalizado, para que la trazabilidad de docs/aspectos.md sea verificable en un solo lugar.
 

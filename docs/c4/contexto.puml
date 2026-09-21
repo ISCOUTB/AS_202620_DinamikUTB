@@ -1,5 +1,4 @@
 @startuml DinamikUTB_Contexto
-
 !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
 
 title DinamikUTB — C4 Nivel 1: Contexto
@@ -11,10 +10,9 @@ Person(administrador, "Administrador", "Administra usuarios, programas, requisit
 
 System(dinamik, "DinamikUTB", "Sistema para el seguimiento de los requisitos necesarios para la graduación universitaria.")
 
-Rel(estudiante, dinamik, "Consulta su progreso y envía solicitudes", "HTTPS/JSON")
-Rel(coordinador, dinamik, "Consulta y actualiza información autorizada", "HTTPS/JSON")
-Rel(administrador, dinamik, "Administra usuarios, programas y requisitos", "HTTPS/JSON")
+Rel(estudiante, dinamik, "Consulta su progreso y envía solicitudes", "HTTP/JSON")
+Rel(coordinador, dinamik, "Consulta y actualiza información autorizada", "HTTP/JSON")
+Rel(administrador, dinamik, "Administra usuarios, programas y requisitos", "HTTP/JSON")
 
 SHOW_LEGEND()
-
 @enduml

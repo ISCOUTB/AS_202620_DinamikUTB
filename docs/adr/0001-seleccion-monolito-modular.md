@@ -140,3 +140,14 @@ La selección del monolito modular no impide una evolución arquitectónica post
 **Aceptado.**
 
 Esta decisión establece la arquitectura inicial del proyecto. Cualquier modificación significativa de la estrategia arquitectónica deberá registrarse mediante un nuevo ADR.
+
+---
+
+## 10. Trazabilidad
+
+| Elemento | Referencia |
+| :--- | :--- |
+| **Aspecto que sustenta** | [A-01](../aspectos.md#a-01--seguimiento-del-cumplimiento-de-requisitos) — Seguimiento del cumplimiento de requisitos |
+| **Elemento C4** | Contenedores `Backend API` y `Base de datos` en `docs/c4/contenedores.puml` |
+| **Commits que lo implementan** | `308ec02` a `d951eb8`, creación incremental de `backend/app/requisitos/` (modelo, esquema, servicio, router) sobre la estructura modular definida por esta decisión |
+| **Pruebas que lo cubren** | `backend/tests/test_requisitos.py` (2 casos: consulta con datos, consulta sin datos) |

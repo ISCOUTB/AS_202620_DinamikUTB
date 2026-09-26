@@ -53,6 +53,12 @@ Los roles definidos inicialmente son:
 
 El acceso a la información debe estar controlado de acuerdo con los permisos correspondientes a cada rol. Esta restricción es la que sustenta directamente el escenario Q-02 y su táctica de autenticación centralizada en el módulo `usuarios/` (ver `04-solution-strategy.md`, sección 4.8.1).
 
+### Límite de costo y despliegue sin tarjeta de crédito
+
+El despliegue del sistema fuera del entorno de desarrollo local debe realizarse **sin costo mensual** y **sin que ningún integrante del equipo deba usar una tarjeta de crédito propia**, dado que el proyecto no cuenta con presupuesto institucional ni corporativo para infraestructura.
+
+Esta restricción condicionó directamente la selección de plataforma de despliegue documentada en [ADR-0005](../adr/0005-plataforma-despliegue-backend.md) (backend y persistencia) y [ADR-0006](../adr/0006-plataforma-despliegue-frontend.md) (frontend), y descartó de entrada alternativas que exigían tarjeta desde el registro (por ejemplo, Fly.io). Las consecuencias operativas de mantenerse dentro de capas gratuitas (expiración de bases de datos, *spin down* por inactividad) están registradas en `11-risks-and-technical-debt.md`.
+
 ---
 
 ## 2.2 Organizational Constraints
@@ -129,10 +135,11 @@ Por lo tanto, las consideraciones legales de una eventual implementación real d
 |---|---|---|
 | **Técnica** | Backend limitado a NestJS o FastAPI (en la práctica: FastAPI) | Condiciona la tecnología utilizada para los servicios del backend. |
 | **Técnica** | Frontend limitado a Flutter o Next.js (en la práctica: Flutter) | Condiciona la tecnología utilizada para la interfaz de usuario. |
-| **Técnica** | Base de datos propia, motor definido como SQLite ([ADR-0003](../adr/0003-seleccion-motor-de-base-de-datos.md)) | La información necesaria para el sistema es administrada por DinamikUTB mediante un motor relacional que sostiene las transacciones exigidas por [Q-01](./10-quality-requirements.md#escenario-q-01--exactitud-de-la-información-académica). |
+| **Técnica** | Base de datos propia, motor definido como SQLite para desarrollo local ([ADR-0003](../adr/0003-seleccion-motor-de-base-de-datos.md)) | La información necesaria para el sistema es administrada por DinamikUTB mediante un motor relacional que sostiene las transacciones exigidas por [Q-01](./10-quality-requirements.md#escenario-q-01--exactitud-de-la-información-académica). |
 | **Técnica** | Sin integración inicial con sistemas institucionales | Se requiere una solución independiente y preparada para futuras integraciones. |
 | **Técnica** | Soporte para múltiples programas académicos | La arquitectura debe permitir incorporar nuevas carreras y requisitos. |
 | **Técnica** | Autenticación y autorización | Se requiere control de acceso según los roles del sistema. |
+| **Técnica** | Costo cero y sin tarjeta de crédito en el despliegue | Condicionó la selección de Render y GitHub Pages en [ADR-0005](../adr/0005-plataforma-despliegue-backend.md) y [ADR-0006](../adr/0006-plataforma-despliegue-frontend.md), con las limitaciones de disponibilidad y persistencia documentadas en `11-risks-and-technical-debt.md`. |
 | **Organizativa** | Proyecto desarrollado durante el semestre | Se debe priorizar un alcance realizable y desarrollar progresivamente la solución. |
 | **Organizativa** | Cuentas creadas previamente por el administrador | No se requiere registro público de estudiantes. |
 | **Organizativa** | Roles diferenciados | Las responsabilidades y permisos deben estar separados entre estudiantes, coordinadores y administradores. |

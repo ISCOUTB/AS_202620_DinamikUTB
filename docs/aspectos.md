@@ -8,10 +8,10 @@
 
 | ID | Aspecto | Requisito | Escenario de calidad | C4 | ADR | Código | Pruebas | Evidencia |
 |---|---|---|---|---|---|---|---|---|
-| A-01 | Seguimiento del cumplimiento de requisitos | RF-01 | [Q-01](arc42/10-quality-requirements.md#escenario-q-01--exactitud-de-la-información-académica), [Q-03](arc42/10-quality-requirements.md#escenario-q-03--facilidad-de-comprensión-de-la-información) | [C4 Nivel 2](c4/contenedores.puml) (contenedores Backend API y Base de datos) | [ADR-0001](adr/0001-seleccion-monolito-modular.md), [ADR-0002](adr/0002-seleccion-tecnologia-backend-frontend.md), [ADR-0003](adr/0003-seleccion-motor-de-base-de-datos.md) | `backend/app/requisitos/router.py`, `service.py`, `models.py`, `schemas.py` | `backend/tests/test_requisitos.py`, `frontend/test/widget_test.dart`  [run en verde](https://github.com/ISCOUTB/AS_202620_DinamikUTB/actions/runs/33475979818) | Pendiente |
+| A-01 | Seguimiento del cumplimiento de requisitos | RF-01 | [Q-01](arc42/10-quality-requirements.md#escenario-q-01--exactitud-de-la-información-académica), [Q-03](arc42/10-quality-requirements.md#escenario-q-03--facilidad-de-comprensión-de-la-información) | [C4 Nivel 2](c4/contenedores.puml) (contenedores Backend API y Base de datos) | [ADR-0001](adr/0001-seleccion-monolito-modular.md), [ADR-0002](adr/0002-seleccion-tecnologia-backend-frontend.md), [ADR-0003](adr/0003-seleccion-motor-de-base-de-datos.md), [ADR-0005](adr/0005-plataforma-despliegue-backend.md), [ADR-0006](adr/0006-plataforma-despliegue-frontend.md) | `backend/app/requisitos/router.py`, `service.py`, `models.py`, `schemas.py` | `backend/tests/test_requisitos.py`, `frontend/test/widget_test.dart`  [run en verde](https://github.com/ISCOUTB/AS_202620_DinamikUTB/actions/runs/33475979818) | Pendiente |
 | A-02 | Cálculo correcto del estado de graduación | RF-02 | [Q-01](arc42/10-quality-requirements.md#escenario-q-01--exactitud-de-la-información-académica) | Pendiente | [ADR-0001](adr/0001-seleccion-monolito-modular.md), [ADR-0002](adr/0002-seleccion-tecnologia-backend-frontend.md), [ADR-0003](adr/0003-seleccion-motor-de-base-de-datos.md) | Pendiente | Pendiente | Pendiente |
 | A-03 | Alertas tempranas de requisitos pendientes | RF-03 | [Q-04](arc42/10-quality-requirements.md#escenario-q-04--alertas-tempranas-de-requisitos-pendientes) | Pendiente | Pendiente (mecanismo de disparo sin decidir) | Pendiente | Pendiente | Pendiente |
-| A-04 | Disponibilidad del sistema | RF-04 | [Q-05](arc42/10-quality-requirements.md#escenario-q-05--disponibilidad-del-sistema) | Pendiente | [ADR-0001](adr/0001-seleccion-monolito-modular.md) | Pendiente | Pendiente | Pendiente |
+| A-04 | Disponibilidad del sistema | RF-04 | [Q-05](arc42/10-quality-requirements.md#escenario-q-05--disponibilidad-del-sistema) | Pendiente | [ADR-0001](adr/0001-seleccion-monolito-modular.md), [ADR-0005](adr/0005-plataforma-despliegue-backend.md) | Pendiente | Pendiente | Pendiente |
 | A-05 | Protección y control de acceso a la información académica | RF-05 | [Q-02](arc42/10-quality-requirements.md#escenario-q-02--seguridad-y-aislamiento-de-la-información) | Pendiente | [ADR-0001](adr/0001-seleccion-monolito-modular.md), [ADR-0002](adr/0002-seleccion-tecnologia-backend-frontend.md) | Pendiente | Pendiente | Pendiente |
 | A-06 | Extensibilidad para múltiples programas académicos | RF-06 | [Q-06](arc42/10-quality-requirements.md#escenario-q-06--extensibilidad-para-múltiples-programas-académicos) | Pendiente | [ADR-0001](adr/0001-seleccion-monolito-modular.md), [ADR-0003](adr/0003-seleccion-motor-de-base-de-datos.md) | Pendiente | Pendiente | Pendiente |
 | A-07 | Gestión de solicitudes de estudiantes en el centro de ayuda | RF-07 | [Q-07](arc42/10-quality-requirements.md#escenario-q-07--gestión-de-solicitudes-del-centro-de-ayuda) | Pendiente | [ADR-0001](adr/0001-seleccion-monolito-modular.md) (módulo `ayuda/`) | Pendiente | Pendiente | Pendiente |
@@ -35,7 +35,7 @@
 
 **Escenarios relacionados:** [Q-01](arc42/10-quality-requirements.md#escenario-q-01--exactitud-de-la-información-académica), [Q-03](arc42/10-quality-requirements.md#escenario-q-03--facilidad-de-comprensión-de-la-información).
 
-**Estado de implementación:** el endpoint `GET /requisitos/{estudiante_id}` ya consulta el estado real desde SQLite, con pantalla en Flutter que lo muestra (`frontend/lib/requisitos/`). El cálculo del porcentaje de avance (A-02) todavía no está implementado.
+**Estado de implementación:** el endpoint `GET /requisitos/{estudiante_id}` ya consulta el estado real desde SQLite, con pantalla en Flutter que lo muestra (`frontend/lib/requisitos/`). El cálculo del porcentaje de avance (A-02) todavía no está implementado. Desde [ADR-0005](adr/0005-plataforma-despliegue-backend.md) y [ADR-0006](adr/0006-plataforma-despliegue-frontend.md), el aspecto también depende de que el backend (Render) y el frontend (GitHub Pages) estén desplegados y accesibles fuera de la universidad.
 
 ---
 
@@ -79,6 +79,8 @@
 
 **Escenario relacionado:** [Q-05](arc42/10-quality-requirements.md#escenario-q-05--disponibilidad-del-sistema)
 
+**Estado de la decisión:** [ADR-0005](adr/0005-plataforma-despliegue-backend.md) fija Render (Free Web Service) como plataforma del backend, con el *spin down* por inactividad como riesgo aceptado y documentado en `arc42/11-risks-and-technical-debt.md`.
+
 ---
 
 ## A-05 — Protección y control de acceso a la información académica
@@ -92,6 +94,8 @@
 **Deber:** El sistema debe autenticar a los usuarios y controlar el acceso a la información académica de acuerdo con los permisos de cada rol.
 
 **Escenario relacionado:** [Q-02](arc42/10-quality-requirements.md#escenario-q-02--seguridad-y-aislamiento-de-la-información).
+
+**Nota de riesgo:** al desplegarse el backend fuera de la universidad ([ADR-0005](adr/0005-plataforma-despliegue-backend.md)) sin que `usuarios/` tenga código todavía, este aspecto queda expuesto en la práctica. Ver el hallazgo correspondiente en `arc42/11-risks-and-technical-debt.md`, sección 11.1.
 
 ---
 
@@ -135,7 +139,7 @@
 
 **Escenario relacionado:** [Q-08](arc42/10-quality-requirements.md#escenario-q-08--historial-de-cambios-sobre-la-información-académica)
 
-**Estado de la decisión:** [ADR-0003](adr/0003-seleccion-motor-de-base-de-datos.md) fija el motor transaccional (SQLite vía SQLAlchemy) sobre el que se apoyará este historial.
+**Estado de la decisión:** [ADR-0003](adr/0003-seleccion-motor-de-base-de-datos.md) fija el motor transaccional (SQLite vía SQLAlchemy en desarrollo local, Postgres en el ambiente desplegado según [ADR-0005](adr/0005-plataforma-despliegue-backend.md)) sobre el que se apoyará este historial.
 
 ---
 

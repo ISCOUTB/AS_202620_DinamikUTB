@@ -38,4 +38,6 @@ Esta sección funciona como índice de las decisiones arquitectónicas (ADR) de 
 
 ## 9.3 Criterio para futuras decisiones
 
-Toda decisión que module la estructura del monolito, cambie una tecnología permitida por 02-architecture-constraints.md, afecte la forma de cumplir un escenario de calidad de 10-quality-requirements.md, o cambie dónde corre una pieza del sistema desplegado, será registrada como un nuevo ADR en docs/adr/. Esto incluye, en particular, cualquier cambio futuro de motor de base de datos respecto a lo fijado en ADR-0003 (incluyendo su ajuste operativo en ADR-0005), el mecanismo de almacenamiento del historial que aún debe resolverse para A-08, cualquier cambio del modelo síncrono de comunicación fijado en ADR-0004, y un eventual ADR para el job programado que sostendría A-03 cuando ese aspecto tenga código.
+Toda decisión que module la estructura del monolito, cambie una tecnología permitida por 02-architecture-constraints.md, afecte la forma de cumplir un escenario de calidad de 10-quality-requirements.md, o cambie dónde corre una pieza del sistema desplegado, será registrada como un nuevo ADR en docs/adr/.
+
+Esto incluye, en particular, cualquier cambio futuro de motor de base de datos respecto a lo fijado en ADR-0003 (incluyendo su ajuste operativo en ADR-0005), el mecanismo de almacenamiento del historial que aún debe resolverse para A-08, cualquier cambio del modelo síncrono de comunicación fijado en ADR-0004, y un eventual ADR para el job programado que sostendría A-03 cuando ese aspecto tenga código.

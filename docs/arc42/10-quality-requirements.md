@@ -145,10 +145,10 @@ La usabilidad ocupa el tercer nivel porque el sistema debe permitir que los estu
 | **Fuente** | Estudiante, coordinador o administrador |
 | **Estímulo** | El usuario intenta acceder al sistema para consultar o gestionar información, incluyendo momentos de mayor demanda (por ejemplo, cierre de semestre). |
 | **Artefacto** | Backend de DinamikUTB desplegado como monolito modular. |
-| **Entorno** | Ambiente de pruebas del proyecto (no existe todavía un ambiente productivo institucional). |
+| **Entorno** | Ambiente desplegado en Render (Free Web Service), según [ADR-0005](../adr/0005-plataforma-despliegue-backend.md). |
 | **Respuesta** | El sistema responde a las solicitudes sin interrupciones prolongadas; si ocurre un fallo, no debe dejar el sistema completo inaccesible más allá de un tiempo acotado. |
-| **Medida** | El sistema debe mantenerse disponible durante la ventana de prueba definida por el equipo, con una recuperación ante fallos en menos de **5 minutos**. Esta medida es un objetivo inicial y deberá ajustarse una vez exista un ambiente de despliegue real. |
-| **Herramienta** | Prueba de carga o monitoreo simple sobre el ambiente de pruebas (por ejemplo, un script que reintenta solicitudes y registra tiempos de caída). |
+| **Medida** | El sistema debe mantenerse disponible durante la ventana de prueba definida por el equipo, con una recuperación ante fallos en menos de **5 minutos**. El *spin down* de ~15 minutos de inactividad y ~1 minuto de reactivación del plan gratuito de Render, documentado en [ADR-0005](../adr/0005-plataforma-despliegue-backend.md) y en `11-risks-and-technical-debt.md`, se acepta como una interrupción conocida dentro de esta medida. |
+| **Herramienta** | Prueba de carga o monitoreo simple sobre el ambiente desplegado (por ejemplo, un script que reintenta solicitudes y registra tiempos de caída). |
 | **Carga** | Ventana de prueba definida por el equipo (por ejemplo, 100 solicitudes concurrentes sostenidas durante 10 minutos). |
 
 **Prioridad:** Media  
@@ -220,11 +220,11 @@ Los escenarios de calidad se relacionan con los aspectos definidos en `docs/aspe
 
 | Escenario | Atributo | Aspecto relacionado | ADR |
 |---|---|---|---|
-| Q-01 | Exactitud / Consistencia | [A-01](../aspectos.md/#a-01---seguimiento-del-cumplimiento-de-requisitos) Seguimiento del cumplimiento de requisitos | [ADR-0001](../adr/0001-seleccion-monolito-modular.md) |
+| Q-01 | Exactitud / Consistencia | [A-01](../aspectos.md/#a-01---seguimiento-del-cumplimiento-de-requisitos) Seguimiento del cumplimiento de requisitos | [ADR-0001](../adr/0001-seleccion-monolito-modular.md), [ADR-0005](../adr/0005-plataforma-despliegue-backend.md) |
 | Q-02 | Seguridad | [A-05](../aspectos.md/#a-05---proteccion-y-control-de-acceso-a-la-informacion-academica) Protección y control de acceso a la información académica | [ADR-0001](../adr/0001-seleccion-monolito-modular.md) |
-| Q-03 | Usabilidad | [A-01](../aspectos.md/#a-01---seguimiento-del-cumplimiento-de-requisitos) Seguimiento del cumplimiento de requisitos | No aplica: se resuelve en la interfaz, no en la arquitectura del backend (ver `04-solution-strategy.md`, sección 4.4). |
+| Q-03 | Usabilidad | [A-01](../aspectos.md/#a-01---seguimiento-del-cumplimiento-de-requisitos) Seguimiento del cumplimiento de requisitos | [ADR-0006](../adr/0006-plataforma-despliegue-frontend.md) — el resto se resuelve en la interfaz, no en la arquitectura del backend (ver `04-solution-strategy.md`, sección 4.4). |
 | Q-04 | Exactitud / Consistencia, Usabilidad | [A-03](../aspectos.md/#a-03---alertas-tempranas-de-requisitos-pendientes) Alertas tempranas de requisitos pendientes | Pendiente: mecanismo de disparo de la alerta sin ADR (ver `09-architecture-decisions.md`). |
-| Q-05 | Disponibilidad | [A-04](../aspectos.md/#a-04---disponibilidad-del-sistema) Disponibilidad del sistema | [ADR-0001](../adr/0001-seleccion-monolito-modular.md) (despliegue como aplicación única). |
+| Q-05 | Disponibilidad | [A-04](../aspectos.md/#a-04---disponibilidad-del-sistema) Disponibilidad del sistema | [ADR-0001](../adr/0001-seleccion-monolito-modular.md) (despliegue como aplicación única), [ADR-0005](../adr/0005-plataforma-despliegue-backend.md) (plataforma de despliegue y su riesgo de *spin down*). |
 | Q-06 | Mantenibilidad | [A-06](../aspectos.md/#a-06---extensibilidad-para-multiples-programas-academicos) Extensibilidad para múltiples programas académicos | [ADR-0001](../adr/0001-seleccion-monolito-modular.md) |
 | Q-07 | Trazabilidad, Seguridad | [A-07](../aspectos.md/#a-07---gestion-de-solicitudes-de-estudiantes-en-el-centro-de-ayuda) Gestión de solicitudes de estudiantes en el centro de ayuda | [ADR-0001](../adr/0001-seleccion-monolito-modular.md) (módulo `ayuda/`). |
 | Q-08 | Trazabilidad | [A-08](../aspectos.md/#a-08---historial-de-cambios-sobre-la-informacion-academica) Historial de cambios sobre la información académica | Pendiente: mecanismo de almacenamiento del historial sin ADR (ver `09-architecture-decisions.md`). |
@@ -233,21 +233,19 @@ Los escenarios de calidad se relacionan con los aspectos definidos en `docs/aspe
 
 ---
 
-## 10.5 Trazabilidad hacia bloques y runtime scenarios
+## 10.5 Trazabilidad hacia bloques, runtime scenarios y despliegue
 
-Con la incorporación de `05-building-block-view.md` y `06-runtime-view.md`, cada escenario de calidad puede verificarse contra un bloque y un flujo de ejecución concretos, y no solo contra una tabla de tácticas:
+Con la incorporación de `05-building-block-view.md`, `06-runtime-view.md` y `07-deployment-view.md`, cada escenario de calidad puede verificarse contra un bloque, un flujo de ejecución y una pieza de infraestructura concretos, y no solo contra una tabla de tácticas:
 
-| Escenario | Módulo(s) responsable(s) (sección 5) | Runtime scenario (sección 6) |
-|---|---|---|
-| Q-01 | `requisitos/`, `estudiantes/`, `programas/` | 6.1 Estudiante consulta su progreso; 6.3 Coordinador corrige un requisito |
-| Q-02 | `usuarios/` | 6.1 (paso de autenticación); 6.2 Control de acceso a información académica |
-| Q-03 | `estudiantes/`, `requisitos/` (frontend) | 6.1 Estudiante consulta su progreso |
-| Q-04 | `requisitos/`, `estudiantes/` | 6.1 Estudiante consulta su progreso (paso de cálculo de alertas, a incorporar) |
-| Q-05 | Backend completo (todos los módulos) | No aplica a un flujo puntual; es una propiedad transversal del despliegue. |
-| Q-06 | `programas/`, `requisitos/` | No requiere un runtime scenario de usuario final; se verifica en tiempo de configuración/administración. |
-| Q-07 | `ayuda/`, `usuarios/` | 6.3 Coordinador corrige un requisito reportado por un estudiante |
-| Q-08 | `requisitos/`, `estudiantes/` (transversal) | 6.3 Coordinador corrige un requisito reportado por un estudiante (paso de registro en historial) |
-
-
+| Escenario | Módulo(s) responsable(s) (sección 5) | Runtime scenario (sección 6) | Infraestructura (sección 7) |
+|---|---|---|---|
+| Q-01 | `requisitos/`, `estudiantes/`, `programas/` | 6.1 Estudiante consulta su progreso; 6.3 Coordinador corrige un requisito | Render Postgres (Free) — [ADR-0005](../adr/0005-plataforma-despliegue-backend.md) |
+| Q-02 | `usuarios/` | 6.1 (paso de autenticación); 6.2 Control de acceso a información académica | No resuelto en el ambiente desplegado — ver `11-risks-and-technical-debt.md` |
+| Q-03 | `estudiantes/`, `requisitos/` (frontend) | 6.1 Estudiante consulta su progreso | GitHub Pages — [ADR-0006](../adr/0006-plataforma-despliegue-frontend.md) |
+| Q-04 | `requisitos/`, `estudiantes/` | 6.1 Estudiante consulta su progreso (paso de cálculo de alertas, a incorporar) | GitHub Actions (`schedule:`), pendiente de un ADR propio |
+| Q-05 | Backend completo (todos los módulos) | No aplica a un flujo puntual; es una propiedad transversal del despliegue. | Render — Free Web Service — [ADR-0005](../adr/0005-plataforma-despliegue-backend.md) |
+| Q-06 | `programas/`, `requisitos/` | No requiere un runtime scenario de usuario final; se verifica en tiempo de configuración/administración. | No aplica |
+| Q-07 | `ayuda/`, `usuarios/` | 6.3 Coordinador corrige un requisito reportado por un estudiante | No aplica todavía (módulo sin código) |
+| Q-08 | `requisitos/`, `estudiantes/` (transversal) | 6.3 Coordinador corrige un requisito reportado por un estudiante (paso de registro en historial) | No aplica todavía (mecanismo sin ADR) |
 
 ---

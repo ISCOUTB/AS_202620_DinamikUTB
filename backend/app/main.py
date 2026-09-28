@@ -22,13 +22,14 @@ app = FastAPI(
 )
 
 # Orígenes permitidos: variable de entorno CORS_ORIGINS (lista separada por comas).
-# En desarrollo local se permite además localhost / 127.0.0.1 en cualquier puerto.
+# En desarrollo local se permite además localhost / 127.0.0.1 en cualquier puerto
+# (el esquema http es el único posible en local; en producción solo aplica CORS_ORIGINS).
 _origenes = [o.strip() for o in os.getenv("CORS_ORIGINS", "").split(",") if o.strip()]
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=_origenes,
-    allow_origin_regex=r"http://(localhost|127\.0\.0\.1)(:\d+)?",
+    allow_origin_regex=r"https?://(localhost|127\.0\.0\.1)(:\d+)?",
     allow_methods=["*"],
     allow_headers=["*"],
 )

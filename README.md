@@ -333,7 +333,9 @@ La organización refleja la arquitectura de monolito modular: cada módulo agrup
 **Comprobación desde fuera de la red de la universidad** (datos móviles):
 
 ```text
-<https://dinamikutb-api.onrender.com/>
+<dom. 27/09/2026 23:55:18,42
+http=200 tiempo=0.419073s
+health=200>
 ```
 
 El servicio gratuito de Render entra en *spin down* tras 15 min sin tráfico: la primera respuesta

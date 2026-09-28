@@ -34,7 +34,7 @@ Al ser un build web de Flutter (`flutter build web`), el resultado es un conjunt
 ### 3.1 GitHub Pages
 
 * **Ventajas:** No requiere una cuenta ni proveedor nuevo — usa el mismo repositorio y la misma autenticación de GitHub que ya usan para el código y el CI. Sin tarjeta, sin límite de expiración, siempre activo (no hay *spin down* en contenido estático).
-* **Desventajas:** Sirve por defecto bajo una subruta (`usuario.github.io/repositorio/`), lo que exige compilar con `flutter build web --base-href /AS_202620_DinamikUTB/` para que las rutas de la app no se rompan. Una aplicación de una sola página (SPA) como Flutter web necesita además una configuración de *fallback* a `index.html` para rutas internas, que en GitHub Pages se resuelve duplicando `index.html` como `404.html`.
+* **Desventajas:** Sirve por defecto bajo una subruta (`usuario.github.io/repositorio/`), lo que exige compilar con `flutter build web --base-href /AS_202620_DinamikUTB/`. Una SPA como Flutter web necesita además un *fallback* a `index.html`, que en GitHub Pages se resuelve duplicando `index.html` como `404.html`.
 * **Seleccionada.**
 
 ### 3.2 Netlify
@@ -61,34 +61,29 @@ Esta decisión no reemplaza a [ADR-0002](0002-seleccion-tecnologia-backend-front
 
 * **Sin proveedor adicional:** un solo lugar (GitHub) concentra código, CI y hosting del frontend.
 * **Siempre disponible:** al ser contenido estático, no hereda el *spin down* del backend descrito en [ADR-0005](0005-plataforma-despliegue-backend.md).
-* **Deploy automatizable:** puede agregarse como un job nuevo en `.github/workflows/ci.yml` que compile con `flutter build web` y publique en la rama `gh-pages` tras cada push exitoso a `main`.
+* **Deploy automatizado:** el workflow `.github/workflows/deploy-pages.yml` compila con `flutter build web` y publica en cada push a `master`. La URL del backend se inyecta con `--dart-define=API_BASE_URL`.
 
 ### Consecuencias negativas
 
-* **Configuración de ruta base obligatoria:** olvidar `--base-href` rompe la carga de assets; debe documentarse en el README junto al comando de build.
-* **El frontend desplegado dependerá de la disponibilidad del backend** (ver [ADR-0005](0005-plataforma-despliegue-backend.md)): si el servicio de Render está en *spin down*, la primera consulta del usuario tardará ~1 minuto en responder aunque el sitio estático cargue de inmediato. Esto debe comunicarse en la interfaz (por ejemplo, en el estado de "cargando" ya exigido por la táctica de Q-03) para no confundirse con un error.
-* **CORS:** la URL pública de GitHub Pages debe agregarse explícitamente a `allow_origins` en `backend/app/main.py` en lugar de mantener el comodín `*` actual, lo cual también corrige el hallazgo de seguridad registrado en [11-risks-and-technical-debt.md](../arc42/11-risks-and-technical-debt.md).
+* **Configuración de ruta base obligatoria:** olvidar `--base-href` rompe la carga de assets; está fijada en `deploy-pages.yml` y documentada en el README.
+* **El frontend desplegado depende de la disponibilidad del backend** (ver [ADR-0005](0005-plataforma-despliegue-backend.md)): si el servicio de Render está en *spin down*, la primera consulta tardará ~1 minuto aunque el sitio estático cargue de inmediato. Debe comunicarse en la interfaz (estado "cargando", táctica de Q-03).
+* **CORS:** el origen de GitHub Pages (`https://iscoutb.github.io`) se declara en la variable `CORS_ORIGINS` del backend (`render.yaml`), reemplazando el comodín `*` anterior.
 
 ## 6. Relación con atributos de calidad
 
 | Atributo | Relación con la decisión |
 | :--- | :--- |
 | **Usabilidad** | Sostiene que la pantalla de progreso (Q-03) esté accesible sin fricción de infraestructura adicional. |
-| **Disponibilidad** | El hosting estático no introduce su propio riesgo de caída, pero hereda el del backend (ADR-0005), que debe comunicarse en la interfaz. |
+| **Disponibilidad** | El hosting estático no introduce su propio riesgo de caída, pero hereda el del backend (ADR-0005). |
 | **Mantenibilidad** | Reduce la superficie operativa del equipo a un solo proveedor (GitHub) para código, CI y frontend. |
 
 ## 7. Relación con las restricciones del proyecto
 
-Cumple la restricción de frontend en Flutter de [02-architecture-constraints.md](../arc42/02-architecture-constraints.md) y el límite organizativo de costo cero / sin tarjeta que también sustenta [ADR-0005](0005-plataforma-despliegue-backend.md).
+Cumple la restricción de frontend en Flutter de [02-architecture-constraints.md](../arc42/02-architecture-constraints.md) y el límite de costo cero / sin tarjeta que también sustenta [ADR-0005](0005-plataforma-despliegue-backend.md).
 
 ## 8. Estado de la decisión
 
-**Aceptado.** El equipo revisó las alternativas y confirmó GitHub Pages sobre Netlify y Vercel, por no requerir una cuenta ni proveedor adicional.
-
-Queda pendiente de completar, en cuanto el equipo ejecute el deploy real:
-
-- URL pública del frontend en GitHub Pages.
-- Commit que agrega el job de build+publish a `ci.yml`.
+**Aceptado.** URL pública esperada: `https://iscoutb.github.io/AS_202620_DinamikUTB/` (confirmar tras el primer deploy).
 
 ## 9. Trazabilidad
 
@@ -96,6 +91,7 @@ Queda pendiente de completar, en cuanto el equipo ejecute el deploy real:
 | :--- | :--- |
 | **Aspectos que sustenta** | [A-01](../aspectos.md#a-01--seguimiento-del-cumplimiento-de-requisitos) |
 | **Escenario de calidad** | [Q-03](../arc42/10-quality-requirements.md#escenario-q-03--facilidad-de-comprensión-de-la-información) |
-| **Elemento C4** | Contenedor `Frontend Flutter` en `docs/c4/contenedores.puml`, y la caja correspondiente en [07-deployment-view.md](../arc42/07-deployment-view.md) |
-| **Commits que lo implementan** | `<pendiente>` — agregar aquí el commit que introduce el job de deploy en `ci.yml` |
-| **Pruebas que lo cubren** | `<pendiente>` — verificación manual de que la URL pública carga y se conecta al backend desplegado |
+| **Elemento C4** | Contenedor `Frontend Flutter` en `docs/c4/contenedores.puml`, y su caja en [07-deployment-view.md](../arc42/07-deployment-view.md) |
+| **Código** | `.github/workflows/deploy-pages.yml`, `frontend/lib/main.dart` (`API_BASE_URL`) |
+| **Commits que lo implementan** | `<hash del commit que agrega deploy-pages.yml>` |
+| **Pruebas que lo cubren** | `frontend/test/widget_test.dart`; verificación manual: la URL pública carga y consulta al backend desplegado (hora registrada en el README) |

@@ -85,11 +85,13 @@ El docente indicó explícitamente que no se crearan etiquetas de git para este 
 | `correcciones.md` anterior era una autoevaluación genérica sin evidencia citable | Se reconstruyó este archivo completo, citando hallazgo, acción, evidencia verificable y estado por cada fila | Este archivo | Corregida |
 
 ---
+
 ## S7 — Hallazgos y su estado actual
 
-| Hallazgo esperado (semana-07-evidencia-s7) | Acción realizada | Evidencia | Estado |
+| Hallazgo (semana-07-evidencia-s7) | Acción realizada | Evidencia | Estado |
 |---|---|---|---|
-| SonarCloud con scanner invocado desde el pipeline y Quality Gate público | Se agregó el job `sonarcloud` a `.github/workflows/ci.yml` con la acción oficial de SonarSource pineada por SHA, y `sonar-project.properties` con Project Key y Organization Key confirmados desde la interfaz de SonarCloud. El job falla con "Not authorized or project not found" al intentar autenticar. Se intentó: (1) desactivar Automatic Analysis desde `/project/analysis_method`, con error de acceso para los cuatro integrantes del equipo; (2) generar un Personal Token (`dinamikutb-ci`) y configurarlo como secreto `SONAR_TOKEN` en GitHub, confirmado como correctamente guardado y usado por el workflow (`Last used < 1 hour ago` en SonarCloud), pero rechazado por falta de autorización sobre el proyecto. | `.github/workflows/ci.yml` (job `sonarcloud`); `sonar-project.properties`; log del run fallido en GitHub Actions; `docs/deuda-tecnica.md` | No verificado — bloqueado por permisos de administración del proyecto en SonarCloud, no identificados dentro del equipo. Requiere intervención de un Administrator del proyecto (posiblemente el docente o monitor del curso). |
+| Scanner de SonarCloud invocado desde el pipeline, con run exitoso | Se agregó el job `sonarcloud` a `.github/workflows/ci.yml`, con la acción oficial de SonarSource fijada por SHA (verificado con `git ls-remote`) y el token en el secreto `SONAR_TOKEN`. Al inicio el análisis no pudo autenticarse porque el equipo no tenía permisos de administración sobre el proyecto en SonarCloud. Una vez concedidos, se desactivó Automatic Analysis y el análisis corre desde el pipeline. | `.github/workflows/ci.yml` (job `sonarcloud`); `sonar-project.properties`; [run en verde](https://github.com/ISCOUTB/AS_202620_DinamikUTB/actions/runs/36367831574) | Corregida |
+| Análisis con Quality Gate público | El Quality Gate fallaba por cobertura: 0.0 % sobre el código nuevo, con 80 % requerido, porque SonarCloud no recibía ningún reporte. Se agregó `pytest-cov`, un `.coveragerc` y el envío de `coverage.xml` al scanner. También se corrigieron los dos hallazgos de `Annotated` en los routers de `requisitos/` y `estudiantes/`. | `.coveragerc`; `sonar-project.properties` (`sonar.python.coverage.reportPaths`); `backend/app/requisitos/router.py`; `backend/app/estudiantes/router.py`; [dashboard público](https://sonarcloud.io/project/overview?id=ISCOUTB_AS_202620_DinamikUTB) | Corregida |
 
 ---
 

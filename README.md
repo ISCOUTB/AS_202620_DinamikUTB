@@ -316,7 +316,49 @@ La organización refleja la arquitectura de monolito modular: cada módulo agrup
 
 ---
 
+# Entorno desplegado
 
+> Limitación conocida: el backend aún no tiene autenticación (`usuarios/` sin código). Por eso el
+> ambiente desplegado contiene **solo datos de ejemplo** (estudiante ficticio `T000123456`) y
+> no debe cargarse información real.
+
+| Pieza | URL |
+|---|---|
+| Frontend (GitHub Pages) | https://iscoutb.github.io/AS_202620_DinamikUTB/ |
+| Backend (Render) | https://dinamikutb-api.onrender.com |
+| Health check | https://dinamikutb-api.onrender.com/health → `200 {"status":"ok"}` |
+| Métricas (Q-05) | https://dinamikutb-api.onrender.com/metrics |
+| Análisis estático | https://sonarcloud.io/project/overview?id=ISCOUTB_AS_202620_DinamikUTB |
+
+**Comprobación desde fuera de la red de la universidad** (datos móviles):
+
+```text
+<pegar aquí la salida de: date -u; curl -sS -o /dev/null -w 'http=%{http_code} tiempo=%{time_total}s\n' URL; curl -sS -o /dev/null -w 'health=%{http_code}\n' URL/health>
+```
+
+El servicio gratuito de Render entra en *spin down* tras 15 min sin tráfico: la primera respuesta
+puede tardar ~1 minuto (documentado en `docs/arc42/11-risks-and-technical-debt.md`).
+
+**Último pipeline en verde sobre `master`:** `<URL del run de GitHub Actions>`
+
+## Cómo recrear el entorno desplegado
+
+1. **Backend + base de datos:** en Render, *New → Blueprint*, elegir este repositorio. Render lee
+   `render.yaml` y crea el web service y el Postgres. `DATABASE_URL` la inyecta Render.
+2. **Frontend:** en *Settings → Pages* elegir *Source: GitHub Actions*. Cada push a `master`
+   ejecuta `.github/workflows/deploy-pages.yml`. Si la URL del backend es distinta a la de
+   arriba, definir la variable de repositorio `API_BASE_URL`.
+3. **Variables:** ver `.env.example` y `docs/arc42/07-deployment-view.md` (sección 7.3).
+4. **Costos:** `docs/costos.md`.
+
+## Logs y métrica
+
+- Logs estructurados (JSON, una línea por petición) en `backend/app/core/logging_config.py`.
+  Ejemplo: `{"ts": "2026-09-27T21:04:11-0500", "level": "INFO", "logger": "dinamikutb", "message": "http_request", "method": "GET", "path": "/", "status": 200, "duration_ms": 3.41}`
+- Métrica consultable en `GET /metrics`, asociada al escenario **Q-05 (disponibilidad)**:
+  `dinamikutb_http_requests_total` (por estado) y `dinamikutb_http_request_duration_seconds`.
+
+---
 ## Equipo
 
     - Gillianis Perez Revolledo

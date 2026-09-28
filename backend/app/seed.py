@@ -1,15 +1,22 @@
 """
-Script de datos de ejemplo para desarrollo local.
+Script de datos de ejemplo para desarrollo local y para el ambiente desplegado.
 
-Inserta requisitos de prueba para poder ver la pantalla de Flutter con
-contenido real, sin depender de que alguien los cargue a mano.
+Inserta un estudiante y requisitos de prueba para poder ver la pantalla de
+Flutter con contenido real. Es idempotente: no duplica datos por tabla.
 
 Uso: desde la carpeta backend/, con el entorno virtual activado:
     python -m app.seed
 """
 
 from app.core.database import Base, SessionLocal, engine
+from app.estudiantes.models import Estudiante
 from app.requisitos.models import Requisito
+
+ESTUDIANTE_DE_EJEMPLO = {
+    "codigo_estudiantil": "T000123456",
+    "nombre": "Ana Pérez",
+    "programa": "Ingeniería de Sistemas",
+}
 
 REQUISITOS_DE_EJEMPLO = [
     Requisito(estudiante_id="T000123456", nombre="Inglés B2", estado="pendiente"),
@@ -30,14 +37,19 @@ def poblar():
     Base.metadata.create_all(bind=engine)
     db = SessionLocal()
     try:
-        ya_existen = db.query(Requisito).count() > 0
-        if ya_existen:
-            print("Ya hay datos en la base. No se insertó nada para evitar duplicados.")
-            return
+        if db.query(Estudiante).count() == 0:
+            db.add(Estudiante(**ESTUDIANTE_DE_EJEMPLO))
+            print("Se insertó 1 estudiante de ejemplo.")
+        else:
+            print("Ya hay estudiantes en la base. No se insertó ninguno.")
 
-        db.add_all(REQUISITOS_DE_EJEMPLO)
+        if db.query(Requisito).count() == 0:
+            db.add_all(REQUISITOS_DE_EJEMPLO)
+            print(f"Se insertaron {len(REQUISITOS_DE_EJEMPLO)} requisitos de ejemplo.")
+        else:
+            print("Ya hay requisitos en la base. No se insertó ninguno.")
+
         db.commit()
-        print(f"Se insertaron {len(REQUISITOS_DE_EJEMPLO)} requisitos de ejemplo.")
     finally:
         db.close()
 

@@ -333,13 +333,13 @@ La organización refleja la arquitectura de monolito modular: cada módulo agrup
 **Comprobación desde fuera de la red de la universidad** (datos móviles):
 
 ```text
-<pegar aquí la salida de: date -u; curl -sS -o /dev/null -w 'http=%{http_code} tiempo=%{time_total}s\n' URL; curl -sS -o /dev/null -w 'health=%{http_code}\n' URL/health>
+<https://dinamikutb-api.onrender.com/>
 ```
 
 El servicio gratuito de Render entra en *spin down* tras 15 min sin tráfico: la primera respuesta
 puede tardar ~1 minuto (documentado en `docs/arc42/11-risks-and-technical-debt.md`).
 
-**Último pipeline en verde sobre `master`:** `<URL del run de GitHub Actions>`
+**Último pipeline en verde sobre `master`:** `<https://github.com/ISCOUTB/AS_202620_DinamikUTB/actions/runs/36379270741>`
 
 ## Cómo recrear el entorno desplegado
 

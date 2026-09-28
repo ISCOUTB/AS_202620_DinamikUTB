@@ -9,7 +9,8 @@ dependencies = [
     "httpx2",
     "pytest",
     "pytest-cov",
-    "sqlalchemy"
+    "sqlalchemy",
+    "psycopg[binary]"
 ]
 
 [tool.pytest.ini_options]

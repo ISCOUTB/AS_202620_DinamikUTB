@@ -93,5 +93,5 @@ Cumple la restricción de frontend en Flutter de [02-architecture-constraints.md
 | **Escenario de calidad** | [Q-03](../arc42/10-quality-requirements.md#escenario-q-03--facilidad-de-comprensión-de-la-información) |
 | **Elemento C4** | Contenedor `Frontend Flutter` en `docs/c4/contenedores.puml`, y su caja en [07-deployment-view.md](../arc42/07-deployment-view.md) |
 | **Código** | `.github/workflows/deploy-pages.yml`, `frontend/lib/main.dart` (`API_BASE_URL`) |
-| **Commits que lo implementan** | `<hash del commit que agrega deploy-pages.yml>` |
+| **Commits que lo implementan** | `c5734b8` |
 | **Pruebas que lo cubren** | `frontend/test/widget_test.dart`; verificación manual: la URL pública carga y consulta al backend desplegado (hora registrada en el README) |

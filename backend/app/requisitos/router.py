@@ -1,3 +1,5 @@
+from typing import Annotated
+
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
@@ -7,9 +9,11 @@ from app.requisitos.schemas import RequisitoEstadoUpdate, RequisitoOut
 
 router = APIRouter(prefix="/requisitos", tags=["requisitos"])
 
+DbSession = Annotated[Session, Depends(get_db)]
+
 
 @router.get("/{estudiante_id}", response_model=list[RequisitoOut])
-def consultar_requisitos(estudiante_id: str, db: Session = Depends(get_db)):
+def consultar_requisitos(estudiante_id: str, db: DbSession):
     return service.obtener_requisitos_por_estudiante(db, estudiante_id)
 
 
@@ -19,7 +23,7 @@ def consultar_requisitos(estudiante_id: str, db: Session = Depends(get_db)):
     responses={404: {"description": "Requisito no encontrado"}},
 )
 def actualizar_estado(
-    requisito_id: int, payload: RequisitoEstadoUpdate, db: Session = Depends(get_db)
+    requisito_id: int, payload: RequisitoEstadoUpdate, db: DbSession
 ):
     requisito = service.actualizar_estado_requisito(db, requisito_id, payload.estado)
     if requisito is None:

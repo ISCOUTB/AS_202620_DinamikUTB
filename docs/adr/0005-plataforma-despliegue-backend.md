@@ -103,5 +103,5 @@ Satisface el límite de costo cero / sin tarjeta de [02-architecture-constraints
 | **Escenario de calidad** | [Q-05](../arc42/10-quality-requirements.md#escenario-q-05--disponibilidad-del-sistema) |
 | **Elemento C4** | Contenedor `Backend API` en `docs/c4/contenedores.puml` y su caja en [07-deployment-view.md](../arc42/07-deployment-view.md) |
 | **Código** | `render.yaml`, `backend/app/main.py` (`/health`, `/metrics`, logging JSON) |
-| **Commits que lo implementan** | `<hash del commit que agrega render.yaml>` |
+| **Commits que lo implementan** | `898257c` |
 | **Pruebas que lo cubren** | `backend/tests/test_health.py`; verificación manual: `curl <URL>/health` con hora registrada en el README |

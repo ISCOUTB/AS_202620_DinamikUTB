@@ -11,7 +11,14 @@ env/
 # Test and coverage
 .pytest_cache/
 .coverage
+coverage.xml
 htmlcov/
+
+# Sonar
+.scannerwork/
+
+# Secretos
+.env
 
 # IDE
 .vscode/

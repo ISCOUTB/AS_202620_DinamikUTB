@@ -15,6 +15,8 @@ Esta sección funciona como índice de las decisiones arquitectónicas (ADR) de 
 | [ADR-0005](../adr/0005-plataforma-despliegue-backend.md) | Selección de plataforma de despliegue del backend | *Aceptado* (2026-09-26) | Formaliza Render (Free Web Service), descrito en `render.yaml`, para el proceso del backend, sobre las alternativas servidor del laboratorio, Railway y Fly.io. Sustenta A-01 y A-04. |
 | [ADR-0006](../adr/0006-plataforma-despliegue-frontend.md) | Selección de plataforma de despliegue del frontend | *Aceptado* (2026-09-26) | Formaliza GitHub Pages como hosting estático del build web de Flutter, sobre las alternativas Netlify y Vercel. Sustenta A-01. |
 | [ADR-0007](../adr/0007-persistencia-render-postgres.md) | Estrategia de persistencia en el ambiente desplegado | *Aceptado* (2026-09-27) | Formaliza Render Postgres (Free) para la persistencia en el ambiente desplegado, sobre SQLite en disco efímero y disco persistente de pago; ajusta la consecuencia operativa de ADR-0003 solo para ese ambiente. Sustenta A-01 y A-04. |
+| [ADR-0008](../adr/0008-verificacion-de-artefactos-sugeridos-por-ia.md) | Verificación obligatoria de artefactos de terceros sugeridos por IA antes de incorporarlos | *Aceptado* (2026-10-01) | A partir de un incidente real (un hash inventado por IA para una acción de GitHub que rompió el pipeline en S7), formaliza la práctica del equipo de verificar contra la fuente oficial todo identificador externo que una propuesta de IA incluya, antes de aceptarlo. Decisión de proceso, no de arquitectura del sistema. Sustenta A-01. |
+| [ADR-0009](../adr/0009-no-incorporacion-componente-generativo.md) | No incorporación de un componente generativo al sistema desplegado | *Aceptado* (2026-10-01) | Evalúa y descarta usar un LLM para A-03 (alertas tempranas), tanto para redactar el texto como para decidir criticidad, por costo, no determinismo frente a Q-01, y riesgo de disponibilidad de un proveedor externo. El mecanismo de A-03 se resolverá con una regla determinista cuando tenga código. |
 
 ---
 
@@ -22,9 +24,9 @@ Esta sección funciona como índice de las decisiones arquitectónicas (ADR) de 
 
 | Aspecto | Decisión de la que depende | Estado de la decisión |
 |---|---|---|
-| [A-01](../aspectos.md#a-01--seguimiento-del-cumplimiento-de-requisitos) — Seguimiento del cumplimiento de requisitos | ADR-0001, ADR-0002, ADR-0003, ADR-0004, ADR-0005, ADR-0006, ADR-0007 | Aceptado |
+| [A-01](../aspectos.md#a-01--seguimiento-del-cumplimiento-de-requisitos) — Seguimiento del cumplimiento de requisitos | ADR-0001, ADR-0002, ADR-0003, ADR-0004, ADR-0005, ADR-0006, ADR-0007, ADR-0008 | Aceptado |
 | [A-02](../aspectos.md#a-02--cálculo-correcto-del-estado-de-graduación) — Cálculo correcto del estado de graduación | ADR-0001, ADR-0002, ADR-0003, ADR-0004 | Aceptado |
-| [A-03](../aspectos.md#a-03--alertas-tempranas-de-requisitos-pendientes) — Alertas tempranas | Pendiente | Pendiente |
+| [A-03](../aspectos.md#a-03--alertas-tempranas-de-requisitos-pendientes) — Alertas tempranas | Pendiente de código; ADR-0009 descarta explícitamente un componente generativo para su mecanismo | Pendiente |
 | [A-04](../aspectos.md#a-04--disponibilidad-del-sistema) — Disponibilidad del sistema | ADR-0001, ADR-0005, ADR-0007 | Aceptado |
 | [A-05](../aspectos.md#a-05--protección-y-control-de-acceso-a-la-información-académica) — Protección y control de acceso | ADR-0001, ADR-0002 | Aceptado (la implementación de `usuarios/` sigue pendiente; ver el riesgo correspondiente en `11-risks-and-technical-debt.md`) |
 | [A-06](../aspectos.md#a-06--extensibilidad-para-múltiples-programas-académicos) — Extensibilidad para múltiples programas | ADR-0001, ADR-0003 | Aceptado |
@@ -35,6 +37,6 @@ Esta sección funciona como índice de las decisiones arquitectónicas (ADR) de 
 
 ## 9.3 Criterio para futuras decisiones
 
-Toda decisión que module la estructura del monolito, cambie una tecnología permitida por 02-architecture-constraints.md, afecte la forma de cumplir un escenario de calidad de 10-quality-requirements.md, o cambie dónde corre una pieza del sistema desplegado, será registrada como un nuevo ADR en `docs/adr/`.
+Toda decisión que module la estructura del monolito, cambie una tecnología permitida por 02-architecture-constraints.md, afecte la forma de cumplir un escenario de calidad de 10-quality-requirements.md, cambie dónde corre una pieza del sistema desplegado, o modifique la práctica de verificación de artefactos de IA fijada en ADR-0008, será registrada como un nuevo ADR en `docs/adr/`.
 
-Esto incluye, en particular, cualquier cambio futuro de motor de base de datos respecto a lo fijado en ADR-0003 (incluyendo su ajuste operativo en ADR-0007), el mecanismo de almacenamiento del historial que aún debe resolverse para A-08, cualquier cambio del modelo síncrono de comunicación fijado en ADR-0004, y un eventual ADR para el job programado que sostendría A-03 cuando ese aspecto tenga código.
+Esto incluye, en particular, cualquier cambio futuro de motor de base de datos respecto a lo fijado en ADR-0003 (incluyendo su ajuste operativo en ADR-0007), el mecanismo de almacenamiento del historial que aún debe resolverse para A-08, cualquier cambio del modelo síncrono de comunicación fijado en ADR-0004, un eventual ADR para el job programado que sostendría A-03 cuando ese aspecto tenga código (con una regla determinista, según ADR-0009), y cualquier decisión futura de incorporar un componente generativo que revise lo descartado en ADR-0009.

@@ -26,7 +26,7 @@ con apoyo de Claude en la sesión de trabajo de S4 y S7 respectivamente (ver ent
 
    | Escenario | Medida objetivo | Medición actual |
    |---|---|---|
-   | [Q-01](arc42/10-quality-requirements.md#escenario-q-01--exactitud-de-la-información-académica) | 100% de los datos correctos, verificado con 20 casos de Pytest | 5 casos implementados en `test_requisitos.py` (consulta con datos, consulta vacía, actualización válida, actualización con estado inválido, actualización de requisito inexistente), **5 de 5 en verde (100%)**. La carga completa de 20 casos definida en S2 sigue pendiente de ampliar; se documenta como brecha real, no se infla el número. |
+   | [Q-01](arc42/10-quality-requirements.md#escenario-q-01--exactitud-de-la-información-académica) | 100% de los datos correctos, verificado con 20 casos de Pytest | **20 de 20 casos en verde (100%)**, en `backend/tests/test_requisitos.py`: 5 casos base (consulta con datos, consulta vacía, actualización válida, actualización con estado inválido, actualización de requisito inexistente) más 15 casos generados con `pytest.mark.parametrize` — 5 actualizaciones a estado válido, 8 variantes de payload inválido (vacío, texto fuera del enum, espacio final, `null`, número, lista, objeto vacío, mayúsculas) y 2 de requisito inexistente. La carga completa prometida desde S2 queda cerrada con este conteo real, no estimado. |
 
 ## Extracto de `docs/ia.md` — aceptado, corregido, rechazado
 
@@ -39,7 +39,7 @@ con apoyo de Claude en la sesión de trabajo de S4 y S7 respectivamente (ver ent
 
 ## Auditoría de erosión (límites de contexto y propiedad de datos, S6)
 
-Se repitió el método de `08-crosscutting-concepts.md`, sección 8.5, sobre el código de esta
+Se repitió el método de [`08-cross-cutting-concepts.md`](arc42/08-cross-cutting-concepts.md), sección 8.5, sobre el código de esta
 porción:
 
 ```bash
@@ -56,7 +56,12 @@ endpoint generado con apoyo de IA respeta el límite de propiedad de datos estab
 |---|---|---|---|
 | `pytest-cov==7.1.0` | Claude, para generar cobertura hacia SonarCloud | `pip install pytest-cov`, confirmado con `pip freeze` contra el índice real de PyPI | Legítimo, versión real instalada |
 | `coverage==7.16.2` | Dependencia transitiva de `pytest-cov` | Igual que arriba | Legítimo |
+| `httpx==0.28.1` | Dependencia transitiva de FastAPI/Starlette (cliente HTTP usado en pruebas de contrato) | Verificado en [PyPI](https://pypi.org/project/httpx/0.28.1/): proyecto real, mismo nombre y mantenedor que el paquete instalado | Legítimo, no corresponde al paquete similar `httpx2` que el proyecto también usa intencionalmente (ver `pyproject.toml`) |
+| `httpcore==1.0.9` | Dependencia transitiva de `httpx` | Verificado en [PyPI](https://pypi.org/project/httpcore/1.0.9/): coincide con el proyecto oficial de encode | Legítimo |
+| `truststore==0.10.4` | Dependencia transitiva (verificación de certificados del sistema operativo) | Verificado en [PyPI](https://pypi.org/project/truststore/0.10.4/): coincide con el proyecto oficial de Python Packaging Authority | Legítimo |
 | Hash de `SonarSource/sonarqube-scan-action` | Claude | `git ls-remote` contra el repositorio oficial | **Inválido en el primer intento** (ver ADR-0008); corregido tras verificación |
+
+> **Nota:** `httpx`, `httpcore` y `truststore` no fueron propuestas directas de una conversación con IA — llegaron como dependencias transitivas de paquetes que sí fueron aceptados. Se incluyen igual en esta verificación porque forman parte de lo que "el modelo trajo consigo" al proponer `fastapi`/`httpx2`/`pytest-cov`, y la ficha pide verificar toda dependencia nueva del período, no solo las de primer nivel.
 
 ## Credenciales
 

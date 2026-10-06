@@ -16,6 +16,7 @@
 - [Atributos de calidad](#atributos-de-calidad)
 - [Ejecución del Proyecto](#ejecución-del-proyecto)
 - [Estructura del proyecto](#estructura-del-proyecto)
+- [Entorno desplegado](#entorno-desplegado)
 - [Equipo](#equipo)
 
 
@@ -103,10 +104,10 @@ Supervisan y gestionan la información de los estudiantes de su programa. Consul
 
 Gestionan el funcionamiento general del sistema: usuarios, programas académicos, requisitos y permisos.
 
-> **Estado de implementación:** el corte vertical actual (semana 4) implementa únicamente
-> la consulta de requisitos para el rol Estudiante. Los flujos de Coordinador Académico y
-> Administrador forman parte del alcance del sistema definido en la sección de Stakeholders
-> y en el C4, y se implementarán en semanas posteriores.
+> **Estado de implementación:** el corte vertical actual implementa la consulta y actualización
+> de requisitos, y la consulta de estudiantes, para el rol Estudiante. Los flujos de Coordinador
+> Académico y Administrador forman parte del alcance del sistema definido en la sección de
+> Stakeholders y en el C4, y se implementarán en semanas posteriores.
 
 ---
 
@@ -167,12 +168,12 @@ De esta manera, **DinamikUTB** pueda priorizar la usabilidad sin saturar una pan
 
 # **Ejecución del Proyecto**
 
-**DinamikUTB** utiliza una arquitectura de **monolito modular**, con un backend desarrollado en **FastAPI** y un frontend desarrollado en **Flutter**. La persistencia se maneja con **SQLite** a través de **SQLAlchemy**.
+**DinamikUTB** utiliza una arquitectura de **monolito modular**, con un backend desarrollado en **FastAPI** y un frontend desarrollado en **Flutter**. La persistencia se maneja con **SQLAlchemy**: **SQLite** en desarrollo local y **PostgreSQL** en el ambiente desplegado (ver [ADR-0007](docs/adr/0007-persistencia-render-postgres.md)).
 
 
 ## Requisitos Previos
 
-Antes de ejecutar el proyecto, se debe contar con las siguientes herramientas instaladas:
+Antes de ejecutar el proyecto en local, se debe contar con las siguientes herramientas instaladas:
 
 * **Python 3.12** o superior
 * **Flutter SDK**
@@ -216,22 +217,27 @@ El script no duplica datos si ya existen registros en la base.
 
 | Componente | Tecnología | Propósito |
 | :--- | :--- | :--- |
-| **Backend** | FastAPI | API base y estructura inicial del backend |
-| **Persistencia** | SQLite + SQLAlchemy | Almacenamiento de la información académica |
+| **Backend** | FastAPI | API base del backend |
+| **Persistencia** | SQLAlchemy (SQLite local / PostgreSQL desplegado) | Almacenamiento de la información académica |
 | **Frontend** | Flutter | Interfaz de usuario multiplataforma |
 | **Pruebas Backend** | Pytest | Validación automatizada del backend |
 | **Pruebas Frontend** | Flutter Test | Pruebas unitarias y de componentes de la UI |
-| **Integración continua** | GitHub Actions | Ejecución automatizada de pruebas en cada push |
+| **Integración continua** | GitHub Actions | Pruebas, análisis estático y despliegue automatizados en cada push |
+| **Análisis estático** | SonarCloud | Calidad de código y Quality Gate en el pipeline |
+| **Despliegue backend** | Render (Free Web Service + Postgres) | Backend y base de datos accesibles fuera de la universidad |
+| **Despliegue frontend** | GitHub Pages | Frontend estático accesible fuera de la universidad |
 
 ---
 
 ## URLs de Desarrollo
 
-Una vez iniciado el sistema:
+Una vez iniciado el sistema en local:
 
 - **API:** `http://127.0.0.1:8000`
 - **Documentación de la API:** `http://127.0.0.1:8000/docs`
 - **Frontend:** se abre automáticamente en Google Chrome.
+
+Para el entorno desplegado, ver [Entorno desplegado](#entorno-desplegado).
 
 ---
 
@@ -242,6 +248,13 @@ Para ejecutar las pruebas del backend:
 ```bash
 cd backend
 pytest
+```
+
+Para ejecutar las pruebas del backend con reporte de cobertura (el que usa el pipeline):
+
+```bash
+cd backend
+python -m pytest --cov --cov-report=xml
 ```
 
 Para ejecutar las pruebas del frontend:
@@ -263,53 +276,72 @@ flutter analyze
 ```text
 AS_202620_DinamikUTB/
 ├── README.md                         # Documentación principal
-├── start.bat                         # Inicio del backend y frontend
+├── start.bat                         # Inicio del backend y frontend (desarrollo local)
+├── render.yaml                       # Infraestructura como código del backend (ADR-0005/0007)
+├── .coveragerc                       # Configuración de cobertura de pytest
+├── sonar-project.properties          # Configuración del análisis de SonarCloud
+├── .env.example                      # Plantilla de variables de entorno (sin secretos)
 ├── .github/
 │   └── workflows/
-│       └── ci.yml                    # Pipeline de integración continua
+│       ├── ci.yml                    # Pruebas, análisis estático y Quality Gate
+│       └── deploy-pages.yml          # Build y despliegue del frontend a GitHub Pages
 ├── backend/                          # API desarrollada con FastAPI
 │   ├── pyproject.toml                # Configuración del proyecto Python
 │   ├── requirements.txt              # Dependencias del backend
+│   ├── scripts/
+│   │   └── export_openapi.py         # Exporta el contrato OpenAPI versionado
 │   ├── app/
-│   │   ├── main.py                   # Punto de entrada de la API
-│   │   ├── seed.py                   # Datos de ejemplo para desarrollo local
+│   │   ├── main.py                   # Punto de entrada: API, health check, métricas, logging
+│   │   ├── seed.py                   # Datos de ejemplo para desarrollo y demo
 │   │   ├── core/
-│   │   │   └── database.py           # Conexión SQLite y sesión de SQLAlchemy
-│   │   ├── usuarios/                 # Gestión de usuarios
-│   │   ├── estudiantes/              # Información y avance académico
-│   │   ├── requisitos/               # Requisitos de grado
+│   │   │   ├── database.py           # Conexión SQLAlchemy (SQLite local / Postgres desplegado)
+│   │   │   ├── logging_config.py     # Logs estructurados en JSON
+│   │   │   └── metrics.py            # Métricas ligadas a Q-05
+│   │   ├── usuarios/                 # Gestión de usuarios (pendiente de código)
+│   │   ├── estudiantes/              # Consulta de información y avance académico
+│   │   ├── requisitos/               # Consulta y actualización de requisitos de grado
 │   │   │   ├── models.py             # Modelo Requisito (SQLAlchemy)
 │   │   │   ├── schemas.py            # Esquemas de entrada/salida (Pydantic)
-│   │   │   ├── service.py            # Lógica de consulta
-│   │   │   └── router.py             # Endpoint GET /requisitos/{estudiante_id}
-│   │   ├── programas/                # Programas y planes de estudio
-│   │   └── ayuda/                    # Soporte y centro de ayuda
+│   │   │   ├── service.py            # Lógica de consulta y actualización
+│   │   │   └── router.py             # GET /requisitos/{id}, PUT /requisitos/{id}/estado
+│   │   ├── programas/                # Programas y planes de estudio (pendiente de código)
+│   │   └── ayuda/                    # Soporte y centro de ayuda (pendiente de código)
 │   └── tests/                        # Pruebas automatizadas del backend
+│       ├── test_requisitos.py        # 20 casos (Q-01)
+│       ├── test_estudiantes.py
+│       ├── test_contrato.py          # Prueba de contrato OpenAPI (S7)
+│       └── test_health.py            # Health check y métricas (S8)
 ├── frontend/                         # Aplicación multiplataforma en Flutter
 │   ├── pubspec.yaml                  # Dependencias y configuración Flutter
 │   ├── lib/
 │   │   ├── main.dart                 # Punto de entrada de la aplicación
 │   │   ├── core/                     # Componentes compartidos
-│   │   ├── usuarios/                 # Funcionalidades de usuarios
+│   │   ├── usuarios/                 # Funcionalidades de usuarios (pendiente)
 │   │   ├── estudiantes/              # Funcionalidades de estudiantes
 │   │   ├── requisitos/               # Consulta y visualización de requisitos
 │   │   │   ├── models.dart           # Modelo Requisito
 │   │   │   ├── requisitos_service.dart  # Cliente HTTP hacia el backend
 │   │   │   └── requisitos_screen.dart   # Pantalla de consulta
-│   │   ├── programas/                # Programas académicos
-│   │   └── ayuda/                    # Centro de ayuda
+│   │   ├── programas/                # Programas académicos (pendiente)
+│   │   └── ayuda/                    # Centro de ayuda (pendiente)
 │   ├── test/                         # Pruebas de Flutter
 │   └── android/, ios/, linux/        # Configuración por plataforma
 │       macos/, web/, windows/
 └── docs/                             # Documentación técnica
-  ├── adr/                          # Decisiones arquitectónicas
-  ├── arc42/                        # Documentación de arquitectura
+  ├── adr/                          # Decisiones arquitectónicas (0001 a 0009)
+  ├── api/
+  │   ├── openapi.json               # Contrato OpenAPI versionado (S7)
+  │   └── evidencia-prueba-contrato.md
+  ├── arc42/                        # Documentación de arquitectura (secciones 1 a 12)
   ├── c4/                           # Diagramas C4
   │   ├── contexto.puml             # Nivel 1: contexto
   │   └── contenedores.puml         # Nivel 2: contenedores
-  ├── aspectos.md                  # Aspectos generales del sistema
+  ├── aspectos.md                  # Trazabilidad de aspectos del sistema
+  ├── evidencia-s9.md               # Evidencia de generación verificada con IA (S9)
+  ├── deuda-tecnica.md               # Deuda técnica reconocida y pospuesta
+  ├── costos.md                     # Estimación de costo del entorno desplegado
   ├── fichadelproblema.md           # Descripción del problema
-  └── ia.md                         # Registro relacionado con IA
+  └── ia.md                         # Registro de uso de IA
 ```
 
 La organización refleja la arquitectura de monolito modular: cada módulo agrupa una responsabilidad funcional dentro del backend y del frontend.
@@ -343,6 +375,11 @@ puede tardar ~1 minuto (documentado en `docs/arc42/11-risks-and-technical-debt.m
 
 **Último pipeline en verde sobre `master`:** `<https://github.com/ISCOUTB/AS_202620_DinamikUTB/actions/runs/36379270741>`
 
+**Base de datos (Render Postgres, plan Free):** creada el 27/09/2026. Expira a los 30 días
+(27/10/2026) con 14 días de gracia; recrear y resembrar antes del **25/10/2026** (ver
+[ADR-0007](docs/adr/0007-persistencia-render-postgres.md) y
+[11-risks-and-technical-debt.md](docs/arc42/11-risks-and-technical-debt.md)).
+
 ## Cómo recrear el entorno desplegado
 
 1. **Backend + base de datos:** en Render, *New → Blueprint*, elegir este repositorio. Render lee
@@ -368,4 +405,3 @@ puede tardar ~1 minuto (documentado en `docs/arc42/11-risks-and-technical-debt.m
     - Luis Daniel Padilla Leottau
     - Juan José Vargas Pérez
 ---
-

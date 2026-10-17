@@ -1,11 +1,11 @@
 {
-    "name": "frontend",
-    "short_name": "frontend",
+    "name": "DinamikUTB",
+    "short_name": "DinamikUTB",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "background_color": "#FAF7F5",
+    "theme_color": "#8C1D24",
+    "description": "DinamikUTB",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

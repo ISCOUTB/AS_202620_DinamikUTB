@@ -25,7 +25,7 @@ Esta sección funciona como índice de las decisiones arquitectónicas (ADR) de 
 
 | Aspecto | Decisión de la que depende | Estado de la decisión |
 |---|---|---|
-| [A-01](../aspectos.md#a-01--seguimiento-del-cumplimiento-de-requisitos) — Seguimiento del cumplimiento de requisitos | ADR-0001, ADR-0002, ADR-0003, ADR-0004, ADR-0005, ADR-0006, ADR-0007, ADR-0008 | Aceptado |
+| [A-01](../aspectos.md#a-01--seguimiento-del-cumplimiento-de-requisitos) — Seguimiento del cumplimiento de requisitos | ADR-0001, ADR-0002, ADR-0003, ADR-0004, ADR-0005, ADR-0006, ADR-0007, ADR-0008, ADR-0010 | Aceptado |
 | [A-02](../aspectos.md#a-02--cálculo-correcto-del-estado-de-graduación) — Cálculo correcto del estado de graduación | ADR-0001, ADR-0002, ADR-0003, ADR-0004 | Aceptado |
 | [A-03](../aspectos.md#a-03--alertas-tempranas-de-requisitos-pendientes) — Alertas tempranas | Pendiente de código; ADR-0009 descarta explícitamente un componente generativo para su mecanismo | Pendiente |
 | [A-04](../aspectos.md#a-04--disponibilidad-del-sistema) — Disponibilidad del sistema | ADR-0001, ADR-0005, ADR-0007, ADR-0010 | Aceptado |
@@ -40,4 +40,4 @@ Esta sección funciona como índice de las decisiones arquitectónicas (ADR) de 
 
 Toda decisión que module la estructura del monolito, cambie una tecnología permitida por 02-architecture-constraints.md, afecte la forma de cumplir un escenario de calidad de 10-quality-requirements.md, cambie dónde corre una pieza del sistema desplegado, o modifique la práctica de verificación de artefactos de IA fijada en ADR-0008, será registrada como un nuevo ADR en `docs/adr/`.
 
-Esto incluye, en particular, cualquier cambio futuro de motor de base de datos respecto a lo fijado en ADR-0003 (incluyendo su ajuste operativo en ADR-0007), el mecanismo de almacenamiento del historial que aún debe resolverse para A-08, cualquier cambio del modelo síncrono de comunicación fijado en ADR-0004, un eventual ADR para el job programado que sostendría A-03 cuando ese aspecto tenga código (con una regla determinista, según ADR-0009), y cualquier decisión futura de incorporar un componente generativo que revise lo descartado en ADR-0009.
+Esto incluye, en particular, cualquier cambio futuro de motor de base de datos respecto a lo fijado en ADR-0003 (incluyendo su ajuste operativo en ADR-0007), el mecanismo de almacenamiento del historial que aún debe resolverse para A-08, cualquier cambio del modelo síncrono de comunicación fijado en ADR-0004, un eventual ADR para el job programado que sostendría A-03 cuando ese aspecto tenga código (con una regla determinista, según ADR-0009), cualquier decisión futura de incorporar un componente generativo que revise lo descartado en ADR-0009, y la revisión de la decisión de no extraer módulos de ADR-0010 cuando se cumpla alguna de las condiciones de su sección 6.

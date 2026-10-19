@@ -2,7 +2,7 @@
 
 Esta sección describe dónde se ejecuta cada pieza de **DinamikUTB** en el ambiente desplegado, siguiendo las decisiones aceptadas en [ADR-0005](../adr/0005-plataforma-despliegue-backend.md) (backend), [ADR-0006](../adr/0006-plataforma-despliegue-frontend.md) (frontend) y [ADR-0007](../adr/0007-persistencia-render-postgres.md) (persistencia).
 
-> **Estado de implementación:** la infraestructura está descrita como código (`render.yaml` y `.github/workflows/deploy-pages.yml`). Los valores marcados `<completar>` se rellenan con los datos reales tras el primer deploy.
+> **Estado de implementación:** la infraestructura está descrita como código (`render.yaml` y `.github/workflows/deploy-pages.yml`) y el ambiente fue desplegado el 27/09/2026. Las URLs y la fecha de creación de la base se confirmaron con la comprobación externa registrada en el [README](../../README.md#entorno-desplegado).
 
 ---
 
@@ -25,8 +25,8 @@ flowchart TD
 | Pieza | Dónde corre | URL pública | Siempre activo | Costo mensual | ADR |
 |---|---|---|---|---|---|
 | Frontend (Flutter web) | GitHub Pages | `https://iscoutb.github.io/AS_202620_DinamikUTB/` | Sí (contenido estático) | $0 | [ADR-0006](../adr/0006-plataforma-despliegue-frontend.md) |
-| Backend (FastAPI) | Render — Free Web Service | `https://dinamikutb-api.onrender.com` (`/health`, `/metrics`) — confirmar tras el deploy | No — *spin down* tras 15 min sin tráfico, ~1 min para reactivarse | $0, dentro de 750 h/mes | [ADR-0005](../adr/0005-plataforma-despliegue-backend.md) |
-| Base de datos | Render Postgres (Free) | interna, no pública | Sí, mientras no expire | $0, expira a los 30 días de creada (14 días de gracia) — fecha de creación: `<completar>` | [ADR-0007](../adr/0007-persistencia-render-postgres.md) |
+| Backend (FastAPI) | Render — Free Web Service | `https://dinamikutb-api.onrender.com` (`/health`, `/metrics`) — comprobada desde fuera de la universidad el 27/09/2026 (HTTP 200) | No — *spin down* tras 15 min sin tráfico, ~1 min para reactivarse | $0, dentro de 750 h/mes | [ADR-0005](../adr/0005-plataforma-despliegue-backend.md) |
+| Base de datos | Render Postgres (Free) | interna, no pública | Sí, mientras no expire | $0, expira a los 30 días de creada (14 días de gracia). Creada el 27/09/2026; expira el 27/10/2026; recrear y resembrar antes del 25/10/2026 | [ADR-0007](../adr/0007-persistencia-render-postgres.md) |
 | Ficheros | No aplica | — | — | — | Ningún módulo sube archivos hoy |
 | Trabajos programados | GitHub Actions (`schedule:`) | — | Se ejecuta según el cron configurado | $0 | Pendiente de un ADR propio cuando A-03 tenga código (ver [09-architecture-decisions.md](./09-architecture-decisions.md)) |
 | Pipeline de CI | GitHub Actions | — | Se ejecuta en cada push/PR | $0 | Cubierto por `ci.yml` |

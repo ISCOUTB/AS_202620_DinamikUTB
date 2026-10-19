@@ -36,7 +36,7 @@ con apoyo de Claude en la sesión de trabajo de S4 y S7 respectivamente (ver ent
    pipeline lo detectó en rojo. Se corrigió el valor esperado a 422 (comportamiento correcto
    de la API, no un cambio del contrato) y se separó el caso de `"0"` (404). El estado verde
    de la suite completa se comprueba en el run de Actions del commit de corrección:
-   URL_DEL_RUN_EN_VERDE.
+   (https://github.com/ISCOUTB/AS_202620_DinamikUTB/actions/runs/39192439697).
 
 ## Extracto de `docs/ia.md` — aceptado, corregido, rechazado
 
@@ -74,7 +74,7 @@ endpoint generado con apoyo de IA respeta el límite de propiedad de datos estab
 | `truststore==0.10.4` | Dependencia transitiva (verificación de certificados del sistema operativo) | Verificado en [PyPI](https://pypi.org/project/truststore/0.10.4/): coincide con el proyecto oficial de Python Packaging Authority | Legítimo |
 | Hash de `SonarSource/sonarqube-scan-action` | Claude | `git ls-remote` contra el repositorio oficial | **Inválido en el primer intento** (ver ADR-0008); corregido tras verificación |
 
-> **Nota:** `httpx`, `httpcore` y `truststore` no fueron propuestas directas de una conversación con IA — llegaron como dependencias transitivas de paquetes que sí fueron aceptados. Se incluyen igual en esta verificación porque forman parte de lo que "el modelo trajo consigo" al proponer `fastapi`/`httpx2`/`pytest-cov`, y la ficha pide verificar toda dependencia nueva del período, no solo las de primer nivel.
+> **Nota:** `httpx`, `httpcore` y `truststore` no fueron propuestas directas de una conversación con IA — llegaron como dependencias transitivas de paquetes que sí fueron aceptados. Se incluyen igual en esta verificación porque forman parte de lo que el modelo trajo consigo al proponer `fastapi`/`httpx2`/`pytest-cov`, y la ficha pide verificar toda dependencia nueva del período, no solo las de primer nivel.
 
 ## Credenciales
 

@@ -155,13 +155,19 @@ def test_put_estado_invalido(payload):
 
 
 @pytest.mark.parametrize(
-    "id_inexistente",
-    ["no-existe", "0"],
+    "id_requisito, status_esperado",
+    [
+        # Entero que no existe en la base: el servicio responde 404.
+        ("0", 404),
+        # No es un entero: FastAPI valida el path (requisito_id: int) y responde 422
+        # antes de llegar al servicio.
+        ("no-existe", 422),
+    ],
 )
-def test_put_estado_requisito_inexistente(id_inexistente):
+def test_put_estado_requisito_inexistente_o_id_invalido(id_requisito, status_esperado):
     response = client.put(
-        f"/requisitos/{id_inexistente}/estado",
+        f"/requisitos/{id_requisito}/estado",
         json={"estado": ESTADOS_VALIDOS[0]},
     )
 
-    assert response.status_code == 404
+    assert response.status_code == status_esperado

@@ -15,25 +15,38 @@ con apoyo de Claude en la sesión de trabajo de S4 y S7 respectivamente (ver ent
    No es un ADR que dice "aceptamos lo que propuso la IA": documenta un incidente real (un hash
    inventado que rompió el pipeline) y la decisión del equipo de verificar, de ahí en adelante,
    todo identificador externo que una propuesta de IA incluya, antes de incorporarlo.
-3. **Código:** `backend/app/requisitos/router.py`, `service.py`, `schemas.py`.
+3. **Código:** [router.py](../backend/app/requisitos/router.py), [service.py](../backend/app/requisitos/service.py),
+   [schemas.py](../backend/app/requisitos/schemas.py).
 4. **Prueba que falla ante el defecto que cubre:** [docs/api/evidencia-prueba-contrato.md](api/evidencia-prueba-contrato.md).
    Documenta la secuencia real: un commit que agregó un campo incompatible al contrato
    (`f7c17b9`) hizo fallar `test_el_contrato_versionado_coincide_con_la_api_real` en un run real
    en rojo
    ([run](https://github.com/ISCOUTB/AS_202620_DinamikUTB/actions/runs/35551548541)), y el revert
-   posterior volvió a dejarlo en verde.
+   posterior volvió a dejarlo en verde
+   ([run](https://github.com/ISCOUTB/AS_202620_DinamikUTB/actions/runs/35553215099)).
 5. **Medición del escenario asociado:**
 
    | Escenario | Medida objetivo | Medición actual |
    |---|---|---|
-   | [Q-01](arc42/10-quality-requirements.md#escenario-q-01--exactitud-de-la-información-académica) | 100% de los datos correctos, verificado con 20 casos de Pytest | **20 de 20 casos en verde (100%)**, en `backend/tests/test_requisitos.py`: 5 casos base (consulta con datos, consulta vacía, actualización válida, actualización con estado inválido, actualización de requisito inexistente) más 15 casos generados con `pytest.mark.parametrize` — 5 actualizaciones a estado válido, 8 variantes de payload inválido (vacío, texto fuera del enum, espacio final, `null`, número, lista, objeto vacío, mayúsculas) y 2 de requisito inexistente. La carga completa prometida desde S2 queda cerrada con este conteo real, no estimado. |
+   | [Q-01](arc42/10-quality-requirements.md#escenario-q-01--exactitud-de-la-información-académica) | 100% de los datos correctos, verificado con 20 casos de Pytest | **20 casos** en [test_requisitos.py](../backend/tests/test_requisitos.py): 5 casos base (consulta con datos, consulta vacía, actualización válida, actualización con estado inválido, actualización de requisito inexistente) más 15 casos generados con `pytest.mark.parametrize` — 5 actualizaciones a estado válido, 8 variantes de payload inválido (vacío, texto fuera del enum, espacio final, `null`, número, lista, objeto vacío, mayúsculas, todas con 422) y 2 de id inválido o inexistente (`"0"` → 404 desde el servicio; `"no-existe"` → 422 por validación del path `requisito_id: int`). |
+
+   **Corrección registrada (octubre 2026):** una versión anterior de esta tabla afirmaba
+   "20 de 20 en verde". El caso `"no-existe"` esperaba 404, pero el router declara
+   `requisito_id: int`, de modo que FastAPI responde 422 antes de llegar al servicio; el
+   pipeline lo detectó en rojo. Se corrigió el valor esperado a 422 (comportamiento correcto
+   de la API, no un cambio del contrato) y se separó el caso de `"0"` (404). El estado verde
+   de la suite completa se comprueba en el run de Actions del commit de corrección:
+   URL_DEL_RUN_EN_VERDE.
 
 ## Extracto de `docs/ia.md` — aceptado, corregido, rechazado
 
 | Fecha | Propuesta de la IA | Resultado |
 |---|---|---|
 | 20/09/2026 | Hash `a68d0ecc...` para fijar `sonarqube-scan-action` por SHA | **Rechazado y corregido.** El equipo verificó con `git ls-remote` que el hash no existía en el repositorio oficial, obtuvo el real (`0303d6b6...`) y lo reemplazó. Ver [ADR-0008](adr/0008-verificacion-de-artefactos-sugeridos-por-ia.md). |
-| 28/08/2026 | Enlazar el ADR-0001 desde el aspecto A-03 (alertas tempranas) | **Rechazado.** El equipo determinó que el ADR no sustenta ese aspecto porque no define ningún mecanismo de alertas; se dejó sin enlazar en vez de forzar una relación sin sustento. |
+| 28/08/2026 | Enlazar el ADR-0001 desde el aspecto A-03 (alertas tempranas) | **Rechazado parcialmente.** El equipo determinó que el ADR no sustenta ese aspecto porque no define ningún mecanismo de alertas; se dejó sin enlazar en vez de forzar una relación sin sustento. |
+| 30/08/2026 | Definiciones del glosario | **Rechazado.** Varios términos ("opción de grado", "requisito en proceso") estaban definidos de forma genérica; se pidió corregirlos y la versión corregida fue aceptada. |
+| 23/08/2026 | Interfaz con todas las funcionalidades visibles en una sola pantalla | **Rechazado parcialmente.** Se rechazó por sobrecarga visual; se aceptó la alternativa por módulos. |
+| 20/09/2026 | Resolver ya el hotspot de lock file del backend | **Rechazado por ahora.** Se pospuso con motivo registrado en [docs/deuda-tecnica.md](deuda-tecnica.md). |
 
 (Extracto; la tabla completa con fecha, herramienta, propósito y validación está en `docs/ia.md`.)
 
@@ -74,6 +87,13 @@ git grep -nIE '(AKIA[0-9A-Z]{16}|-----BEGIN [A-Z ]*PRIVATE KEY|ghp_[A-Za-z0-9]{3
 
 Sin coincidencias. `DATABASE_URL` y `SONAR_TOKEN` se referencian por nombre de variable, nunca con
 su valor, en `render.yaml` y `.github/workflows/ci.yml`.
+
+## Integrantes del equipo (correspondencia de firmas)
+
+El historial de Git muestra varias firmas por persona (distintos nombres de usuario con el mismo
+correo registrado). Consolidadas por correo idéntico, corresponden a los 4 integrantes declarados
+en [docs/fichadelproblema.md](fichadelproblema.md), con la misma regla usada en las revisiones de S7 y S8.
+La distribución por persona está en [correcciones.md](../correcciones.md), sección «Concentración de commits».
 
 ## Componente generativo
 

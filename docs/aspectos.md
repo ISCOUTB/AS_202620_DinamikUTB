@@ -81,6 +81,8 @@
 
 **Estado de la decisión:** [ADR-0005](adr/0005-plataforma-despliegue-backend.md) fija Render (Free Web Service) como plataforma del backend, con el *spin down* por inactividad como riesgo aceptado y documentado en `arc42/11-risks-and-technical-debt.md`. [ADR-0007](adr/0007-persistencia-render-postgres.md) fija Render Postgres (Free) para la persistencia, cuya expiración a los 30 días también está registrada como riesgo. El aspecto se observa mediante `GET /health` y la métrica `GET /metrics`.
 
+**Modos de fallo:** analizados en [arc42/11, sección 11.5](arc42/11-risks-and-technical-debt.md); decisión de no extraer módulos en [ADR-0010](adr/0010-extraccion-de-modulo.md).
+
 ---
 
 ## A-05 — Protección y control de acceso a la información académica

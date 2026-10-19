@@ -2,23 +2,25 @@
 !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
 
 title DinamikUTB — C4 Nivel 2: Contenedores
-caption Diagrama de contenedores del sistema — Septiembre 2026
+caption Diagrama de contenedores del sistema — Octubre 2026
 
 Person(estudiante, "Estudiante", "Consulta su progreso de graduación, requisitos pendientes, historial y envía solicitudes.")
 Person(coordinador, "Coordinador académico", "Consulta estudiantes de sus programas, atiende solicitudes y actualiza información autorizada.")
 Person(administrador, "Administrador", "Administra usuarios, programas, requisitos y la configuración general del sistema.")
 
 System_Boundary(dinamik, "DinamikUTB") {
-    Container(frontend, "Frontend Flutter", "Flutter / Dart", "Interfaz de usuario multiplataforma para consultar y gestionar la información del sistema.")
-    Container(backend, "Backend API", "FastAPI / Python", "API principal del sistema. Implementa la lógica y los módulos de usuarios, estudiantes, requisitos, programas y ayuda.")
-    ContainerDb(database, "Base de datos", "SQLite", "Almacena la información persistente de usuarios, estudiantes, requisitos y programas.")
+    Container(frontend, "Frontend Flutter", "Flutter / Dart", "Interfaz de usuario multiplataforma. Desplegado como sitio estático en GitHub Pages (ADR-0006).")
+    Container(backend, "Backend API", "FastAPI / Python", "API principal del sistema. Implementa los módulos de usuarios, estudiantes, requisitos, programas y ayuda (hoy con código: estudiantes y requisitos). Desplegado en Render Free Web Service (ADR-0005).")
+    ContainerDb(database_local, "Base de datos (desarrollo local y CI)", "SQLite", "Persistencia en desarrollo local y en las pruebas. Se usa cuando DATABASE_URL no está definida (ADR-0003).")
+    ContainerDb(database_prod, "Base de datos (ambiente desplegado)", "PostgreSQL — Render Postgres Free", "Persistencia del ambiente desplegado. Se selecciona con DATABASE_URL (ADR-0007).")
 }
 
 Rel(estudiante, frontend, "Interactúa con la interfaz")
 Rel(coordinador, frontend, "Interactúa con la interfaz")
 Rel(administrador, frontend, "Interactúa con la interfaz")
-Rel(frontend, backend, "Consume la API", "HTTP/JSON")
-Rel(backend, database, "Lee y escribe información", "SQL, vía SQLAlchemy (ORM)")
+Rel(frontend, backend, "Consume la API", "HTTP/JSON (síncrono, ADR-0004)")
+Rel(backend, database_local, "Lee y escribe (local/CI)", "SQL, vía SQLAlchemy (ORM)")
+Rel(backend, database_prod, "Lee y escribe (desplegado)", "SQL, vía SQLAlchemy (ORM) + psycopg")
 
 SHOW_LEGEND()
 @enduml

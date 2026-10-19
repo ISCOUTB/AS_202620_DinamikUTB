@@ -17,6 +17,7 @@
 - [Ejecución del Proyecto](#ejecución-del-proyecto)
 - [Estructura del proyecto](#estructura-del-proyecto)
 - [Entorno desplegado](#entorno-desplegado)
+- [Resiliencia y modos de fallo](#resiliencia-y-modos-de-fallo)
 - [Equipo](#equipo)
 
 
@@ -310,7 +311,8 @@ AS_202620_DinamikUTB/
 │       ├── test_requisitos.py        # 20 casos (Q-01)
 │       ├── test_estudiantes.py
 │       ├── test_contrato.py          # Prueba de contrato OpenAPI (S7)
-│       └── test_health.py            # Health check y métricas (S8)
+│       ├── test_health.py            # Health check y métricas (S8)
+│       └── test_idempotencia.py      # Idempotencia del PUT (S11)
 ├── frontend/                         # Aplicación multiplataforma en Flutter
 │   ├── pubspec.yaml                  # Dependencias y configuración Flutter
 │   ├── lib/
@@ -320,28 +322,30 @@ AS_202620_DinamikUTB/
 │   │   ├── estudiantes/              # Funcionalidades de estudiantes
 │   │   ├── requisitos/               # Consulta y visualización de requisitos
 │   │   │   ├── models.dart           # Modelo Requisito
-│   │   │   ├── requisitos_service.dart  # Cliente HTTP hacia el backend
+│   │   │   ├── requisitos_service.dart  # Cliente HTTP con timeout y reintento (S11)
 │   │   │   └── requisitos_screen.dart   # Pantalla de consulta
 │   │   ├── programas/                # Programas académicos (pendiente)
 │   │   └── ayuda/                    # Centro de ayuda (pendiente)
 │   ├── test/                         # Pruebas de Flutter
+│   │   ├── widget_test.dart          # Pantalla de requisitos
+│   │   └── requisitos_service_test.dart  # Timeout, reintento e idempotencia (S11)
 │   └── android/, ios/, linux/        # Configuración por plataforma
 │       macos/, web/, windows/
 └── docs/                             # Documentación técnica
-  ├── adr/                          # Decisiones arquitectónicas (0001 a 0009)
-  ├── api/
-  │   ├── openapi.json               # Contrato OpenAPI versionado (S7)
-  │   └── evidencia-prueba-contrato.md
-  ├── arc42/                        # Documentación de arquitectura (secciones 1 a 12)
-  ├── c4/                           # Diagramas C4
-  │   ├── contexto.puml             # Nivel 1: contexto
-  │   └── contenedores.puml         # Nivel 2: contenedores
-  ├── aspectos.md                  # Trazabilidad de aspectos del sistema
-  ├── evidencia-s9.md               # Evidencia de generación verificada con IA (S9)
-  ├── deuda-tecnica.md               # Deuda técnica reconocida y pospuesta
-  ├── costos.md                     # Estimación de costo del entorno desplegado
-  ├── fichadelproblema.md           # Descripción del problema
-  └── ia.md                         # Registro de uso de IA
+    ├── adr/                          # Decisiones arquitectónicas (0001 a 0010)
+    ├── api/
+    │   ├── openapi.json              # Contrato OpenAPI versionado (S7)
+    │   └── evidencia-prueba-contrato.md
+    ├── arc42/                        # Documentación de arquitectura (secciones 1 a 12)
+    ├── c4/                           # Diagramas C4
+    │   ├── contexto.puml             # Nivel 1: contexto
+    │   └── contenedores.puml         # Nivel 2: contenedores
+    ├── aspectos.md                   # Trazabilidad de aspectos del sistema
+    ├── evidencia-s9.md               # Evidencia de generación verificada con IA (S9)
+    ├── deuda-tecnica.md              # Deuda técnica reconocida y pospuesta
+    ├── costos.md                     # Estimación de costo del entorno desplegado
+    ├── fichadelproblema.md           # Descripción del problema
+    └── ia.md                         # Registro de uso de IA
 ```
 
 La organización refleja la arquitectura de monolito modular: cada módulo agrupa una responsabilidad funcional dentro del backend y del frontend.
@@ -396,6 +400,24 @@ puede tardar ~1 minuto (documentado en `docs/arc42/11-risks-and-technical-debt.m
   Ejemplo: `{"ts": "2026-09-27T21:04:11-0500", "level": "INFO", "logger": "dinamikutb", "message": "http_request", "method": "GET", "path": "/", "status": 200, "duration_ms": 3.41}`
 - Métrica consultable en `GET /metrics`, asociada al escenario **Q-05 (disponibilidad)**:
   `dinamikutb_http_requests_total` (por estado) y `dinamikutb_http_request_duration_seconds`.
+
+---
+
+# Resiliencia y modos de fallo
+
+La integración principal (Flutter → FastAPI → base de datos) está analizada en
+[arc42 §11.5](docs/arc42/11-risks-and-technical-debt.md): qué pasa si el otro lado no responde,
+responde tarde o responde dos veces, con la mitigación y el estado de cada una.
+
+- **Cliente:** `frontend/lib/requisitos/requisitos_service.dart` aplica timeout de 25 s por intento y
+  hasta 3 intentos con espera creciente para las consultas. Probado en
+  `frontend/test/requisitos_service_test.dart`.
+- **Servidor:** el `PUT /requisitos/{id}/estado` fija un valor absoluto, por lo que repetirlo es
+  seguro (idempotente). Probado en `backend/tests/test_idempotencia.py`. Detalle en
+  [arc42 §11.6](docs/arc42/11-risks-and-technical-debt.md).
+- **Extracción de módulos:** se decidió no extraer ninguno del monolito; la alternativa se evaluó con
+  criterios en [ADR-0010](docs/adr/0010-extraccion-de-modulo.md).
+- **Pendiente declarado:** concurrencia de escrituras (F6) y expiración de la base gratuita (F7).
 
 ---
 ## Equipo

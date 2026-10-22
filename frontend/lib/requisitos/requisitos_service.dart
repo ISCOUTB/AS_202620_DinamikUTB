@@ -1,64 +1,58 @@
-import 'dart:async';
-import 'dart:convert';
-
-import 'package:http/http.dart' as http;
-
+import '../core/network/api_client.dart';
+import '../core/network/api_exception.dart';
 import 'models.dart';
 
 class RequisitosService {
-  RequisitosService({
-    required this.baseUrl,
-    http.Client? client,
-    this.timeout = const Duration(seconds: 25),
+  RequisitosService(
+    this._api, {
     this.maxIntentos = 3,
     this.esperaBase = const Duration(seconds: 2),
-  }) : client = client ?? http.Client();
+  }) : assert(maxIntentos > 0);
 
-  final String baseUrl;
-  final http.Client client;
-
-  /// Tiempo máximo de espera por intento. Con el arranque en frío de Render
-  /// (~1 min, ADR-0005), 3 intentos de 25 s cubren la reactivación.
-  final Duration timeout;
-
-  /// Número total de intentos (el primero más los reintentos).
+  final ApiClient _api;
   final int maxIntentos;
-
-  /// Espera antes del primer reintento; se duplica en cada reintento (2 s, 4 s...).
   final Duration esperaBase;
 
-  /// Consulta idempotente (GET): es seguro reintentarla.
-  /// Reintenta ante timeout, falla de conexión y respuestas 5xx.
-  /// No reintenta ante 4xx: un error del cliente no se arregla repitiendo.
+  String _base(String estudianteId) =>
+      '/requisitos/${Uri.encodeComponent(estudianteId)}';
+
   Future<List<Requisito>> obtenerRequisitos(String estudianteId) async {
-    final uri = Uri.parse('$baseUrl/requisitos/$estudianteId');
+    ApiException? ultimoError;
 
     for (var intento = 1; intento <= maxIntentos; intento++) {
       try {
-        final response = await client.get(uri).timeout(timeout);
-
-        if (response.statusCode == 200) {
-          final data = jsonDecode(response.body) as List<dynamic>;
-          return data
-              .map((item) => Requisito.fromJson(item as Map<String, dynamic>))
-              .toList();
+        final data = await _api.get(_base(estudianteId)) as List<dynamic>;
+        return data
+            .map((item) => Requisito.fromJson(item as Map<String, dynamic>))
+            .toList();
+      } on ApiException catch (error) {
+        if ((error.statusCode != null && error.statusCode! < 500) ||
+            intento == maxIntentos) {
+          rethrow;
         }
-
-        if (response.statusCode < 500) {
-          throw Exception('No se pudo cargar los requisitos');
-        }
-        // 5xx: cae al reintento.
-      } on TimeoutException {
-        // Sin respuesta a tiempo: cae al reintento.
-      } on http.ClientException {
-        // Falla de conexión: cae al reintento.
-      }
-
-      if (intento < maxIntentos) {
+        ultimoError = error;
         await Future<void>.delayed(esperaBase * (1 << (intento - 1)));
       }
     }
 
-    throw Exception('No se pudo cargar los requisitos');
+    if (ultimoError != null) throw ultimoError;
+    throw StateError('La consulta de requisitos terminó sin respuesta.');
+  }
+
+  Future<ResumenRequisitos> obtenerResumen(String estudianteId) async {
+    final data =
+        await _api.get('${_base(estudianteId)}/resumen') as Map<String, dynamic>;
+    return ResumenRequisitos.fromJson(data);
+  }
+
+  Future<Requisito> actualizarEstado(
+    int requisitoId,
+    EstadoRequisito estado,
+  ) async {
+    final data = await _api.put(
+      '/requisitos/$requisitoId/estado',
+      body: {'estado': estado.valorApi},
+    ) as Map<String, dynamic>;
+    return Requisito.fromJson(data);
   }
 }

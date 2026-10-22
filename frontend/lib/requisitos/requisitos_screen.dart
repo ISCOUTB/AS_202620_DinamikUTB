@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 
+import '../core/theme/app_colors.dart';
+import '../core/widgets/async_view.dart';
+import '../core/widgets/page_list.dart';
+import '../core/widgets/responsive_grid.dart';
 import 'models.dart';
+import 'requisito_card.dart';
 import 'requisitos_service.dart';
-import '../main.dart' show colorGranate, colorNegro, colorTextoSecundario;
 
+/// Consulta los requisitos del estudiante y permite filtrarlos por estado.
 class RequisitosScreen extends StatefulWidget {
   const RequisitosScreen({
     super.key,
@@ -19,78 +24,62 @@ class RequisitosScreen extends StatefulWidget {
 }
 
 class _RequisitosScreenState extends State<RequisitosScreen> {
-  late Future<List<Requisito>> _futureRequisitos;
-
-  @override
-  void initState() {
-    super.initState();
-    _futureRequisitos = widget.service.obtenerRequisitos(widget.estudianteId);
-  }
-
-  Color _colorPorEstado(String estado) {
-    switch (estado) {
-      case 'pendiente':
-        return colorGranate;
-      case 'cumplido':
-        return colorNegro;
-      default:
-        return colorTextoSecundario;
-    }
-  }
+  EstadoRequisito? _filtro;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Mis requisitos')),
-      body: FutureBuilder<List<Requisito>>(
-        future: _futureRequisitos,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
-
-          if (snapshot.hasError) {
-            return const Center(
-              child: Text('No se pudo cargar la información. Intenta de nuevo.'),
-            );
-          }
-
-          final requisitos = snapshot.data ?? [];
-
-          if (requisitos.isEmpty) {
-            return const Center(child: Text('No tienes requisitos registrados.'));
-          }
-
-          return ListView.builder(
-            itemCount: requisitos.length,
-            itemBuilder: (context, index) {
-              final requisito = requisitos[index];
-              return Container(
-                margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                decoration: BoxDecoration(
-                  border: Border(
-                    left: BorderSide(
-                      color: _colorPorEstado(requisito.estado),
-                      width: 4,
-                    ),
-                  ),
-                  color: Colors.white,
+    return AsyncView<List<Requisito>>(
+      load: () => widget.service.obtenerRequisitos(widget.estudianteId),
+      builder: (context, requisitos) {
+        if (requisitos.isEmpty) {
+          return const PageList(children: [
+            Padding(
+              padding: EdgeInsets.only(top: 48),
+              child: Center(child: Text('No tienes requisitos registrados.')),
+            ),
+          ]);
+        }
+        final visibles = _filtro == null
+            ? requisitos
+            : requisitos.where((r) => r.estado == _filtro).toList();
+        return PageList(children: [
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              ChoiceChip(
+                label: const Text('Todos'),
+                selected: _filtro == null,
+                onSelected: (_) => setState(() => _filtro = null),
+              ),
+              for (final estado in EstadoRequisito.values)
+                ChoiceChip(
+                  label: Text(switch (estado) {
+                    EstadoRequisito.cumplido => 'Cumplidos',
+                    EstadoRequisito.enProceso => 'En curso',
+                    EstadoRequisito.pendiente => 'Pendientes',
+                  }),
+                  selected: _filtro == estado,
+                  onSelected: (_) => setState(() => _filtro = estado),
                 ),
-                child: ListTile(
-                  title: Text(
-                    requisito.nombre,
-                    style: const TextStyle(color: colorNegro),
-                  ),
-                  subtitle: Text(
-                    requisito.estado,
-                    style: const TextStyle(color: colorTextoSecundario),
-                  ),
-                ),
-              );
-            },
-          );
-        },
-      ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          if (visibles.isEmpty)
+            const Padding(
+              padding: EdgeInsets.only(top: 32),
+              child: Center(
+                child: Text('No hay requisitos con este estado.',
+                    style: TextStyle(color: AppColors.textMuted)),
+              ),
+            )
+          else
+            ResponsiveGrid(
+              minTileWidth: 320,
+              children: [for (final r in visibles) RequisitoCard(requisito: r)],
+            ),
+        ]);
+      },
     );
   }
 }

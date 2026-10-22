@@ -3,9 +3,9 @@
     "short_name": "DinamikUTB",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#FAF7F5",
-    "theme_color": "#8C1D24",
-    "description": "DinamikUTB",
+    "background_color": "#ffffff",
+    "theme_color": "#ffffff",
+    "description": "Seguimiento de requisitos de grado de DinamikUTB.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

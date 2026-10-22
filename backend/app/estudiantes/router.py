@@ -1,23 +1,25 @@
-from typing import Annotated
+from fastapi import APIRouter, HTTPException
 
-from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
-
-from app.core.database import get_db
+from app.core.database import DbSession
+from app.core.validation import CodigoEstudiantilPath
 from app.estudiantes import service
-from app.estudiantes.schemas import EstudianteOut
+from .schemas import EstudianteOut
+from app.usuarios.dependencies import CurrentUser, verificar_acceso_estudiante
 
 router = APIRouter(prefix="/estudiantes", tags=["estudiantes"])
-
-DbSession = Annotated[Session, Depends(get_db)]
 
 
 @router.get(
     "/{codigo_estudiantil}",
     response_model=EstudianteOut,
-    responses={404: {"description": "Estudiante no encontrado"}},
+    responses={
+        401: {"description": "No autenticado"},
+        403: {"description": "Sin permisos sobre este recurso"},
+        404: {"description": "Estudiante no encontrado"},
+    },
 )
-def consultar_estudiante(codigo_estudiantil: str, db: DbSession):
+def consultar_estudiante(codigo_estudiantil: CodigoEstudiantilPath, usuario: CurrentUser, db: DbSession):
+    verificar_acceso_estudiante(usuario, codigo_estudiantil)
     estudiante = service.obtener_estudiante(db, codigo_estudiantil)
     if estudiante is None:
         raise HTTPException(status_code=404, detail="Estudiante no encontrado")

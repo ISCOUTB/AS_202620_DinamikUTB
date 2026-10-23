@@ -42,7 +42,32 @@
         "title": "HTTPValidationError",
         "type": "object"
       },
+      "LoginIn": {
+        "additionalProperties": false,
+        "properties": {
+          "email": {
+            "maxLength": 254,
+            "minLength": 6,
+            "pattern": "^[A-Za-z0-9._%+\\-]+@[A-Za-z0-9.\\-]+\\.[A-Za-z]{2,}$",
+            "title": "Email",
+            "type": "string"
+          },
+          "password": {
+            "maxLength": 128,
+            "minLength": 8,
+            "title": "Password",
+            "type": "string"
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ],
+        "title": "LoginIn",
+        "type": "object"
+      },
       "RequisitoEstadoUpdate": {
+        "additionalProperties": false,
         "properties": {
           "estado": {
             "enum": [
@@ -81,6 +106,97 @@
           "estado"
         ],
         "title": "RequisitoOut",
+        "type": "object"
+      },
+      "ResumenRequisitosOut": {
+        "properties": {
+          "cumplidos": {
+            "title": "Cumplidos",
+            "type": "integer"
+          },
+          "en_proceso": {
+            "title": "En Proceso",
+            "type": "integer"
+          },
+          "pendientes": {
+            "title": "Pendientes",
+            "type": "integer"
+          },
+          "porcentaje_avance": {
+            "title": "Porcentaje Avance",
+            "type": "number"
+          },
+          "total": {
+            "title": "Total",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "total",
+          "cumplidos",
+          "en_proceso",
+          "pendientes",
+          "porcentaje_avance"
+        ],
+        "title": "ResumenRequisitosOut",
+        "type": "object"
+      },
+      "TokenOut": {
+        "properties": {
+          "access_token": {
+            "title": "Access Token",
+            "type": "string"
+          },
+          "expires_in": {
+            "title": "Expires In",
+            "type": "integer"
+          },
+          "token_type": {
+            "default": "bearer",
+            "title": "Token Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "access_token",
+          "expires_in"
+        ],
+        "title": "TokenOut",
+        "type": "object"
+      },
+      "UsuarioOut": {
+        "description": "Datos mínimos del usuario autenticado. Nunca incluye hash, intentos ni bloqueos.",
+        "properties": {
+          "codigo_estudiantil": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Codigo Estudiantil"
+          },
+          "email": {
+            "title": "Email",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "rol": {
+            "title": "Rol",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "email",
+          "rol"
+        ],
+        "title": "UsuarioOut",
         "type": "object"
       },
       "ValidationError": {
@@ -123,11 +239,18 @@
         "title": "ValidationError",
         "type": "object"
       }
+    },
+    "securitySchemes": {
+      "HTTPBearer": {
+        "description": "Token JWT obtenido en POST /auth/login",
+        "scheme": "bearer",
+        "type": "http"
+      }
     }
   },
   "info": {
     "title": "DinamikUTB API",
-    "version": "0.1.0"
+    "version": "0.2.0"
   },
   "openapi": "3.1.0",
   "paths": {
@@ -147,15 +270,94 @@
         "summary": "Root"
       }
     },
+    "/auth/login": {
+      "post": {
+        "operationId": "login_auth_login_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokenOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "description": "Credenciales inválidas o cuenta bloqueada temporalmente"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "429": {
+            "description": "Demasiados intentos"
+          }
+        },
+        "summary": "Login",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/auth/me": {
+      "get": {
+        "operationId": "perfil_auth_me_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UsuarioOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "description": "No autenticado"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Perfil",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
     "/estudiantes/{codigo_estudiantil}": {
       "get": {
         "operationId": "consultar_estudiante_estudiantes__codigo_estudiantil__get",
         "parameters": [
           {
+            "description": "Código estudiantil (alfanumérico, 4 a 20 caracteres)",
             "in": "path",
             "name": "codigo_estudiantil",
             "required": true,
             "schema": {
+              "description": "Código estudiantil (alfanumérico, 4 a 20 caracteres)",
+              "pattern": "^[A-Za-z0-9]{4,20}$",
               "title": "Codigo Estudiantil",
               "type": "string"
             }
@@ -172,6 +374,12 @@
             },
             "description": "Successful Response"
           },
+          "401": {
+            "description": "No autenticado"
+          },
+          "403": {
+            "description": "Sin permisos sobre este recurso"
+          },
           "404": {
             "description": "Estudiante no encontrado"
           },
@@ -186,6 +394,11 @@
             "description": "Validation Error"
           }
         },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
         "summary": "Consultar Estudiante",
         "tags": [
           "estudiantes"
@@ -197,10 +410,13 @@
         "operationId": "consultar_requisitos_requisitos__estudiante_id__get",
         "parameters": [
           {
+            "description": "Código estudiantil (alfanumérico, 4 a 20 caracteres)",
             "in": "path",
             "name": "estudiante_id",
             "required": true,
             "schema": {
+              "description": "Código estudiantil (alfanumérico, 4 a 20 caracteres)",
+              "pattern": "^[A-Za-z0-9]{4,20}$",
               "title": "Estudiante Id",
               "type": "string"
             }
@@ -221,6 +437,12 @@
             },
             "description": "Successful Response"
           },
+          "401": {
+            "description": "No autenticado"
+          },
+          "403": {
+            "description": "Sin permisos sobre este recurso"
+          },
           "422": {
             "content": {
               "application/json": {
@@ -232,7 +454,68 @@
             "description": "Validation Error"
           }
         },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
         "summary": "Consultar Requisitos",
+        "tags": [
+          "requisitos"
+        ]
+      }
+    },
+    "/requisitos/{estudiante_id}/resumen": {
+      "get": {
+        "operationId": "consultar_resumen_requisitos__estudiante_id__resumen_get",
+        "parameters": [
+          {
+            "description": "Código estudiantil (alfanumérico, 4 a 20 caracteres)",
+            "in": "path",
+            "name": "estudiante_id",
+            "required": true,
+            "schema": {
+              "description": "Código estudiantil (alfanumérico, 4 a 20 caracteres)",
+              "pattern": "^[A-Za-z0-9]{4,20}$",
+              "title": "Estudiante Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResumenRequisitosOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "description": "No autenticado"
+          },
+          "403": {
+            "description": "Sin permisos sobre este recurso"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Consultar Resumen",
         "tags": [
           "requisitos"
         ]
@@ -247,6 +530,8 @@
             "name": "requisito_id",
             "required": true,
             "schema": {
+              "maximum": 2147483647,
+              "minimum": 1,
               "title": "Requisito Id",
               "type": "integer"
             }
@@ -273,6 +558,12 @@
             },
             "description": "Successful Response"
           },
+          "401": {
+            "description": "No autenticado"
+          },
+          "403": {
+            "description": "Sin permisos sobre este recurso"
+          },
           "404": {
             "description": "Requisito no encontrado"
           },
@@ -287,6 +578,11 @@
             "description": "Validation Error"
           }
         },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
         "summary": "Actualizar Estado",
         "tags": [
           "requisitos"

@@ -4,11 +4,14 @@ import 'dart:convert';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 
+import 'package:frontend/core/network/api_client.dart';
+import 'package:frontend/core/network/api_exception.dart';
+import 'package:frontend/core/storage/token_storage.dart';
 import 'package:frontend/requisitos/requisitos_service.dart';
 
 typedef Paso = Future<http.StreamedResponse> Function();
 
-/// Cliente que ejecuta un guion de respuestas, en orden. El último paso se repite.
+/// Devuelve respuestas en orden y repite la última en las llamadas siguientes.
 class ClienteConGuion extends http.BaseClient {
   ClienteConGuion(this._pasos);
 
@@ -34,9 +37,12 @@ Future<http.StreamedResponse> _respuesta(int status, String cuerpo) async {
 const _json = '[{"id": 1, "nombre": "Inglés B2", "estado": "pendiente"}]';
 
 RequisitosService _servicio(ClienteConGuion cliente) => RequisitosService(
-      baseUrl: 'http://127.0.0.1:8000',
-      client: cliente,
-      timeout: const Duration(milliseconds: 50),
+      ApiClient(
+        baseUrl: 'http://127.0.0.1:8000',
+        tokenStorage: InMemoryTokenStorage(),
+        client: cliente,
+        timeout: const Duration(milliseconds: 50),
+      ),
       maxIntentos: 3,
       esperaBase: Duration.zero,
     );
@@ -73,7 +79,7 @@ void main() {
 
     await expectLater(
       _servicio(cliente).obtenerRequisitos('T000123456'),
-      throwsException,
+      throwsA(isA<ApiException>()),
     );
     expect(cliente.llamadas, 3);
   });
@@ -95,7 +101,7 @@ void main() {
 
     await expectLater(
       _servicio(cliente).obtenerRequisitos('T000123456'),
-      throwsException,
+      throwsA(isA<ApiException>()),
     );
     expect(cliente.llamadas, 1);
   });

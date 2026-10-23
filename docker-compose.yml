@@ -1,0 +1,22 @@
+# Inicia PostgreSQL local con las credenciales definidas en .env.
+# Comando: docker compose up -d db
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:?define POSTGRES_USER en .env}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?define POSTGRES_PASSWORD en .env}
+      POSTGRES_DB: ${POSTGRES_DB:?define POSTGRES_DB en .env}
+    ports:
+      - "127.0.0.1:5432:5432"   # Disponible solo desde esta máquina.
+    volumes:
+      - dinamik_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  dinamik_pgdata:

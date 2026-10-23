@@ -1,6 +1,6 @@
 [project]
 name = "dinamikutb-backend"
-version = "0.1.0"
+version = "0.2.0"
 description = "Backend de DinamikUTB"
 requires-python = ">=3.12"
 dependencies = [
@@ -10,7 +10,9 @@ dependencies = [
     "pytest",
     "pytest-cov",
     "sqlalchemy",
-    "psycopg[binary]"
+    "psycopg[binary]",
+    "argon2-cffi",
+    "pyjwt",
 ]
 
 [tool.pytest.ini_options]

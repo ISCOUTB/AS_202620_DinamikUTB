@@ -12,9 +12,9 @@ include: package:flutter_lints/flutter.yaml
 analyzer:
   exclude:
     - build/**
+    - web/**
     - android/**
     - ios/**
-    - web/**
     - windows/**
     - macos/**
     - linux/**

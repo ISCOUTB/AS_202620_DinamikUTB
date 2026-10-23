@@ -1,7 +1,10 @@
-import os
+from typing import Annotated
 
+from fastapi import Depends
 from sqlalchemy import create_engine
-from sqlalchemy.orm import declarative_base, sessionmaker
+from sqlalchemy.orm import Session, declarative_base, sessionmaker
+
+from app.core.config import get_settings
 
 
 def _normalizar_url(url: str) -> str:
@@ -13,12 +16,22 @@ def _normalizar_url(url: str) -> str:
     return url
 
 
-# Local: SQLite (default). Desplegado: DATABASE_URL viene del entorno (Render Postgres).
-DATABASE_URL = _normalizar_url(os.getenv("DATABASE_URL", "sqlite:///./dinamikutb.db"))
+# PostgreSQL se usa en producción y Docker; SQLite, en desarrollo local y pruebas.
+DATABASE_URL = _normalizar_url(get_settings().database_url)
+_es_sqlite = DATABASE_URL.startswith("sqlite")
 
-_connect_args = {"check_same_thread": False} if DATABASE_URL.startswith("sqlite") else {}
+if _es_sqlite:
+    _engine_kwargs = {"connect_args": {"check_same_thread": False}}
+else:
+    # Limita conexiones simultáneas para ajustarse al plan de Render.
+    _engine_kwargs = {
+        "connect_args": {"connect_timeout": 10},
+        "pool_size": 5,
+        "max_overflow": 5,
+        "pool_recycle": 1800,
+    }
 
-engine = create_engine(DATABASE_URL, connect_args=_connect_args, pool_pre_ping=True)
+engine = create_engine(DATABASE_URL, pool_pre_ping=True, **_engine_kwargs)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base()
@@ -30,3 +43,6 @@ def get_db():
         yield db
     finally:
         db.close()
+
+
+DbSession = Annotated[Session, Depends(get_db)]

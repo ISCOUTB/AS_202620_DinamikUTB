@@ -26,11 +26,14 @@ def test_el_contrato_declara_las_rutas_principales():
     contrato = json.loads(RUTA_CONTRATO.read_text(encoding="utf-8"))
 
     assert "/requisitos/{estudiante_id}" in contrato["paths"]
+    assert "/requisitos/{estudiante_id}/resumen" in contrato["paths"]
     assert "/requisitos/{requisito_id}/estado" in contrato["paths"]
     assert "/estudiantes/{codigo_estudiantil}" in contrato["paths"]
+    assert "/auth/login" in contrato["paths"]
+    assert "/auth/me" in contrato["paths"]
 
 
 def test_el_contrato_declara_su_version():
     contrato = json.loads(RUTA_CONTRATO.read_text(encoding="utf-8"))
 
-    assert contrato["info"]["version"] == "0.1.0"
+    assert contrato["info"]["version"] == "0.2.0"

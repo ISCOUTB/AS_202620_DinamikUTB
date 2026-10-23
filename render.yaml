@@ -1,5 +1,4 @@
-# Infraestructura como código del backend (ADR-0005 / ADR-0007).
-# Render la lee como "Blueprint": crea el web service y la base de datos.
+# Define el servicio backend y la base de datos que Render debe crear.
 databases:
   - name: dinamikutb-db
     plan: free
@@ -13,15 +12,15 @@ services:
     plan: free
     rootDir: backend
     buildCommand: pip install -r requirements.txt
-    # El seed no duplica datos; el plan free no tiene shell, por eso va aquí.
+    # Carga los datos de ejemplo antes de iniciar la API.
     startCommand: python -m app.seed && uvicorn app.main:app --host 0.0.0.0 --port $PORT
     healthCheckPath: /health
     envVars:
       - key: PYTHON_VERSION
         value: 3.12.7
-      - key: DATABASE_URL          # secreto: lo entrega Render, nunca va en el repo
+      - key: DATABASE_URL          # Render proporciona esta variable.
         fromDatabase:
           name: dinamikutb-db
           property: connectionString
-      - key: CORS_ORIGINS          # solo el origen (sin ruta) de GitHub Pages
+      - key: CORS_ORIGINS          # Origen de GitHub Pages, sin ruta.
         value: https://iscoutb.github.io

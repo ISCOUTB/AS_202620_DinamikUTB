@@ -9,6 +9,8 @@ import 'models.dart';
 class PerfilScreen extends StatelessWidget {
   const PerfilScreen({super.key, required this.usuario});
 
+  static const _etiquetaCerrarSesion = 'Cerrar sesión';
+
   final Usuario usuario;
 
   Future<void> _confirmarSalida(BuildContext context) async {
@@ -16,11 +18,14 @@ class PerfilScreen extends StatelessWidget {
     final salir = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Cerrar sesión'),
+        title: const Text(_etiquetaCerrarSesion),
         content: const Text('¿Quieres cerrar tu sesión en este dispositivo?'),
         actions: [
           TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancelar')),
-          FilledButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('Cerrar sesión')),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: const Text(_etiquetaCerrarSesion),
+          ),
         ],
       ),
     );
@@ -61,7 +66,7 @@ class PerfilScreen extends StatelessWidget {
         OutlinedButton.icon(
           onPressed: () => _confirmarSalida(context),
           icon: const Icon(Icons.logout),
-          label: const Text('Cerrar sesión'),
+          label: const Text(_etiquetaCerrarSesion),
         ),
       ],
     );

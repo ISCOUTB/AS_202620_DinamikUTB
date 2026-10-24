@@ -20,6 +20,9 @@ services:
       DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
       CORS_ORIGINS: ${CORS_ORIGINS:?define CORS_ORIGINS}
       LOG_FORMAT: json
+      APP_ENV: production
+      SECRET_KEY: ${SECRET_KEY:?define SECRET_KEY}
+      SEED_DEMO_PASSWORD: ${SEED_DEMO_PASSWORD:?define SEED_DEMO_PASSWORD}
       # Otras variables de la API: agrégalas en Dokploy y referéncialas aquí.
     expose:
       - "8000"

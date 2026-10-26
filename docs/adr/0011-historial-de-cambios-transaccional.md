@@ -116,6 +116,7 @@ Reglas:
 4. `actor_id` y `estudiante_id` son valores, no claves foráneas hacia otros módulos (propiedad de datos); `requisito_id` sí es clave foránea porque es el mismo módulo.
 5. El log JSON `auditoria_cambio_estado` se mantiene como telemetría, no como registro de auditoría.
 6. `estudiantes/` y `programas/` aplicarán el mismo patrón cuando tengan escrituras.
+7. **Alcance actual y extensión.** Hoy el único dato académico modificable es el estado de un requisito, por lo que es lo único que se registra. Cuando el sistema incorpore otros datos (créditos acumulados, cursos aprobados, resultados de exámenes), cada uno se registrará con el mismo patrón en el módulo dueño, usando la columna `campo` para identificar qué cambió. Esos datos no existen hoy como entidades; no se registran cambios sobre datos que el sistema no almacena.
 
 ---
 

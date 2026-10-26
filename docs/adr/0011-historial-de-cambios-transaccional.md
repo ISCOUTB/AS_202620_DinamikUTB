@@ -131,7 +131,7 @@ Reglas:
 
 ### Consecuencias negativas
 
-* **La durabilidad del historial es la de la base.** La base gratuita de Render expira a los 30 días y se recrea (F7); recrearla borra también el historial. Hoy solo hay datos de ejemplo; antes de cargar datos reales hace falta una base persistente.
+* **La durabilidad del historial es la de la base.** En Render, la base gratuita expira a los 30 días y recrearla borra el historial (F7). En el laboratorio persiste en el volumen `pgdata`, pero no hay respaldo declarado ([ADR-0012](0012-despliegue-en-servidor-del-laboratorio.md)). Hoy solo hay datos de ejemplo.
 * **Inmutabilidad por convención:** quien tenga acceso SQL a la base puede alterar la tabla. Riesgo aceptado para el alcance académico.
 * **Consulta incompleta:** existe `service.obtener_historial`, pero **no hay endpoint** todavía; RF-08 y Q-08 quedan cubiertos solo en el registro, no en la consulta por un usuario autorizado.
 * **Cobertura parcial:** solo `requisitos/` registra historial; `estudiantes/` es de solo lectura hoy.

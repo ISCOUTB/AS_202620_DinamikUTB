@@ -2,7 +2,7 @@
 !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
 
 title DinamikUTB — C4 Nivel 2: Contenedores
-caption Diagrama de contenedores del sistema — Octubre 2026 (S12: almacenes de datos y servidor del laboratorio)
+caption Diagrama de contenedores del sistema — Octubre 2026
 
 Person(estudiante, "Estudiante", "Consulta su progreso de graduación, requisitos pendientes, historial y envía solicitudes.")
 Person(coordinador, "Coordinador académico", "Consulta estudiantes de sus programas, atiende solicitudes y actualiza información autorizada.")
@@ -35,8 +35,6 @@ Rel(backend, database_prod, "Lee y escribe (Render)", "SQL, vía SQLAlchemy + ps
 Rel(backend_lab, database_lab, "Lee y escribe (laboratorio)", "SQL, vía SQLAlchemy + psycopg")
 Rel(backend, logs, "Escribe", "stdout, JSON")
 Rel(backend_lab, logs, "Escribe", "stdout, JSON")
-
-footer Sin broker de mensajería: la comunicación es síncrona (ADR-0004) y no se extrae ningún módulo (ADR-0010). Si se agrega un broker (hay uno comentado en compose.lab.yaml), debe aparecer aquí como contenedor propio.
 
 SHOW_LEGEND()
 @enduml

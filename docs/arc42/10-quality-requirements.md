@@ -224,10 +224,10 @@ Los escenarios de calidad se relacionan con los aspectos definidos en `docs/aspe
 | Q-02 | Seguridad | [A-05](../aspectos.md/#a-05---proteccion-y-control-de-acceso-a-la-informacion-academica) Protección y control de acceso a la información académica | [ADR-0001](../adr/0001-seleccion-monolito-modular.md) |
 | Q-03 | Usabilidad | [A-01](../aspectos.md/#a-01---seguimiento-del-cumplimiento-de-requisitos) Seguimiento del cumplimiento de requisitos | [ADR-0006](../adr/0006-plataforma-despliegue-frontend.md) — el resto se resuelve en la interfaz, no en la arquitectura del backend (ver `04-solution-strategy.md`, sección 4.4). |
 | Q-04 | Exactitud / Consistencia, Usabilidad | [A-03](../aspectos.md/#a-03---alertas-tempranas-de-requisitos-pendientes) Alertas tempranas de requisitos pendientes | Pendiente: mecanismo de disparo de la alerta sin ADR (ver `09-architecture-decisions.md`). |
-| Q-05 | Disponibilidad | [A-04](../aspectos.md/#a-04---disponibilidad-del-sistema) Disponibilidad del sistema | [ADR-0001](../adr/0001-seleccion-monolito-modular.md) (despliegue como aplicación única), [ADR-0005](../adr/0005-plataforma-despliegue-backend.md) (plataforma de despliegue y su riesgo de *spin down*). |
+| Q-05 | Disponibilidad | [A-04](../aspectos.md/#a-04---disponibilidad-del-sistema) Disponibilidad del sistema | [ADR-0001](../adr/0001-seleccion-monolito-modular.md) (despliegue como aplicación única), [ADR-0005](../adr/0005-plataforma-despliegue-backend.md) (plataforma de despliegue y su riesgo de *spin down*), [ADR-0012](../adr/0012-despliegue-en-servidor-del-laboratorio.md) (despliegue en el laboratorio, sin *spin down*). |
 | Q-06 | Mantenibilidad | [A-06](../aspectos.md/#a-06---extensibilidad-para-multiples-programas-academicos) Extensibilidad para múltiples programas académicos | [ADR-0001](../adr/0001-seleccion-monolito-modular.md) |
 | Q-07 | Trazabilidad, Seguridad | [A-07](../aspectos.md/#a-07---gestion-de-solicitudes-de-estudiantes-en-el-centro-de-ayuda) Gestión de solicitudes de estudiantes en el centro de ayuda | [ADR-0001](../adr/0001-seleccion-monolito-modular.md) (módulo `ayuda/`). |
-| Q-08 | Trazabilidad | [A-08](../aspectos.md/#a-08---historial-de-cambios-sobre-la-informacion-academica) Historial de cambios sobre la información académica | Pendiente: mecanismo de almacenamiento del historial sin ADR (ver `09-architecture-decisions.md`). |
+| Q-08 | Trazabilidad | [A-08](../aspectos.md/#a-08---historial-de-cambios-sobre-la-informacion-academica) Historial de cambios sobre la información académica | [ADR-0011](../adr/0011-historial-de-cambios-transaccional.md) (mecanismo de almacenamiento del historial). |
 
 > Estos escenarios podrán ser refinados posteriormente a medida que se implementen los componentes del sistema y se definan las pruebas correspondientes.
 
@@ -246,6 +246,6 @@ Con la incorporación de `05-building-block-view.md`, `06-runtime-view.md` y `07
 | Q-05 | Backend completo (todos los módulos) | No aplica a un flujo puntual; es una propiedad transversal del despliegue. | Render — Free Web Service — [ADR-0005](../adr/0005-plataforma-despliegue-backend.md) |
 | Q-06 | `programas/`, `requisitos/` | No requiere un runtime scenario de usuario final; se verifica en tiempo de configuración/administración. | No aplica |
 | Q-07 | `ayuda/`, `usuarios/` | 6.3 Coordinador corrige un requisito reportado por un estudiante | No aplica todavía (módulo sin código) |
-| Q-08 | `requisitos/`, `estudiantes/` (transversal) | 6.3 Coordinador corrige un requisito reportado por un estudiante (paso de registro en historial) | No aplica todavía (mecanismo sin ADR) |
+| Q-08 | `requisitos/`, `estudiantes/` (transversal) | 6.3 Coordinador corrige un requisito reportado por un estudiante (paso de registro en historial) | Misma base de datos del ambiente (Render Postgres / SQLite local), tabla `requisitos_historial` — [ADR-0011](../adr/0011-historial-de-cambios-transaccional.md) |
 
 ---

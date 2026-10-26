@@ -3,7 +3,7 @@ import logging
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 
-from app.requisitos.models import Requisito
+from app.requisitos.models import Requisito, RequisitoHistorial
 
 logger = logging.getLogger("dinamikutb")
 
@@ -50,10 +50,25 @@ def actualizar_estado_requisito(
     if requisito is None:
         return None
     anterior = requisito.estado
+    if anterior == nuevo_estado:
+        # Repetir el mismo valor no cambia nada ni genera historial (idempotencia, ADR-0011).
+        return requisito
+
     requisito.estado = nuevo_estado
+    # El historial va en la misma transacción que el cambio: quedan ambos o ninguno.
+    db.add(
+        RequisitoHistorial(
+            requisito_id=requisito.id,
+            estudiante_id=requisito.estudiante_id,
+            campo="estado",
+            valor_anterior=anterior,
+            valor_nuevo=nuevo_estado,
+            actor_id=actor_id,
+        )
+    )
     db.commit()
     db.refresh(requisito)
-    # Registra quién cambió el estado y sus valores anterior y nuevo.
+    # Telemetría operativa; el registro de auditoría es la tabla requisitos_historial.
     logger.info(
         "auditoria_cambio_estado",
         extra={"campos": {
@@ -64,3 +79,15 @@ def actualizar_estado_requisito(
         }},
     )
     return requisito
+
+
+def obtener_historial(db: Session, requisito_id: int):
+    """Cambios de un requisito en orden cronológico; None si el requisito no existe."""
+    if db.get(Requisito, requisito_id) is None:
+        return None
+    return (
+        db.query(RequisitoHistorial)
+        .filter(RequisitoHistorial.requisito_id == requisito_id)
+        .order_by(RequisitoHistorial.id)
+        .all()
+    )

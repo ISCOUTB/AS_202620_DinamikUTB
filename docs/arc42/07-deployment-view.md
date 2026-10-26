@@ -31,6 +31,7 @@ flowchart TD
 | Trabajos programados | GitHub Actions (`schedule:`) | — | Se ejecuta según el cron configurado | $0 | Pendiente de un ADR propio cuando A-03 tenga código (ver [09-architecture-decisions.md](./09-architecture-decisions.md)) |
 | Pipeline de CI | GitHub Actions | — | Se ejecuta en cada push/PR | $0 | Cubierto por `ci.yml` |
 | Análisis estático | SonarCloud | `https://sonarcloud.io/project/overview?id=ISCOUTB_AS_202620_DinamikUTB` | Sí | $0 | — |
+| Backend + base (laboratorio) | Servidor del laboratorio, Dokploy + Traefik; `api` y `db` (Postgres 16, volumen `pgdata`) | `https://dinamikutb.iscoutb.dev` (`/health`); comprobación externa pendiente, ver [ADR-0012](../adr/0012-despliegue-en-servidor-del-laboratorio.md) | Sí, sin *spin down* | $0, límite del equipo 512 MB | [ADR-0012](../adr/0012-despliegue-en-servidor-del-laboratorio.md) |
 
 El costo detallado, sus supuestos y el punto de ruptura de cada capa gratuita están en [docs/costos.md](../costos.md).
 

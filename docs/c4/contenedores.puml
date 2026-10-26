@@ -9,18 +9,33 @@ Person(coordinador, "Coordinador académico", "Consulta estudiantes de sus progr
 Person(administrador, "Administrador", "Administra usuarios, programas, requisitos y la configuración general del sistema.")
 
 System_Boundary(dinamik, "DinamikUTB") {
-    Container(frontend, "Frontend Flutter", "Flutter / Dart", "Interfaz de usuario multiplataforma. Desplegado como sitio estático en GitHub Pages (ADR-0006).")
-    Container(backend, "Backend API", "FastAPI / Python", "API principal del sistema. Implementa los módulos de usuarios, estudiantes, requisitos, programas y ayuda (hoy con código: estudiantes y requisitos). Desplegado en Render Free Web Service (ADR-0005).")
-    ContainerDb(database_local, "Base de datos (desarrollo local y CI)", "SQLite", "Persistencia en desarrollo local y en las pruebas. Se usa cuando DATABASE_URL no está definida (ADR-0003).")
-    ContainerDb(database_prod, "Base de datos (ambiente desplegado)", "PostgreSQL — Render Postgres Free", "Persistencia del ambiente desplegado. Se selecciona con DATABASE_URL (ADR-0007).")
+    Container(frontend, "Frontend Flutter", "Flutter / Dart", "Interfaz multiplataforma. Sitio estático en GitHub Pages (ADR-0006). Conserva en memoria el estado de sus pantallas (arc42 §8.9).")
+    ContainerDb(token_store, "Almacén de sesión del cliente", "flutter_secure_storage (almacenamiento del navegador)", "Guarda el token JWT de acceso (30 min). Copia local: el servidor revalida al usuario en cada petición.")
+
+    Container(backend, "Backend API (Render)", "FastAPI / Python", "Módulos con código: usuarios, estudiantes y requisitos. Render Free Web Service (ADR-0005). Limitador de login y métricas en memoria (volátiles).")
+    ContainerDb(database_local, "Base de datos (desarrollo local y CI)", "SQLite", "Tablas: usuarios, estudiantes, requisitos, requisitos_historial. Se usa cuando DATABASE_URL no está definida (ADR-0003).")
+    ContainerDb(database_prod, "Base de datos (Render)", "PostgreSQL — Render Postgres Free", "Mismas tablas. Expira a los 30 días (ADR-0007).")
+
+    Container(proxy, "Proxy inverso (laboratorio)", "Traefik, gestionado por Dokploy", "Enruta el tráfico público hacia la API del laboratorio; la API solo usa 'expose', sin puertos publicados.")
+    Container(backend_lab, "Backend API (laboratorio)", "FastAPI / Python en Docker", "Misma imagen (backend/Dockerfile), desplegada por Dokploy en cada push con deploy/compose.lab.yaml. Límite: 0,5 CPU y 192 MB. Ver ADR-0012.")
+    ContainerDb(database_lab, "Base de datos (laboratorio)", "PostgreSQL 16 en Docker, volumen pgdata", "Mismas tablas. Persiste en un volumen con nombre, sin expiración de 30 días. Límite: 0,5 CPU y 160 MB. Aquí vive el historial de cambios del despliegue del laboratorio (ADR-0011, ADR-0012).")
+
+    ContainerDb(logs, "Registro operativo", "Logs JSON por stdout (Render y Dokploy)", "Una línea por petición y por cambio de estado. Telemetría, no registro de auditoría (ADR-0011).")
 }
 
 Rel(estudiante, frontend, "Interactúa con la interfaz")
 Rel(coordinador, frontend, "Interactúa con la interfaz")
 Rel(administrador, frontend, "Interactúa con la interfaz")
-Rel(frontend, backend, "Consume la API", "HTTP/JSON (síncrono, ADR-0004)")
-Rel(backend, database_local, "Lee y escribe (local/CI)", "SQL, vía SQLAlchemy (ORM)")
-Rel(backend, database_prod, "Lee y escribe (desplegado)", "SQL, vía SQLAlchemy (ORM) + psycopg")
+Rel(frontend, token_store, "Lee y escribe el token", "API de almacenamiento del navegador")
+Rel(frontend, backend, "Consume la API (Render)", "HTTP/JSON (síncrono, ADR-0004)")
+Rel(frontend, proxy, "Consume la API (laboratorio), si API_BASE_URL apunta allí", "HTTPS/JSON")
+Rel(proxy, backend_lab, "Enruta", "HTTP, red interna")
+Rel(backend, database_local, "Lee y escribe (local/CI)", "SQL, vía SQLAlchemy")
+Rel(backend, database_prod, "Lee y escribe (Render)", "SQL, vía SQLAlchemy + psycopg")
+Rel(backend_lab, database_lab, "Lee y escribe (laboratorio)", "SQL, vía SQLAlchemy + psycopg")
+Rel(backend, logs, "Escribe", "stdout, JSON")
+Rel(backend_lab, logs, "Escribe", "stdout, JSON")
 
+footer Sin broker de mensajes: integración síncrona (ADR-0004), sin flujo por eventos (arc42 §8.10)
 SHOW_LEGEND()
 @enduml

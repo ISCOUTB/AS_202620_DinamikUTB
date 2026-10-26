@@ -23,7 +23,12 @@ services:
       APP_ENV: production
       SECRET_KEY: ${SECRET_KEY:?define SECRET_KEY}
       SEED_DEMO_PASSWORD: ${SEED_DEMO_PASSWORD:?define SEED_DEMO_PASSWORD}
-      # Otras variables de la API: agrégalas en Dokploy y referéncialas aquí.
+      SMTP_HOST: ${SMTP_HOST:-}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+      SMTP_FROM: ${SMTP_FROM:-}
+      PASSWORD_RESET_URL: ${PASSWORD_RESET_URL:-}
     expose:
       - "8000"
     depends_on:
@@ -39,7 +44,7 @@ services:
       resources:
         limits:
           cpus: "0.50"
-          memory: 192M
+          memory: 256M
 
   db:
     image: postgres:16-alpine
@@ -64,18 +69,27 @@ services:
           cpus: "0.50"
           memory: 160M
 
-  # Frontend web (opcional). Las apps móviles Flutter NO se despliegan aquí.
-  # web:
-  #   build:
-  #     context: ../frontend
-  #   restart: unless-stopped
-  #   expose:
-  #     - "80"                     # nginx; con Next.js standalone usa "3000"
-  #   deploy:
-  #     resources:
-  #       limits:
-  #         cpus: "0.25"
-  #         memory: 64M            # nginx estático; Next.js SSR necesita ~160M
+  web:
+    build:
+      context: ../frontend
+      args:
+        API_BASE_URL: ${API_BASE_URL:?define API_BASE_URL}
+    restart: unless-stopped
+    expose:
+      - "80"
+    depends_on:
+      api:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "--quiet", "http://127.0.0.1/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          cpus: "0.25"
+          memory: 64M
 
   # Broker de mensajes (semana 12). Elige UNO. Kafka no está permitido en el laboratorio.
   # broker:

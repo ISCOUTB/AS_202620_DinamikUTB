@@ -1,0 +1,14 @@
+.dart_tool
+build
+.packages
+.pub-cache
+.idea
+.vscode
+.git
+*.log
+test
+android
+ios
+linux
+macos
+windows

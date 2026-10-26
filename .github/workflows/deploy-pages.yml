@@ -1,8 +1,6 @@
 name: Deploy frontend (GitHub Pages)
 
 on:
-  push:
-    branches: ["master"]
   workflow_dispatch:
 
 permissions:
@@ -30,13 +28,27 @@ jobs:
 
       - run: flutter pub get --enforce-lockfile
 
+      - name: Validate API base URL
+        env:
+          API_BASE_URL: ${{ vars.API_BASE_URL }}
+        run: |
+          if [ -z "$API_BASE_URL" ]; then
+            echo "Configure the API_BASE_URL repository variable before deploying."
+            exit 1
+          fi
+
       - name: Build web
+        env:
+          API_BASE_URL: ${{ vars.API_BASE_URL }}
         run: >
           flutter build web --release
-          --base-href /AS_202620_DinamikUTB/
-          --dart-define=API_BASE_URL=${{ vars.API_BASE_URL || 'https://dinamikutb-api.onrender.com' }}
+          --base-href /
+          --dart-define=API_BASE_URL=$API_BASE_URL
 
-      # GitHub Pages usa 404.html para redirigir rutas de la aplicación.
+      - name: Configure custom domain
+        run: printf '%s\n' 'dinamikutb.iscoutb.dev' > build/web/CNAME
+
+      # GitHub Pages sirve este archivo para rutas no encontradas y la app muestra su 404.
       - run: cp build/web/index.html build/web/404.html
 
       - uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3

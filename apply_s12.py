@@ -4,11 +4,13 @@ from pathlib import Path
 
 
 def read(p):
-    return Path(p).read_text(encoding="utf-8", newline="")
+    with open(p, "r", encoding="utf-8", newline="") as f:
+        return f.read()
 
 
 def write(p, s):
-    Path(p).write_text(s, encoding="utf-8", newline="")
+    with open(p, "w", encoding="utf-8", newline="") as f:
+        f.write(s)
 
 
 def git(*a):

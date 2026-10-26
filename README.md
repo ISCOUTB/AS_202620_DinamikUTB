@@ -312,7 +312,8 @@ AS_202620_DinamikUTB/
 │       ├── test_estudiantes.py
 │       ├── test_contrato.py          # Prueba de contrato OpenAPI (S7)
 │       ├── test_health.py            # Health check y métricas (S8)
-│       └── test_idempotencia.py      # Idempotencia del PUT (S11)
+│       ├── test_idempotencia.py      # Idempotencia del PUT (S11)
+│       └── test_historial.py         # Historial transaccional de cambios (S12)
 ├── frontend/                         # Aplicación multiplataforma en Flutter
 │   ├── pubspec.yaml                  # Dependencias y configuración Flutter
 │   ├── lib/
@@ -332,7 +333,7 @@ AS_202620_DinamikUTB/
 │   └── android/, ios/, linux/        # Configuración por plataforma
 │       macos/, web/, windows/
 └── docs/                             # Documentación técnica
-    ├── adr/                          # Decisiones arquitectónicas (0001 a 0010)
+    ├── adr/                          # Decisiones arquitectónicas (0001 a 0011)
     ├── api/
     │   ├── openapi.json              # Contrato OpenAPI versionado (S7)
     │   └── evidencia-prueba-contrato.md
@@ -342,6 +343,7 @@ AS_202620_DinamikUTB/
     │   └── contenedores.puml         # Nivel 2: contenedores
     ├── aspectos.md                   # Trazabilidad de aspectos del sistema
     ├── evidencia-s9.md               # Evidencia de generación verificada con IA (S9)
+    ├── evidencia-s12.md              # Estrategia de datos y eventos (S12)
     ├── deuda-tecnica.md              # Deuda técnica reconocida y pospuesta
     ├── costos.md                     # Estimación de costo del entorno desplegado
     ├── fichadelproblema.md           # Descripción del problema

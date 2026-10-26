@@ -36,5 +36,6 @@ Rel(backend_lab, database_lab, "Lee y escribe (laboratorio)", "SQL, vía SQLAlch
 Rel(backend, logs, "Escribe", "stdout, JSON")
 Rel(backend_lab, logs, "Escribe", "stdout, JSON")
 
+footer Sin broker de mensajes: integración síncrona (ADR-0004), sin flujo por eventos (arc42 §8.10)
 SHOW_LEGEND()
 @enduml

@@ -15,7 +15,7 @@
 | A-05 | Protección y control de acceso a la información académica | RF-05 | [Q-02](arc42/10-quality-requirements.md#escenario-q-02--seguridad-y-aislamiento-de-la-información) | Pendiente | [ADR-0001](adr/0001-seleccion-monolito-modular.md), [ADR-0002](adr/0002-seleccion-tecnologia-backend-frontend.md) | Pendiente | Pendiente | Pendiente |
 | A-06 | Extensibilidad para múltiples programas académicos | RF-06 | [Q-06](arc42/10-quality-requirements.md#escenario-q-06--extensibilidad-para-múltiples-programas-académicos) | Pendiente | [ADR-0001](adr/0001-seleccion-monolito-modular.md), [ADR-0003](adr/0003-seleccion-motor-de-base-de-datos.md) | Pendiente | Pendiente | Pendiente |
 | A-07 | Gestión de solicitudes de estudiantes en el centro de ayuda | RF-07 | [Q-07](arc42/10-quality-requirements.md#escenario-q-07--gestión-de-solicitudes-del-centro-de-ayuda) | Pendiente | [ADR-0001](adr/0001-seleccion-monolito-modular.md) (módulo `ayuda/`) | Pendiente | Pendiente | Pendiente |
-| A-08 | Historial de cambios sobre la información académica | RF-08 | [Q-08](arc42/10-quality-requirements.md#escenario-q-08--historial-de-cambios-sobre-la-información-académica) | Pendiente | [ADR-0003](adr/0003-seleccion-motor-de-base-de-datos.md) (motor transaccional, **parcial**); mecanismo de almacenamiento del historial pendiente de un ADR adicional | Pendiente | Pendiente | Pendiente |
+| A-08 | Historial de cambios sobre la información académica | RF-08 | [Q-08](arc42/10-quality-requirements.md#escenario-q-08--historial-de-cambios-sobre-la-información-académica) | [C4 Nivel 2](c4/contenedores.puml) (la tabla de historial vive en los contenedores de base de datos) | [ADR-0003](adr/0003-seleccion-motor-de-base-de-datos.md) (motor transaccional), [ADR-0011](adr/0011-historial-de-cambios-transaccional.md) (mecanismo) | [models.py](../backend/app/requisitos/models.py) (`RequisitoHistorial`), [service.py](../backend/app/requisitos/service.py) | [test_historial.py](../backend/tests/test_historial.py) | [docs/evidencia-s12.md](evidencia-s12.md) — parcial: sin endpoint de consulta ni historial en `estudiantes/` |
 
 ---
 
@@ -143,7 +143,7 @@
 
 **Escenario relacionado:** [Q-08](arc42/10-quality-requirements.md#escenario-q-08--historial-de-cambios-sobre-la-información-académica)
 
-**Estado de la decisión:** [ADR-0003](adr/0003-seleccion-motor-de-base-de-datos.md) fija el motor transaccional (SQLite vía SQLAlchemy en desarrollo local; Postgres en el ambiente desplegado según [ADR-0007](adr/0007-persistencia-render-postgres.md)) sobre el que se apoyará este historial.
+**Estado de la decisión:** [ADR-0011](adr/0011-historial-de-cambios-transaccional.md) fija una tabla de historial append-only por módulo dueño, escrita en la misma transacción que el cambio. Implementada en `requisitos/` (cambios de estado). **Pendiente:** endpoint de consulta para coordinador/administrador, historial en `estudiantes/` y `programas/` cuando tengan escrituras, y una base persistente (la gratuita de Render expira, ver `arc42/11`).
 
 ---
 

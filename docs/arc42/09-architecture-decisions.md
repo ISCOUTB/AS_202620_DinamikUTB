@@ -27,10 +27,10 @@ Esta sección funciona como índice de las decisiones arquitectónicas (ADR) de 
 
 | Aspecto | Decisión de la que depende | Estado de la decisión |
 |---|---|---|
-| [A-01](../aspectos.md#a-01--seguimiento-del-cumplimiento-de-requisitos) — Seguimiento del cumplimiento de requisitos | ADR-0001, ADR-0002, ADR-0003, ADR-0004, ADR-0005, ADR-0006, ADR-0007, ADR-0008, ADR-0010 | Aceptado |
+| [A-01](../aspectos.md#a-01--seguimiento-del-cumplimiento-de-requisitos) — Seguimiento del cumplimiento de requisitos | ADR-0001, ADR-0002, ADR-0003, ADR-0004, ADR-0005, ADR-0006, ADR-0007, ADR-0008, ADR-0010, ADR-0012 | Aceptado |
 | [A-02](../aspectos.md#a-02--cálculo-correcto-del-estado-de-graduación) — Cálculo correcto del estado de graduación | ADR-0001, ADR-0002, ADR-0003, ADR-0004 | Aceptado |
 | [A-03](../aspectos.md#a-03--alertas-tempranas-de-requisitos-pendientes) — Alertas tempranas | Pendiente de código; ADR-0009 descarta explícitamente un componente generativo para su mecanismo | Pendiente |
-| [A-04](../aspectos.md#a-04--disponibilidad-del-sistema) — Disponibilidad del sistema | ADR-0001, ADR-0005, ADR-0007, ADR-0010 | Aceptado |
+| [A-04](../aspectos.md#a-04--disponibilidad-del-sistema) — Disponibilidad del sistema | ADR-0001, ADR-0005, ADR-0007, ADR-0010, ADR-0012 | Aceptado |
 | [A-05](../aspectos.md#a-05--protección-y-control-de-acceso-a-la-información-académica) — Protección y control de acceso | ADR-0001, ADR-0002 | Aceptado (la implementación de `usuarios/` sigue pendiente; ver el riesgo correspondiente en `11-risks-and-technical-debt.md`) |
 | [A-06](../aspectos.md#a-06--extensibilidad-para-múltiples-programas-académicos) — Extensibilidad para múltiples programas | ADR-0001, ADR-0003 | Aceptado |
 | [A-07](../aspectos.md#a-07--gestión-de-solicitudes-de-estudiantes-en-el-centro-de-ayuda) — Gestión de solicitudes del centro de ayuda | ADR-0001 (módulo ayuda/) | Pendiente 

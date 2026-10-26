@@ -14,7 +14,9 @@ deciders: Equipo de arquitectura DinamikUTB
 
 ## 1. Contexto y descripción del problema
 
-[ADR-0005](0005-plataforma-despliegue-backend.md) descartó el servidor del laboratorio (alternativa 3.1) porque su alcance desde fuera de la universidad no estaba verificado y dependía de la coordinación de laboratorios. Esa condición cambió: el equipo desplegó el sistema allí con Dokploy, descrito como código en `deploy/compose.lab.yaml`. Este ADR registra esa decisión **sin reescribir** el ADR-0005, que sigue siendo válido para el despliegue en Render.
+[ADR-0005](0005-plataforma-despliegue-backend.md) descartó el servidor del laboratorio (alternativa 3.1) porque su alcance desde fuera de la universidad no estaba verificado y dependía de la coordinación de laboratorios. Esa condición cambió: el equipo lo desplegó con Dokploy, descrito como código en `deploy/compose.lab.yaml`. Este ADR registra esa decisión **sin reescribir** el ADR-0005, que sigue siendo válido para el despliegue en Render.
+
+Hay además una fecha que fuerza la decisión: la base de Render gratuita se creó el 27/09/2026 y expira el 27/10/2026 ([ADR-0007](0007-persistencia-render-postgres.md), F7).
 
 ## 2. Factores de decisión
 
@@ -29,21 +31,21 @@ deciders: Equipo de arquitectura DinamikUTB
 ## 3. Alternativas consideradas
 
 ### 3.1 Solo Render (estado de ADR-0005 y ADR-0007)
-* **Desventajas:** *spin down* de ~1 min y base que expira a los 30 días.
+* **Desventajas:** *spin down* de ~1 min y base que expira a los 30 días (27/10/2026).
 
 ### 3.2 Solo el servidor del laboratorio
 * **Ventajas:** persistencia sin expiración, sin arranque en frío.
-* **Desventajas:** depende de la disponibilidad del laboratorio y de sus políticas; <completar: ¿es accesible desde fuera de la universidad? ¿cómo lo comprobaron?>.
+* **Desventajas:** depende de la disponibilidad del laboratorio y de sus políticas. La accesibilidad desde fuera de la universidad **se comprueba con `curl` desde una red externa** sobre `https://dinamikutb.iscoutb.dev/health`; el resultado vigente está en la sección 8. El dominio pasa por Cloudflare y Traefik, así que es público a nivel de proxy; lo que debe confirmarse es que la ruta de la API responda.
 
 ### 3.3 Ambos despliegues en paralelo
 * **Ventajas:** respaldo mutuo; la URL del backend se elige con `API_BASE_URL`.
-* **Desventajas:** dos bases independientes **sin replicación**: los datos y el historial no se comparten entre ellas.
+* **Desventajas:** dos bases independientes **sin replicación**: los datos y el historial no se comparten entre ellas. Obliga a recrear la base de Render antes del 27/10 y a mantener dos ambientes.
 
 ## 4. Decisión
 
-<elegir una y borrar las otras>
-- **Opción A (sistema principal en el laboratorio):** el backend y su Postgres del laboratorio son el ambiente de referencia; Render queda como respaldo o se retira.
-- **Opción B (en paralelo):** ambos se mantienen; el frontend apunta a <cuál> mediante `API_BASE_URL`.
+**Opción A: el sistema principal corre en el laboratorio.** El backend y su Postgres del laboratorio son el ambiente de referencia. Render queda como respaldo mientras dure su base (hasta el 27/10/2026), **no se recrea** y después se retira.
+
+El frontend de GitHub Pages cambia de backend con la variable de repositorio `API_BASE_URL` (`https://dinamikutb.iscoutb.dev`), y solo después de que `/health` responda 200 desde fuera de la universidad. Mientras eso no ocurra, Render sigue siendo la URL en uso.
 
 Servicios (`deploy/compose.lab.yaml`): `api` (FastAPI, 0,5 CPU, 192 MB) y `db` (`postgres:16-alpine`, volumen `pgdata`, 0,5 CPU, 160 MB), detrás de Traefik. Variables obligatorias: `SECRET_KEY`, `CORS_ORIGINS`, `SEED_DEMO_PASSWORD`, `POSTGRES_*`, definidas en Dokploy, nunca en el repositorio.
 
@@ -52,12 +54,13 @@ Servicios (`deploy/compose.lab.yaml`): `api` (FastAPI, 0,5 CPU, 192 MB) y `db` (
 ### Positivas
 * Historial y datos persisten sin la expiración de 30 días.
 * Sin arranque en frío: mejora la medida de Q-05.
+* Una sola base de referencia: no hay datos divergentes entre ambientes.
 
 ### Negativas
 * **Disponibilidad atada al laboratorio**, fuera del control del equipo.
-* **Sin copias de seguridad declaradas** del volumen `pgdata`: si se pierde, se pierde el historial ([ADR-0011](0011-historial-de-cambios-transaccional.md)). <completar: ¿hay respaldo?>
-* **Dos ambientes** (si opción B): datos divergentes entre Render y laboratorio.
+* **Sin copias de seguridad.** No hay `pg_dump` programado ni respaldo del volumen `pgdata`: si se pierde, se pierde el historial ([ADR-0011](0011-historial-de-cambios-transaccional.md)). Riesgo aceptado porque hoy solo hay datos de ejemplo; antes de cargar datos reales hay que definir un respaldo.
 * **Postgres con 160 MB** y `max_connections=30`: ajustado; el *pool* de la API (5+5) cabe, pero no hay margen para crecer.
+* **Transición:** entre el cambio de `API_BASE_URL` y la baja de Render, la base de Render queda sin uso y sin datos nuevos.
 
 ## 6. Relación con atributos de calidad
 
@@ -69,7 +72,7 @@ Servicios (`deploy/compose.lab.yaml`): `api` (FastAPI, 0,5 CPU, 192 MB) y `db` (
 
 ## 7. Estado de la decisión
 
-**Aceptado.** No reemplaza al ADR-0005 ni al ADR-0007: los complementa para este ambiente.
+**Aceptado.** No reemplaza al ADR-0005 ni al ADR-0007: los complementa para este ambiente. Se revisa si el laboratorio deja de ser accesible desde fuera de la universidad o si se define un respaldo del volumen.
 
 ## 8. Trazabilidad
 
@@ -79,5 +82,19 @@ Servicios (`deploy/compose.lab.yaml`): `api` (FastAPI, 0,5 CPU, 192 MB) y `db` (
 | **Escenario** | [Q-05](../arc42/10-quality-requirements.md#escenario-q-05--disponibilidad-del-sistema) |
 | **C4** | `backend_lab`, `database_lab`, `proxy` en `docs/c4/contenedores.puml` |
 | **Código** | `deploy/compose.lab.yaml`, `deploy/.env.example`, `backend/Dockerfile` |
-| **URL pública** | <completar> · comprobada el <fecha> |
-| **Commits** | <completar> |
+| **URL pública** | https://dinamikutb.iscoutb.dev (health: https://dinamikutb.iscoutb.dev/health) |
+| **Commits** | `8dad793` |
+
+### Comprobación del despliegue
+
+<!-- verif:start -->
+Comprobación del 26/10/2026 con `curl`, desde una red externa:
+
+| Petición | Resultado |
+| :--- | :--- |
+| `GET /health` | HTTP 200 (`{"status":"ok"}`) |
+| `GET /requisitos/T000123456` | HTTP 401 (credenciales inválidas o sesión expirada) |
+| `GET /docs` | HTTP 404 (esperado en producción, `docs_url=None`) |
+
+**Estado esperado:** Despliegue verificado. El dominio público dirige las peticiones a la API desplegada en el servidor del laboratorio.
+<!-- verif:end -->

@@ -279,6 +279,10 @@ AS_202620_DinamikUTB/
 ├── README.md                         # Documentación principal
 ├── start.bat                         # Inicio del backend y frontend (desarrollo local)
 ├── render.yaml                       # Infraestructura como código del backend (ADR-0005/0007)
+├── docker-compose.yml                # PostgreSQL local para desarrollo
+├── deploy/
+│   ├── compose.lab.yaml              # Despliegue en el laboratorio con Dokploy (ADR-0012)
+│   └── .env.example                  # Variables del laboratorio (sin secretos)
 ├── .coveragerc                       # Configuración de cobertura de pytest
 ├── sonar-project.properties          # Configuración del análisis de SonarCloud
 ├── .env.example                      # Plantilla de variables de entorno (sin secretos)
@@ -288,6 +292,7 @@ AS_202620_DinamikUTB/
 │       └── deploy-pages.yml          # Build y despliegue del frontend a GitHub Pages
 ├── backend/                          # API desarrollada con FastAPI
 │   ├── pyproject.toml                # Configuración del proyecto Python
+│   ├── Dockerfile                    # Imagen de la API (ADR-0012)
 │   ├── requirements.txt              # Dependencias del backend
 │   ├── scripts/
 │   │   └── export_openapi.py         # Exporta el contrato OpenAPI versionado
@@ -333,7 +338,7 @@ AS_202620_DinamikUTB/
 │   └── android/, ios/, linux/        # Configuración por plataforma
 │       macos/, web/, windows/
 └── docs/                             # Documentación técnica
-    ├── adr/                          # Decisiones arquitectónicas (0001 a 0011)
+    ├── adr/                          # Decisiones arquitectónicas (0001 a 0012)
     ├── api/
     │   ├── openapi.json              # Contrato OpenAPI versionado (S7)
     │   └── evidencia-prueba-contrato.md
@@ -367,6 +372,8 @@ La organización refleja la arquitectura de monolito modular: cada módulo agrup
 | Health check | https://dinamikutb-api.onrender.com/health → `200 {"status":"ok"}` |
 | Métricas (Q-05) | https://dinamikutb-api.onrender.com/metrics |
 | Análisis estático | https://sonarcloud.io/project/overview?id=ISCOUTB_AS_202620_DinamikUTB |
+| Backend (laboratorio, ADR-0012) | https://dinamikutb.iscoutb.dev (despliegue en curso al 25/10/2026) |
+| Health check (laboratorio) | https://dinamikutb.iscoutb.dev/health |
 
 **Comprobación desde fuera de la red de la universidad** (datos móviles):
 

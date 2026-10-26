@@ -171,5 +171,5 @@ Reglas:
 | **Elemento C4** | Contenedores de base de datos en `docs/c4/contenedores.puml` (la tabla vive en ellos) |
 | **Código** | `backend/app/requisitos/models.py` (`RequisitoHistorial`), `backend/app/requisitos/service.py` |
 | **Pruebas** | `backend/tests/test_historial.py` |
-| **Commits que lo implementan** | `<completar con el hash tras el commit>` |
+| **Commits que lo implementan** | `bd747bc` |
 | **Estrategia de datos** | [arc42 §8.8–8.10](../arc42/08-cross-cutting-concepts.md), [docs/evidencia-s12.md](../evidencia-s12.md) |

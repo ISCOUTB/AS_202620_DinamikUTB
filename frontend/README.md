@@ -33,9 +33,28 @@ flutter test
 
 ## Despliegue en el laboratorio (Dokploy)
 
-El código fuente permanece en GitHub. Dokploy obtiene el repositorio y construye
-el frontend y la API usando `deploy/compose.lab.yaml`; el sitio web se sirve
-desde el contenedor Nginx definido en `frontend/Dockerfile`.
+El código fuente permanece en GitHub. GitHub Actions construye la aplicación
+Flutter y publica la imagen estática de Nginx en GitHub Container Registry
+(GHCR). Dokploy descarga esa imagen y construye únicamente la API con
+`deploy/compose.lab.yaml`; así el servidor del laboratorio no necesita descargar
+ni compilar el SDK de Flutter.
+
+El workflow `.github/workflows/publish-frontend-image.yml` publica una imagen
+al hacer push a `master` cuando cambian archivos de `frontend/`. También puede
+ejecutarse manualmente desde **GitHub → Actions → Publish frontend image →
+Run workflow**.
+
+Antes del primer build, crea en **GitHub → Settings → Secrets and variables →
+Actions → Variables** la variable de repositorio:
+
+```text
+API_BASE_URL=https://api.dinamikutb.iscoutb.dev
+```
+
+La URL se incorpora al frontend compilado. Después de la primera publicación,
+configura el paquete `as_202620_dinamikutb-frontend` de GHCR como **público**,
+para que Dokploy pueda descargarlo sin credenciales. Si debe ser privado,
+configura en Dokploy las credenciales de GHCR con permiso de solo lectura.
 
 No necesitas crear registros DNS si el laboratorio ya asignó estos dominios al
 proyecto. En Dokploy, vincula cada dominio al servicio y puerto interno
@@ -58,15 +77,15 @@ Activa HTTPS en Dokploy para ambos dominios. No publiques el servicio `db`.
 En las variables de entorno de Dokploy, configura como mínimo:
 
 ```env
-API_BASE_URL=https://api.dinamikutb.iscoutb.dev
+FRONTEND_IMAGE=ghcr.io/iscoutb/as_202620_dinamikutb-frontend:latest
 CORS_ORIGINS=https://dinamikutb.iscoutb.dev
 ```
 
 Completa también las variables obligatorias de PostgreSQL y seguridad siguiendo
 `deploy/.env.example`. Genera valores seguros para contraseñas y `SECRET_KEY`;
-guárdalos en Dokploy, no en el repositorio. `API_BASE_URL` no es un secreto: se
-incorpora al frontend durante la construcción de la imagen. Si cambia, vuelve a
-construir y desplegar `web`.
+guárdalos en Dokploy, no en el repositorio. `API_BASE_URL` se configura como
+variable de GitHub Actions, no en Dokploy. `FRONTEND_IMAGE` indica qué imagen
+descarga Dokploy.
 
 ### Pasos en Dokploy
 
@@ -77,8 +96,15 @@ construir y desplegar `web`.
    como referencia y sin copiar sus valores vacíos para los secretos.
 4. Asigna `dinamikutb.iscoutb.dev` al servicio `web` en el puerto `80` y
    `api.dinamikutb.iscoutb.dev` al servicio `api` en el puerto `8000`.
-5. Habilita HTTPS y despliega. Si el laboratorio ofrece despliegue automático,
-   actívalo para que los cambios publicados en GitHub se reconstruyan.
+5. Habilita HTTPS y despliega. Dokploy construirá la API y descargará el
+   frontend publicado en GHCR.
+6. Para cada actualización del frontend, espera a que el workflow
+   **Publish frontend image** termine correctamente en GitHub Actions y luego
+   pulsa **Redeploy** en Dokploy para descargar `latest`. No actives el
+   despliegue automático de Dokploy por cada push: podría descargar la imagen
+   anterior mientras GitHub Actions aún la está construyendo.
+7. Si modificas `API_BASE_URL` en las variables de GitHub, ejecuta también
+   manualmente **Publish frontend image** y después redepliega en Dokploy.
 
 ### Verificación
 

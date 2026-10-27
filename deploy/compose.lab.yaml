@@ -1,8 +1,7 @@
 # deploy/compose.lab.yaml — infraestructura como código del sistema en el servidor del laboratorio.
 #
-# Dokploy lo despliega en cada push a la rama principal con:
-#   docker compose -p <app> --env-file deploy/.env -f deploy/compose.lab.yaml up -d --build
-# Las rutas relativas (build.context) se resuelven desde deploy/, por eso se usa "../".
+# GitHub Actions construye y publica la imagen del frontend en GHCR. Dokploy
+# construye la API y descarga la imagen estática del frontend.
 #
 # Reglas del laboratorio (docs/politicas-uso.md):
 #   - Sin "ports:": Traefik enruta el tráfico público; usa "expose".
@@ -70,10 +69,8 @@ services:
           memory: 160M
 
   web:
-    build:
-      context: ../frontend
-      args:
-        API_BASE_URL: ${API_BASE_URL:?define API_BASE_URL}
+    image: ${FRONTEND_IMAGE:?define FRONTEND_IMAGE}
+    pull_policy: always
     restart: unless-stopped
     expose:
       - "80"

@@ -1,14 +1,21 @@
 ---
 id: ADR-0006
 title: Selección de plataforma de despliegue del frontend
-status: Aceptado
+status: Superseded
 date: 2026-09-26
 deciders: Equipo de arquitectura DinamikUTB
 ---
 
 # ADR-0006: Selección de plataforma de despliegue del frontend
 
-![Status: Aceptado](https://img.shields.io/badge/Status-Accepted-brightgreen?style=flat-square)
+> **Vigencia:** esta decisión histórica de publicar el frontend en GitHub Pages
+> fue reemplazada el 2026-10-27. El frontend ahora se construye desde el código
+> alojado en GitHub y se despliega junto con la API en el laboratorio mediante
+> Dokploy y `deploy/compose.lab.yaml`. Consulta
+> [frontend/README.md](../../frontend/README.md) para los dominios y pasos
+> actuales. GitHub sigue siendo el repositorio del código fuente.
+
+![Status: Superseded](https://img.shields.io/badge/Status-Superseded-lightgrey?style=flat-square)
 ![Date: 2026--09--26](https://img.shields.io/badge/Date-2026--09--26-blue?style=flat-square)
 ![Scope: Deployment](https://img.shields.io/badge/Scope-Deployment-orange?style=flat-square)
 

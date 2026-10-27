@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../core/network/api_exception.dart';
-import '../core/responsive/breakpoints.dart';
-import '../core/theme/app_colors.dart';
-import '../core/validators.dart';
+import 'package:frontend/core/network/api_exception.dart';
+import 'package:frontend/core/responsive/breakpoints.dart';
+import 'package:frontend/core/theme/app_colors.dart';
+import 'package:frontend/core/validators.dart';
+import 'account_screen.dart';
 import 'auth_controller.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -20,6 +21,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _password = TextEditingController();
   bool _ocultar = true;
   bool _cargando = false;
+  bool _recordarme = false;
   String? _error;
 
   @override
@@ -37,7 +39,11 @@ class _LoginScreenState extends State<LoginScreen> {
       _error = null;
     });
     try {
-      await auth.iniciarSesion(_email.text, _password.text);
+      await auth.iniciarSesion(
+        _email.text,
+        _password.text,
+        recordar: _recordarme,
+      );
     } on ApiException catch (e) {
       if (mounted) setState(() => _error = e.message);
     } finally {
@@ -106,11 +112,19 @@ class _LoginScreenState extends State<LoginScreen> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text('Iniciar sesión',
-                    style: tema.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700)),
+                Text(
+                  'Bienvenido a DinamikUTB',
+                  style: tema.textTheme.headlineSmall?.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
                 const SizedBox(height: 4),
-                Text('Accede con tu cuenta institucional.',
-                    style: tema.textTheme.bodyMedium?.copyWith(color: AppColors.textMuted)),
+                Text(
+                  'Gestiona tu progreso académico y alcanza tus metas',
+                  style: tema.textTheme.bodyMedium?.copyWith(
+                    color: AppColors.textMuted,
+                  ),
+                ),
                 const SizedBox(height: 20),
                 if (_error != null) ...[
                   _Aviso(mensaje: _error!),
@@ -121,7 +135,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   enabled: !_cargando,
                   keyboardType: TextInputType.emailAddress,
                   textInputAction: TextInputAction.next,
-                  autofillHints: const [AutofillHints.username, AutofillHints.email],
+                  autofillHints: const [
+                    AutofillHints.username,
+                    AutofillHints.email,
+                  ],
                   autocorrect: false,
                   maxLength: 254,
                   validator: Validators.email,
@@ -149,20 +166,76 @@ class _LoginScreenState extends State<LoginScreen> {
                     prefixIcon: const Icon(Icons.lock_outline),
                     counterText: '',
                     suffixIcon: IconButton(
-                      tooltip: _ocultar ? 'Mostrar contraseña' : 'Ocultar contraseña',
-                      icon: Icon(_ocultar ? Icons.visibility_outlined : Icons.visibility_off_outlined),
+                      tooltip: _ocultar
+                          ? 'Mostrar contraseña'
+                          : 'Ocultar contraseña',
+                      icon: Icon(
+                        _ocultar
+                            ? Icons.visibility_outlined
+                            : Icons.visibility_off_outlined,
+                      ),
                       onPressed: () => setState(() => _ocultar = !_ocultar),
                     ),
                   ),
                 ),
-                const SizedBox(height: 24),
+                Wrap(
+                  alignment: WrapAlignment.spaceBetween,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: [
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Checkbox(
+                          visualDensity: VisualDensity.compact,
+                          materialTapTargetSize:
+                              MaterialTapTargetSize.shrinkWrap,
+                          value: _recordarme,
+                          onChanged: _cargando
+                              ? null
+                              : (value) => setState(
+                                  () => _recordarme = value ?? false,
+                                ),
+                        ),
+                        const Text(
+                          'Recordarme',
+                          style: TextStyle(fontSize: 11),
+                        ),
+                      ],
+                    ),
+                    TextButton(
+                      onPressed: _cargando
+                          ? null
+                          : () => Navigator.push(
+                              context,
+                              MaterialPageRoute<void>(
+                                builder: (_) => const AccountScreen(
+                                  page: AccountPage.recuperar,
+                                ),
+                              ),
+                            ),
+                      style: TextButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(horizontal: 4),
+                        minimumSize: Size.zero,
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      ),
+                      child: const Text(
+                        '¿Olvidaste tu contraseña?',
+                        style: TextStyle(fontSize: 11),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
                 FilledButton(
                   onPressed: _cargando ? null : _enviar,
                   child: _cargando
                       ? const SizedBox(
                           height: 20,
                           width: 20,
-                          child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Colors.white,
+                          ),
                         )
                       : const Text('Iniciar sesión'),
                 ),
@@ -219,14 +292,20 @@ class _Marca extends StatelessWidget {
             color: oscura ? Colors.white12 : AppColors.navy,
             borderRadius: BorderRadius.circular(18),
           ),
-          child: const Icon(Icons.school_rounded, color: AppColors.gold, size: 36),
+          child: const Icon(
+            Icons.school_rounded,
+            color: AppColors.gold,
+            size: 36,
+          ),
         ),
         const SizedBox(height: 12),
-        Text('DinamikUTB',
-            style: Theme.of(context)
-                .textTheme
-                .headlineSmall
-                ?.copyWith(color: color, fontWeight: FontWeight.w800)),
+        Text(
+          'DinamikUTB',
+          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+            color: color,
+            fontWeight: FontWeight.w800,
+          ),
+        ),
       ],
     );
   }
@@ -258,8 +337,13 @@ class _PanelMarca extends StatelessWidget {
         children: [
           const _Marca(oscura: true),
           const SizedBox(height: 32),
-          Text('Tu camino a la graduación, siempre a la vista.',
-              style: tema.headlineMedium?.copyWith(color: Colors.white, fontWeight: FontWeight.w700)),
+          Text(
+            'Tu camino a la graduación, siempre a la vista.',
+            style: tema.headlineMedium?.copyWith(
+              color: Colors.white,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
           const SizedBox(height: 24),
           for (final (icono, texto) in puntos)
             Padding(
@@ -268,7 +352,12 @@ class _PanelMarca extends StatelessWidget {
                 children: [
                   Icon(icono, color: AppColors.cyanLight),
                   const SizedBox(width: 12),
-                  Expanded(child: Text(texto, style: tema.bodyLarge?.copyWith(color: Colors.white70))),
+                  Expanded(
+                    child: Text(
+                      texto,
+                      style: tema.bodyLarge?.copyWith(color: Colors.white70),
+                    ),
+                  ),
                 ],
               ),
             ),

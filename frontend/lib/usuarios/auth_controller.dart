@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 
-import '../core/network/api_exception.dart';
-import '../core/storage/token_storage.dart';
+import 'package:frontend/core/network/api_exception.dart';
+import 'package:frontend/core/storage/token_storage.dart';
 import 'auth_service.dart';
 import 'models.dart';
 
@@ -32,9 +32,13 @@ class AuthController extends ChangeNotifier {
   }
 
   /// Lanza [ApiException] si el inicio de sesión falla.
-  Future<void> iniciarSesion(String email, String password) async {
+  Future<void> iniciarSesion(
+    String email,
+    String password, {
+    bool recordar = false,
+  }) async {
     final token = await _service.login(email, password);
-    await _storage.write(token);
+    await _storage.write(token, persist: recordar);
     try {
       _cambiar(AuthStatus.autenticado, await _service.perfil());
     } on ApiException {
@@ -46,6 +50,35 @@ class AuthController extends ChangeNotifier {
   Future<void> cerrarSesion() async {
     await _storage.clear();
     _cambiar(AuthStatus.noAutenticado, null);
+  }
+
+  Future<void> solicitarRecuperacion(String email) =>
+      _service.solicitarRecuperacion(email);
+
+  Future<void> restablecerPassword(String token, String password) =>
+      _service.restablecerPassword(token, password);
+
+  Future<void> actualizarPerfil({
+    required String nombre,
+    required String programa,
+    required int semestre,
+  }) async {
+    _cambiar(
+      AuthStatus.autenticado,
+      await _service.actualizarPerfil(
+        nombre: nombre,
+        programa: programa,
+        semestre: semestre,
+      ),
+    );
+  }
+
+  Future<void> cambiarPassword({
+    required String actual,
+    required String nueva,
+  }) async {
+    await _service.cambiarPassword(actual: actual, nueva: nueva);
+    await cerrarSesion();
   }
 
   void _cambiar(AuthStatus nuevo, Usuario? usuarioNuevo) {

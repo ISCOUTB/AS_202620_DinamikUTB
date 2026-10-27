@@ -2,7 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
-import '../responsive/breakpoints.dart';
+import 'package:frontend/core/responsive/breakpoints.dart';
 
 /// Lista desplazable centrada con márgenes adaptativos.
 class PageList extends StatelessWidget {

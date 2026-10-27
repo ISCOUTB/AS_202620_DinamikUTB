@@ -4,12 +4,14 @@ class Estudiante {
     required this.codigoEstudiantil,
     required this.nombre,
     required this.programa,
+    this.semestre,
   });
 
   final int id;
   final String codigoEstudiantil;
   final String nombre;
   final String programa;
+  final int? semestre;
 
   factory Estudiante.fromJson(Map<String, dynamic> json) {
     return Estudiante(
@@ -17,6 +19,7 @@ class Estudiante {
       codigoEstudiantil: json['codigo_estudiantil'] as String,
       nombre: json['nombre'] as String,
       programa: json['programa'] as String,
+      semestre: json['semestre'] as int?,
     );
   }
 }

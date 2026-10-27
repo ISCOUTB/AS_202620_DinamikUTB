@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../core/theme/app_colors.dart';
-import '../core/widgets/async_view.dart';
-import '../core/widgets/page_list.dart';
-import '../core/widgets/responsive_grid.dart';
+import 'package:frontend/core/theme/app_colors.dart';
+import 'package:frontend/core/widgets/async_view.dart';
+import 'package:frontend/core/widgets/page_list.dart';
+import 'package:frontend/core/widgets/responsive_grid.dart';
 import 'models.dart';
 import 'requisito_card.dart';
 import 'requisitos_service.dart';

@@ -9,46 +9,63 @@ abstract final class AppTheme {
       onPrimary: Colors.white,
       secondary: AppColors.cyan,
       onSecondary: Colors.white,
-      tertiary: AppColors.gold,
-      surface: AppColors.surface,
+      tertiary: AppColors.success,
+      surface: Colors.white,
       onSurface: AppColors.navy,
       error: AppColors.danger,
     );
-    final radio8 = BorderRadius.circular(8);
+    final radio12 = BorderRadius.circular(12);
+    final borde = OutlineInputBorder(
+      borderRadius: radio12,
+      borderSide: const BorderSide(color: AppColors.border),
+    );
 
     return ThemeData(
       useMaterial3: true,
       colorScheme: scheme,
-      scaffoldBackgroundColor: AppColors.surface,
+      scaffoldBackgroundColor: AppColors.background,
       textTheme: ThemeData.light().textTheme.apply(
-            bodyColor: AppColors.navy,
-            displayColor: AppColors.navy,
-          ),
+        bodyColor: AppColors.navy,
+        displayColor: AppColors.navy,
+      ),
       appBarTheme: const AppBarTheme(
-        backgroundColor: AppColors.navy,
-        foregroundColor: Colors.white,
+        backgroundColor: Colors.white,
+        foregroundColor: AppColors.navy,
         elevation: 0,
+        centerTitle: false,
       ),
       cardTheme: CardThemeData(
         color: Colors.white,
         elevation: 0,
         margin: EdgeInsets.zero,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(16),
           side: const BorderSide(color: AppColors.border),
         ),
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: Colors.white,
-        border: OutlineInputBorder(borderRadius: radio8),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: radio8,
-          borderSide: const BorderSide(color: Color(0x330C203F)),
+        fillColor: AppColors.background,
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 14,
         ),
+        border: borde,
+        enabledBorder: borde,
         focusedBorder: OutlineInputBorder(
-          borderRadius: radio8,
-          borderSide: const BorderSide(color: AppColors.cyan, width: 2),
+          borderRadius: radio12,
+          borderSide: const BorderSide(color: AppColors.cyan, width: 1.5),
+        ),
+        hintStyle: const TextStyle(color: Color(0xFF94A3B8), fontSize: 13),
+      ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppColors.cyan,
+          foregroundColor: Colors.white,
+          elevation: 1,
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+          shape: RoundedRectangleBorder(borderRadius: radio12),
+          textStyle: const TextStyle(fontWeight: FontWeight.w600),
         ),
       ),
       filledButtonTheme: FilledButtonThemeData(
@@ -56,14 +73,17 @@ abstract final class AppTheme {
           backgroundColor: AppColors.cyan,
           foregroundColor: Colors.white,
           minimumSize: const Size(48, 48),
-          shape: RoundedRectangleBorder(borderRadius: radio8),
+          shape: RoundedRectangleBorder(borderRadius: radio12),
         ),
       ),
-      progressIndicatorTheme: const ProgressIndicatorThemeData(color: AppColors.cyan),
+      progressIndicatorTheme: const ProgressIndicatorThemeData(
+        color: AppColors.cyan,
+      ),
       navigationBarTheme: const NavigationBarThemeData(
         backgroundColor: Colors.white,
         indicatorColor: AppColors.surfaceLow,
       ),
+      dividerTheme: const DividerThemeData(color: AppColors.border),
     );
   }
 }

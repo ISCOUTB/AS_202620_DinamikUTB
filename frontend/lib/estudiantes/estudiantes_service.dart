@@ -1,4 +1,4 @@
-import '../core/network/api_client.dart';
+import 'package:frontend/core/network/api_client.dart';
 import 'models.dart';
 
 class EstudiantesService {

@@ -1,5 +1,5 @@
-import '../core/network/api_client.dart';
-import '../core/network/api_exception.dart';
+import 'package:frontend/core/network/api_client.dart';
+import 'package:frontend/core/network/api_exception.dart';
 import 'models.dart';
 
 class RequisitosService {

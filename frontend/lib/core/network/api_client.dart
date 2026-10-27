@@ -1,9 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:http/http.dart' as http;
 
-import '../storage/token_storage.dart';
+import 'package:frontend/core/storage/token_storage.dart';
 import 'api_exception.dart';
 
 /// Centraliza las peticiones, la autenticación, el timeout y los errores HTTP.
@@ -31,6 +32,29 @@ class ApiClient {
 
   Future<dynamic> put(String path, {Object? body}) =>
       _enviar('PUT', path, body: body);
+
+  Future<dynamic> delete(String path) => _enviar('DELETE', path);
+
+  Future<Uint8List> getBytes(String path) async {
+    final request = http.Request('GET', Uri.parse('$baseUrl$path'))
+      ..headers['Accept'] = 'application/octet-stream';
+    final token = await _tokens.read();
+    if (token != null) request.headers['Authorization'] = 'Bearer $token';
+
+    final http.Response response;
+    try {
+      final streamed = await _client.send(request).timeout(timeout);
+      response = await http.Response.fromStream(streamed);
+    } on TimeoutException {
+      throw const ApiException('El servidor tardó demasiado en responder.');
+    } on http.ClientException {
+      throw const ApiException('No se pudo conectar con el servidor.');
+    }
+    if (response.statusCode < 200 || response.statusCode >= 300) {
+      _procesar(response, true);
+    }
+    return response.bodyBytes;
+  }
 
   Future<dynamic> _enviar(
     String metodo,

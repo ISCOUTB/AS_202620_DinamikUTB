@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../core/theme/app_colors.dart';
+import 'package:frontend/core/theme/app_colors.dart';
 import 'models.dart';
 
 class RequirementStatusChip extends StatelessWidget {

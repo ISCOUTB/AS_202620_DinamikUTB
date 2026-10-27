@@ -1,12 +1,26 @@
 /// Validaciones de entrada para los formularios de la aplicación.
 abstract final class Validators {
-  static final _email = RegExp(r'^[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}$');
+  static final _email = RegExp(
+    r'^[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}$',
+  );
   static final _codigo = RegExp(r'^[A-Za-z0-9]{4,20}$');
 
   static String? email(String? valor) {
     final texto = (valor ?? '').trim();
     if (texto.isEmpty) return 'Ingresa tu correo';
-    if (texto.length > 254 || !_email.hasMatch(texto)) return 'Correo no válido';
+    if (texto.length > 254 || !_email.hasMatch(texto)) {
+      return 'Correo no válido';
+    }
+    return null;
+  }
+
+  static String? correoInstitucional(String? valor) {
+    final correo = (valor ?? '').trim();
+    final error = email(correo);
+    if (error != null) return error;
+    if (!correo.toLowerCase().endsWith('@utb.edu.co')) {
+      return 'Usa tu correo institucional @utb.edu.co.';
+    }
     return null;
   }
 
@@ -21,7 +35,9 @@ abstract final class Validators {
   static String? codigoEstudiantil(String? valor) {
     final texto = (valor ?? '').trim();
     if (texto.isEmpty) return 'Ingresa el código estudiantil';
-    if (!_codigo.hasMatch(texto)) return 'Solo letras y números (4 a 20 caracteres)';
+    if (!_codigo.hasMatch(texto)) {
+      return 'Solo letras y números (4 a 20 caracteres)';
+    }
     return null;
   }
 }

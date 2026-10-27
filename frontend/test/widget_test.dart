@@ -33,14 +33,18 @@ class ClienteFalso extends http.BaseClient {
 }
 
 ApiClient _api(String respuesta, [int status = 200]) => ApiClient(
-      baseUrl: 'http://127.0.0.1:8000',
-      tokenStorage: InMemoryTokenStorage(),
-      client: ClienteFalso(respuesta, status),
-    );
+  baseUrl: 'http://127.0.0.1:8000',
+  tokenStorage: InMemoryTokenStorage(),
+  client: ClienteFalso(respuesta, status),
+);
 
 AuthController _auth() {
   final almacen = InMemoryTokenStorage();
-  final api = ApiClient(baseUrl: 'http://127.0.0.1:8000', tokenStorage: almacen, client: ClienteFalso('{}', 401));
+  final api = ApiClient(
+    baseUrl: 'http://127.0.0.1:8000',
+    tokenStorage: almacen,
+    client: ClienteFalso('{}', 401),
+  );
   return AuthController(service: AuthService(api), storage: almacen);
 }
 
@@ -51,12 +55,17 @@ void main() {
       {'id': 2, 'nombre': 'Práctica profesional', 'estado': 'cumplido'},
     ]);
 
-    await tester.pumpWidget(MaterialApp(
-      theme: AppTheme.light,
-      home: Scaffold(
-        body: RequisitosScreen(service: RequisitosService(_api(json)), estudianteId: 'T000123456'),
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: AppTheme.light,
+        home: Scaffold(
+          body: RequisitosScreen(
+            service: RequisitosService(_api(json)),
+            estudianteId: 'T000123456',
+          ),
+        ),
       ),
-    ));
+    );
 
     expect(find.byType(CircularProgressIndicator), findsOneWidget);
     await tester.pumpAndSettle();
@@ -68,47 +77,66 @@ void main() {
   });
 
   testWidgets('Muestra un mensaje cuando no hay requisitos', (tester) async {
-    await tester.pumpWidget(MaterialApp(
-      theme: AppTheme.light,
-      home: Scaffold(
-        body: RequisitosScreen(service: RequisitosService(_api('[]')), estudianteId: 'T999999999'),
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: AppTheme.light,
+        home: Scaffold(
+          body: RequisitosScreen(
+            service: RequisitosService(_api('[]')),
+            estudianteId: 'T999999999',
+          ),
+        ),
       ),
-    ));
+    );
     await tester.pumpAndSettle();
 
     expect(find.text('No tienes requisitos registrados.'), findsOneWidget);
   });
 
-  testWidgets('Muestra error con opción de reintentar si el servidor falla', (tester) async {
-    await tester.pumpWidget(MaterialApp(
-      theme: AppTheme.light,
-      home: Scaffold(
-        body: RequisitosScreen(service: RequisitosService(_api('{}', 500)), estudianteId: 'T000123456'),
+  testWidgets('Muestra error con opción de reintentar si el servidor falla', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: AppTheme.light,
+        home: Scaffold(
+          body: RequisitosScreen(
+            service: RequisitosService(_api('{}', 500)),
+            estudianteId: 'T000123456',
+          ),
+        ),
       ),
-    ));
+    );
     await tester.pumpAndSettle();
 
     expect(find.text('Reintentar'), findsOneWidget);
   });
 
   testWidgets('El login valida los campos antes de enviar', (tester) async {
-    await tester.pumpWidget(ChangeNotifierProvider<AuthController>.value(
-      value: _auth(),
-      child: MaterialApp(theme: AppTheme.light, home: const LoginScreen()),
-    ));
+    await tester.pumpWidget(
+      ChangeNotifierProvider<AuthController>.value(
+        value: _auth(),
+        child: MaterialApp(theme: AppTheme.light, home: const LoginScreen()),
+      ),
+    );
 
     await tester.tap(find.widgetWithText(FilledButton, 'Iniciar sesión'));
     await tester.pump();
 
     expect(find.text('Ingresa tu correo'), findsOneWidget);
     expect(find.text('Ingresa tu contraseña'), findsOneWidget);
+    expect(find.text('Regístrate'), findsNothing);
   });
 
-  testWidgets('El campo de contraseña permite escribir números', (tester) async {
-    await tester.pumpWidget(ChangeNotifierProvider<AuthController>.value(
-      value: _auth(),
-      child: MaterialApp(theme: AppTheme.light, home: const LoginScreen()),
-    ));
+  testWidgets('El campo de contraseña permite escribir números', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      ChangeNotifierProvider<AuthController>.value(
+        value: _auth(),
+        child: MaterialApp(theme: AppTheme.light, home: const LoginScreen()),
+      ),
+    );
 
     final passwordField = tester.widget<TextField>(
       find.descendant(
@@ -126,40 +154,46 @@ void main() {
     expect(find.text('Ingresa tu contraseña'), findsNothing);
   });
 
-  testWidgets('El shell es adaptativo: barra inferior en móvil, riel en escritorio', (tester) async {
-    addTearDown(tester.view.reset);
-    final destinos = [
-      for (final nombre in ['Uno', 'Dos'])
-        ShellDestination(
-          label: nombre,
-          icon: Icons.circle_outlined,
-          selectedIcon: Icons.circle,
-          builder: (_) => Text('contenido $nombre'),
+  testWidgets(
+    'El shell es adaptativo: barra inferior en móvil, riel en escritorio',
+    (tester) async {
+      addTearDown(tester.view.reset);
+      final destinos = [
+        for (final nombre in ['Uno', 'Dos'])
+          ShellDestination(
+            label: nombre,
+            icon: Icons.circle_outlined,
+            selectedIcon: Icons.circle,
+            builder: (_) => Text('contenido $nombre'),
+          ),
+      ];
+      Widget app() => ChangeNotifierProvider<AuthController>.value(
+        value: _auth(),
+        child: MaterialApp(
+          theme: AppTheme.light,
+          home: AppShell(destinations: destinos),
         ),
-    ];
-    Widget app() => ChangeNotifierProvider<AuthController>.value(
-          value: _auth(),
-          child: MaterialApp(theme: AppTheme.light, home: AppShell(destinations: destinos)),
-        );
+      );
 
-    tester.view.devicePixelRatio = 1;
-    tester.view.physicalSize = const Size(400, 800);
-    await tester.pumpWidget(app());
-    expect(find.byType(NavigationBar), findsOneWidget);
-    expect(find.byType(NavigationRail), findsNothing);
+      tester.view.devicePixelRatio = 1;
+      tester.view.physicalSize = const Size(400, 800);
+      await tester.pumpWidget(app());
+      expect(find.byType(NavigationBar), findsOneWidget);
+      expect(find.byType(NavigationRail), findsNothing);
 
-    tester.view.physicalSize = const Size(1280, 800);
-    await tester.pumpWidget(app());
-    await tester.pump();
-    expect(find.byType(NavigationRail), findsOneWidget);
-    expect(find.byType(NavigationBar), findsNothing);
-  });
+      tester.view.physicalSize = const Size(1280, 800);
+      await tester.pumpWidget(app());
+      await tester.pump();
+      expect(find.byType(NavigationRail), findsOneWidget);
+      expect(find.byType(NavigationBar), findsNothing);
+    },
+  );
 
   test('Validators rechaza entradas con caracteres de inyección', () {
     expect(Validators.codigoEstudiantil("T1' OR '1'='1"), isNotNull);
     expect(Validators.codigoEstudiantil('T000123456'), isNull);
     expect(Validators.email('no-es-correo'), isNotNull);
-    expect(Validators.email('ana@utb.edu.co'), isNull);
+    expect(Validators.email('ana@dinamikutb.dev'), isNull);
     expect(Validators.password('corta'), isNotNull);
   });
 }

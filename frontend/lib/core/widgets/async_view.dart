@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../network/api_exception.dart';
+import 'package:frontend/core/network/api_exception.dart';
 
 /// Presenta los estados de carga, error y datos de una consulta asíncrona.
 /// El [builder] debe devolver un widget desplazable para permitir actualizar deslizando.

@@ -1,6 +1,134 @@
 {
   "components": {
     "schemas": {
+      "AdminUserCreateIn": {
+        "properties": {
+          "email": {
+            "title": "Email",
+            "type": "string"
+          },
+          "password": {
+            "title": "Password",
+            "type": "string"
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ],
+        "title": "AdminUserCreateIn",
+        "type": "object"
+      },
+      "CursoMallaOut": {
+        "properties": {
+          "codigo": {
+            "title": "Codigo",
+            "type": "string"
+          },
+          "creditos": {
+            "minimum": 0.0,
+            "title": "Creditos",
+            "type": "integer"
+          },
+          "nivel": {
+            "maximum": 20.0,
+            "minimum": 1.0,
+            "title": "Nivel",
+            "type": "integer"
+          },
+          "nombre": {
+            "title": "Nombre",
+            "type": "string"
+          },
+          "prerequisitos": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Prerequisitos",
+            "type": "array"
+          }
+        },
+        "required": [
+          "codigo",
+          "nombre",
+          "nivel",
+          "creditos",
+          "prerequisitos"
+        ],
+        "title": "CursoMallaOut",
+        "type": "object"
+      },
+      "EstudianteAdminUpdateIn": {
+        "properties": {
+          "activo": {
+            "default": true,
+            "title": "Activo",
+            "type": "boolean"
+          },
+          "codigo_estudiantil": {
+            "title": "Codigo Estudiantil",
+            "type": "string"
+          },
+          "email": {
+            "title": "Email",
+            "type": "string"
+          },
+          "nombre": {
+            "title": "Nombre",
+            "type": "string"
+          },
+          "programa": {
+            "title": "Programa",
+            "type": "string"
+          },
+          "semestre": {
+            "default": 1,
+            "title": "Semestre",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "nombre",
+          "email",
+          "codigo_estudiantil",
+          "programa"
+        ],
+        "title": "EstudianteAdminUpdateIn",
+        "type": "object"
+      },
+      "EstudianteCreateIn": {
+        "properties": {
+          "codigo_estudiantil": {
+            "title": "Codigo Estudiantil",
+            "type": "string"
+          },
+          "email": {
+            "title": "Email",
+            "type": "string"
+          },
+          "nombre": {
+            "title": "Nombre",
+            "type": "string"
+          },
+          "programa": {
+            "title": "Programa",
+            "type": "string"
+          },
+          "semestre": {
+            "default": 1,
+            "title": "Semestre",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "nombre",
+          "email",
+          "codigo_estudiantil",
+          "programa"
+        ],
+        "title": "EstudianteCreateIn",
+        "type": "object"
+      },
       "EstudianteOut": {
         "properties": {
           "codigo_estudiantil": {
@@ -64,6 +192,273 @@
           "password"
         ],
         "title": "LoginIn",
+        "type": "object"
+      },
+      "MallaOut": {
+        "properties": {
+          "creditos_totales": {
+            "title": "Creditos Totales",
+            "type": "integer"
+          },
+          "cursos": {
+            "items": {
+              "$ref": "#/components/schemas/CursoMallaOut"
+            },
+            "title": "Cursos",
+            "type": "array"
+          },
+          "plan": {
+            "title": "Plan",
+            "type": "string"
+          },
+          "programa": {
+            "title": "Programa",
+            "type": "string"
+          }
+        },
+        "required": [
+          "programa",
+          "plan",
+          "creditos_totales",
+          "cursos"
+        ],
+        "title": "MallaOut",
+        "type": "object"
+      },
+      "PasswordChangeIn": {
+        "properties": {
+          "current_password": {
+            "title": "Current Password",
+            "type": "string"
+          },
+          "new_password": {
+            "title": "New Password",
+            "type": "string"
+          }
+        },
+        "required": [
+          "current_password",
+          "new_password"
+        ],
+        "title": "PasswordChangeIn",
+        "type": "object"
+      },
+      "PasswordRecoverIn": {
+        "properties": {
+          "email": {
+            "title": "Email",
+            "type": "string"
+          }
+        },
+        "required": [
+          "email"
+        ],
+        "title": "PasswordRecoverIn",
+        "type": "object"
+      },
+      "PasswordResetIn": {
+        "properties": {
+          "new_password": {
+            "title": "New Password",
+            "type": "string"
+          },
+          "token": {
+            "title": "Token",
+            "type": "string"
+          }
+        },
+        "required": [
+          "token",
+          "new_password"
+        ],
+        "title": "PasswordResetIn",
+        "type": "object"
+      },
+      "PerfilUpdateIn": {
+        "properties": {
+          "nombre": {
+            "title": "Nombre",
+            "type": "string"
+          },
+          "programa": {
+            "title": "Programa",
+            "type": "string"
+          },
+          "semestre": {
+            "title": "Semestre",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "nombre",
+          "programa",
+          "semestre"
+        ],
+        "title": "PerfilUpdateIn",
+        "type": "object"
+      },
+      "ProgramaIn": {
+        "additionalProperties": false,
+        "properties": {
+          "codigo": {
+            "maxLength": 20,
+            "minLength": 2,
+            "title": "Codigo",
+            "type": "string"
+          },
+          "duracion_semestres": {
+            "maximum": 20.0,
+            "minimum": 1.0,
+            "title": "Duracion Semestres",
+            "type": "integer"
+          },
+          "facultad": {
+            "maxLength": 120,
+            "minLength": 2,
+            "title": "Facultad",
+            "type": "string"
+          },
+          "nombre": {
+            "maxLength": 120,
+            "minLength": 3,
+            "title": "Nombre",
+            "type": "string"
+          }
+        },
+        "required": [
+          "codigo",
+          "nombre",
+          "facultad",
+          "duracion_semestres"
+        ],
+        "title": "ProgramaIn",
+        "type": "object"
+      },
+      "ProgramaOut": {
+        "additionalProperties": false,
+        "properties": {
+          "activo": {
+            "title": "Activo",
+            "type": "boolean"
+          },
+          "codigo": {
+            "maxLength": 20,
+            "minLength": 2,
+            "title": "Codigo",
+            "type": "string"
+          },
+          "duracion_semestres": {
+            "maximum": 20.0,
+            "minimum": 1.0,
+            "title": "Duracion Semestres",
+            "type": "integer"
+          },
+          "estudiantes_asociados": {
+            "default": 0,
+            "title": "Estudiantes Asociados",
+            "type": "integer"
+          },
+          "facultad": {
+            "maxLength": 120,
+            "minLength": 2,
+            "title": "Facultad",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "nombre": {
+            "maxLength": 120,
+            "minLength": 3,
+            "title": "Nombre",
+            "type": "string"
+          }
+        },
+        "required": [
+          "codigo",
+          "nombre",
+          "facultad",
+          "duracion_semestres",
+          "id",
+          "activo"
+        ],
+        "title": "ProgramaOut",
+        "type": "object"
+      },
+      "ProgramaUpdate": {
+        "additionalProperties": false,
+        "properties": {
+          "activo": {
+            "title": "Activo",
+            "type": "boolean"
+          },
+          "codigo": {
+            "maxLength": 20,
+            "minLength": 2,
+            "title": "Codigo",
+            "type": "string"
+          },
+          "duracion_semestres": {
+            "maximum": 20.0,
+            "minimum": 1.0,
+            "title": "Duracion Semestres",
+            "type": "integer"
+          },
+          "facultad": {
+            "maxLength": 120,
+            "minLength": 2,
+            "title": "Facultad",
+            "type": "string"
+          },
+          "nombre": {
+            "maxLength": 120,
+            "minLength": 3,
+            "title": "Nombre",
+            "type": "string"
+          }
+        },
+        "required": [
+          "codigo",
+          "nombre",
+          "facultad",
+          "duracion_semestres",
+          "activo"
+        ],
+        "title": "ProgramaUpdate",
+        "type": "object"
+      },
+      "RequisitoCatalogoIn": {
+        "properties": {
+          "descripcion": {
+            "default": "",
+            "title": "Descripcion",
+            "type": "string"
+          },
+          "nombre": {
+            "title": "Nombre",
+            "type": "string"
+          },
+          "obligatorio": {
+            "default": true,
+            "title": "Obligatorio",
+            "type": "boolean"
+          },
+          "programa_id": {
+            "title": "Programa Id",
+            "type": "integer"
+          },
+          "semestre_recomendado": {
+            "default": 1,
+            "title": "Semestre Recomendado",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "programa_id",
+          "nombre"
+        ],
+        "title": "RequisitoCatalogoIn",
         "type": "object"
       },
       "RequisitoEstadoUpdate": {
@@ -165,7 +560,7 @@
         "type": "object"
       },
       "UsuarioOut": {
-        "description": "Datos mínimos del usuario autenticado. Nunca incluye hash, intentos ni bloqueos.",
+        "description": "Datos mínimos del usuario autenticado.",
         "properties": {
           "codigo_estudiantil": {
             "anyOf": [
@@ -186,9 +581,42 @@
             "title": "Id",
             "type": "integer"
           },
+          "nombre": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Nombre"
+          },
+          "programa": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Programa"
+          },
           "rol": {
             "title": "Rol",
             "type": "string"
+          },
+          "semestre": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Semestre"
           }
         },
         "required": [
@@ -270,6 +698,194 @@
         "summary": "Root"
       }
     },
+    "/auth/administradores": {
+      "get": {
+        "operationId": "listar_administradores_auth_administradores_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Listar Administradores",
+        "tags": [
+          "auth"
+        ]
+      },
+      "post": {
+        "operationId": "crear_administrador_auth_administradores_post",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "rol",
+            "required": false,
+            "schema": {
+              "default": "coordinador",
+              "title": "Rol",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AdminUserCreateIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Crear Administrador",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/auth/administradores/{user_id}": {
+      "put": {
+        "operationId": "actualizar_administrador_auth_administradores__user_id__put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "user_id",
+            "required": true,
+            "schema": {
+              "title": "User Id",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "activo",
+            "required": false,
+            "schema": {
+              "default": true,
+              "title": "Activo",
+              "type": "boolean"
+            }
+          },
+          {
+            "in": "query",
+            "name": "rol",
+            "required": false,
+            "schema": {
+              "default": "estudiante",
+              "title": "Rol",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Actualizar Administrador",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/auth/administradores/{user_id}/recuperacion": {
+      "post": {
+        "operationId": "emitir_recuperacion_auth_administradores__user_id__recuperacion_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "user_id",
+            "required": true,
+            "schema": {
+              "title": "User Id",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Emitir Recuperacion",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
     "/auth/login": {
       "post": {
         "operationId": "login_auth_login_post",
@@ -346,6 +962,358 @@
         ]
       }
     },
+    "/auth/mi-perfil": {
+      "put": {
+        "operationId": "actualizar_mi_perfil_auth_mi_perfil_put",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PerfilUpdateIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Actualizar Mi Perfil",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/auth/password": {
+      "put": {
+        "operationId": "cambiar_password_auth_password_put",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PasswordChangeIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Cambiar Password",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/auth/password/recuperar": {
+      "post": {
+        "operationId": "recuperar_password_auth_password_recuperar_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PasswordRecoverIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Recuperar Password",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/auth/password/restablecer": {
+      "post": {
+        "operationId": "restablecer_password_auth_password_restablecer_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PasswordResetIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Restablecer Password",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/estudiantes": {
+      "get": {
+        "operationId": "listar_estudiantes_estudiantes_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "buscar",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Buscar"
+            }
+          },
+          {
+            "in": "query",
+            "name": "programa",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Programa"
+            }
+          },
+          {
+            "in": "query",
+            "name": "semestre",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Semestre"
+            }
+          },
+          {
+            "in": "query",
+            "name": "activo",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Activo"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limite",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "title": "Limite",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "desplazamiento",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "title": "Desplazamiento",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Listar Estudiantes",
+        "tags": [
+          "estudiantes"
+        ]
+      },
+      "post": {
+        "operationId": "crear_estudiante_estudiantes_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EstudianteCreateIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Crear Estudiante",
+        "tags": [
+          "estudiantes"
+        ]
+      }
+    },
+    "/estudiantes/estadisticas/resumen": {
+      "get": {
+        "operationId": "estadisticas_resumen_estudiantes_estadisticas_resumen_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Estadisticas Resumen",
+        "tags": [
+          "estudiantes"
+        ]
+      }
+    },
     "/estudiantes/{codigo_estudiantil}": {
       "get": {
         "operationId": "consultar_estudiante_estudiantes__codigo_estudiantil__get",
@@ -402,6 +1370,383 @@
         "summary": "Consultar Estudiante",
         "tags": [
           "estudiantes"
+        ]
+      }
+    },
+    "/estudiantes/{codigo}/administrativo": {
+      "put": {
+        "operationId": "actualizar_estudiante_admin_estudiantes__codigo__administrativo_put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "codigo",
+            "required": true,
+            "schema": {
+              "title": "Codigo",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EstudianteAdminUpdateIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Actualizar Estudiante Admin",
+        "tags": [
+          "estudiantes"
+        ]
+      }
+    },
+    "/malla": {
+      "get": {
+        "operationId": "consultar_malla_malla_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "programa",
+            "required": true,
+            "schema": {
+              "maxLength": 120,
+              "minLength": 3,
+              "title": "Programa",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MallaOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Consultar Malla",
+        "tags": [
+          "currículo"
+        ]
+      }
+    },
+    "/programas": {
+      "get": {
+        "operationId": "listar_programas_programas_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ProgramaOut"
+                  },
+                  "title": "Response Listar Programas Programas Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Listar Programas",
+        "tags": [
+          "programas"
+        ]
+      },
+      "post": {
+        "operationId": "crear_programa_programas_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProgramaIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProgramaOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "409": {
+            "description": "El código o nombre de programa ya existe."
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Crear Programa",
+        "tags": [
+          "programas"
+        ]
+      }
+    },
+    "/programas/administracion": {
+      "get": {
+        "operationId": "listar_programas_admin_programas_administracion_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ProgramaOut"
+                  },
+                  "title": "Response Listar Programas Admin Programas Administracion Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Listar Programas Admin",
+        "tags": [
+          "programas"
+        ]
+      }
+    },
+    "/programas/{programa_id}": {
+      "put": {
+        "operationId": "actualizar_programa_programas__programa_id__put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "programa_id",
+            "required": true,
+            "schema": {
+              "title": "Programa Id",
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProgramaUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProgramaOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "description": "Programa no encontrado."
+          },
+          "409": {
+            "description": "El código o nombre de programa ya existe."
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Actualizar Programa",
+        "tags": [
+          "programas"
+        ]
+      }
+    },
+    "/reportes/estudiantes.csv": {
+      "get": {
+        "operationId": "exportar_estudiantes_reportes_estudiantes_csv_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Exportar Estudiantes",
+        "tags": [
+          "reportes"
+        ]
+      }
+    },
+    "/requisitos/catalogo": {
+      "get": {
+        "operationId": "listar_catalogo_requisitos_catalogo_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "programa_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Programa Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Listar Catalogo",
+        "tags": [
+          "requisitos"
+        ]
+      },
+      "post": {
+        "operationId": "crear_requisito_catalogo_requisitos_catalogo_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RequisitoCatalogoIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Crear Requisito Catalogo",
+        "tags": [
+          "requisitos"
         ]
       }
     },

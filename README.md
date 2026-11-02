@@ -1,3 +1,4 @@
+
 # DinamikUTB
 
 > Sistema digital para el seguimiento de requisitos necesarios para la graduación universitaria.
@@ -20,7 +21,6 @@
 - [Resiliencia y modos de fallo](#resiliencia-y-modos-de-fallo)
 - [Equipo](#equipo)
 
-
 ---
 
 # Descripción
@@ -29,7 +29,7 @@
 
 La solución busca centralizar información que actualmente puede encontrarse distribuida entre reglamentos académicos, plataformas institucionales y otras fuentes de consulta.
 
-El sistema permitirá que el estudiante pueda conocer de manera clara:
+El sistema permite que el estudiante pueda conocer de manera clara:
 
 - Qué requisitos ya ha completado.
 - Qué requisitos tiene pendientes.
@@ -37,7 +37,7 @@ El sistema permitirá que el estudiante pueda conocer de manera clara:
 - Qué requisitos requieren atención.
 - Qué tan cerca se encuentra de completar su proceso de graduación.
 
-Además, la plataforma podrá generar alertas tempranas cuando identifique requisitos importantes que aún no hayan sido completados.
+Además, la plataforma permite a coordinadores y administradores gestionar catálogos de requisitos, programas académicos y supervisar el avance curricular.
 
 ---
 
@@ -45,13 +45,11 @@ Además, la plataforma podrá generar alertas tempranas cuando identifique requi
 
 En la Universidad Tecnológica de Bolívar, los estudiantes deben cumplir diferentes condiciones académicas y administrativas, entre ellas:
 
-- Créditos académicos.
-- Nivel de idioma extranjero.
-- Prácticas o pasantías.
-- Opción de grado.
-- Electivas específicas.
-- Otros requisitos establecidos por el programa académico.
-
+- Créditos académicos de la malla curricular.
+- Nivel de idioma extranjero (ej. Inglés B2).
+- Prácticas o pasantías profesionales.
+- Opción de grado (proyecto de ingeniería, seminario, etc.).
+- Cursos electivos y complementarios del programa.
 
 ---
 
@@ -84,8 +82,8 @@ Desarrollar una plataforma digital que permita a los estudiantes consultar y rea
 - Permitir consultar el progreso hacia la graduación.
 - Identificar requisitos pendientes.
 - Generar alertas tempranas sobre requisitos críticos.
-- Facilitar la planificación académica del estudiante mediante una visualización dinámica.
-- Permitir una futura ampliación hacia diferentes programas académicos.
+- Facilitar la planificación académica del estudiante mediante la visualización de la malla curricular.
+- Permitir la gestión de múltiples programas académicos.
 
 ---
 
@@ -95,344 +93,221 @@ El sistema está orientado a tres roles principales, alineados con los stakehold
 
 ### Estudiantes
 
-Usuarios principales de la plataforma. Consultan su progreso hacia la graduación: requisitos cumplidos, pendientes y porcentaje de avance.
+Usuarios principales de la plataforma. Consultan su progreso hacia la graduación: requisitos cumplidos, pendientes, malla curricular y porcentaje de avance.
 
 ### Coordinadores Académicos
 
-Supervisan y gestionan la información de los estudiantes de su programa. Consultan estudiantes de su carrera, gestionan requisitos y atienden solicitudes relacionadas con inconsistencias.
+Supervisan y gestionan la información de los estudiantes de su programa. Consultan estudiantes de su carrera, gestionan requisitos y atienden solicitudes de inconsistencias.
 
 ### Administradores
 
-Gestionan el funcionamiento general del sistema: usuarios, programas académicos, requisitos y permisos.
-
-> **Estado de implementación:** el corte vertical actual implementa la consulta y actualización
-> de requisitos, y la consulta de estudiantes, para el rol Estudiante. Los flujos de Coordinador
-> Académico y Administrador forman parte del alcance del sistema definido en la sección de
-> Stakeholders y en el C4, y se implementarán en semanas posteriores.
+Gestionan el funcionamiento general del sistema: cuentas de usuario, programas académicos, requisitos de catálogo, seguimiento institucional y exportación de reportes.
 
 ---
 
 # Solución Propuesta
 
-**DinamikUTB** proporcionará una vista centralizada del proceso de graduación del estudiante.
+**DinamikUTB** proporciona una vista centralizada del proceso de graduación del estudiante.
 
-El sistema analizará los requisitos establecidos para el programa académico y permitirá determinar cuáles han sido cumplidos y cuáles permanecen pendientes.
-
-La plataforma también podrá generar alertas cuando detecte que un requisito importante aún no ha sido completado y el estudiante se encuentre cerca de finalizar su programa académico.
+El sistema analiza los requisitos establecidos para el programa académico y permite determinar cuáles han sido cumplidos, cuáles permanecen en proceso y cuáles están pendientes. La solución se estructura bajo una arquitectura de **monolito modular** en el backend y una interfaz cliente multiplataforma construida en Flutter.
 
 ---
 
 # Funcionalidades
 
-## Seguimiento de requisitos
+## Seguimiento de requisitos y avance
 
-El estudiante podrá consultar de manera centralizada el estado de los diferentes requisitos necesarios para completar su proceso de graduación.
+- Consulta centralizada de requisitos de grado por estudiante.
+- Cálculo automático del porcentaje de avance hacia la graduación.
+- Matriz de requisitos clasificada por estado (cumplido, en proceso, pendiente).
+- Consulta interactiva de la malla curricular por niveles y verificación de prerrequisitos.
 
-La plataforma permitirá identificar:
+## Gestión administrativa y académica
 
-- Requisitos cumplidos.
-- Requisitos pendientes.
-- Requisitos que se encuentran en proceso.
-- Progreso general hacia la graduación.
+- Directorio de estudiantes con filtros por programa, semestre y estado.
+- Administración del catálogo de programas académicos y requisitos institucionales.
+- Módulo de seguimiento académico y detección de estudiantes próximos a egreso.
+- Exportación segura de reportes en formato CSV con protección contra inyecciones de fórmulas.
+- Restablecimiento seguro de contraseñas mediante tokens atómicos de un solo uso.
 
-Además, la información podrá organizarse de acuerdo con el programa académico del estudiante, facilitando la consulta y planificación de los requisitos que aún debe completar.
+---
 
---- 
 # Atributos de calidad
- 
-##  Disponibilidad vs. Consistencia
 
-**DinamikUTB** debe mantener un equilibrio entre la disponibilidad del sistema y la consistencia de la información.
+## Disponibilidad vs. Consistencia
 
 - **Disponibilidad:** El sistema debe permanecer accesible incluso ante fallas parciales o alta demanda.
 - **Consistencia:** La información sobre los requisitos de grado debe ser correcta y coherente.
-- **Prioridad:** Consistencia > Disponibilidad
+- **Prioridad:** Consistencia > Disponibilidad (Q-01).
 
-Se prioriza la consistencia porque mostrar información incorrecta podría afectar las decisiones del estudiante sobre su graduación.
+Se prioriza la consistencia porque mostrar información incorrecta podría inducir a decisiones académicas erróneas.
 
-##  Usabilidad  vs. Funcionalidad
+## Usabilidad vs. Funcionalidad
 
-Se plantea implementar una interfaz organizada por módulos, donde las funcionalidades se agrupen según la necesidad de los usuarios. 
-
-- **Usabilidad:** El sistema debe ser sencillo, intuitivo y permitir que los estudiantes encuentren rápidamente la información que necesitan.
-- **Funcionalidades:** El sistema debe ofrecer las herramientas pasa consultar:
-   - **Mi progreso:** Cursos aprobados, pendientes y porcentaje de avance.
-   - **Requisitos de grado:** Requisitos cumplidos y pendientes.
-   - **Plan Académico:** Cursos requeridos de la carrera, recomendados o electivos.
-   - **Perfil:** Información del estudiante.
-- **Prioridad:** Usabilidad > Funcionalidad
-
-De esta manera, **DinamikUTB** pueda priorizar la usabilidad sin saturar una pantalla de demasiadas funcionalidades y no afectar la experiencia del estudiante.
+- **Usabilidad:** La interfaz debe ser sencilla, intuitiva y responsive, adaptándose fluidamente de dispositivos móviles a pantallas de escritorio.
+- **Funcionalidades:** El sistema ofrece herramientas agrupadas modularmente (Mi progreso, Malla curricular, Requisitos de grado, Panel de gestión y Perfil).
+- **Prioridad:** Usabilidad > Funcionalidad (Q-03).
 
 ---
 
+# Ejecución del Proyecto
 
-# **Ejecución del Proyecto**
-
-**DinamikUTB** utiliza una arquitectura de **monolito modular**, con un backend desarrollado en **FastAPI** y un frontend desarrollado en **Flutter**. La persistencia se maneja con **SQLAlchemy**: **SQLite** en desarrollo local y **PostgreSQL** en el ambiente desplegado (ver [ADR-0007](docs/adr/0007-persistencia-render-postgres.md)).
-
+**DinamikUTB** utiliza una arquitectura de **monolito modular**, con un backend desarrollado en **FastAPI** y un frontend desarrollado en **Flutter**. La persistencia se maneja con **SQLAlchemy**: **SQLite** en desarrollo local/CI y **PostgreSQL** en el entorno desplegado del laboratorio ([ADR-0003](docs/adr/0003-seleccion-motor-de-base-de-datos.md), [ADR-0012](docs/adr/0012-despliegue-en-servidor-del-laboratorio.md)).
 
 ## Requisitos Previos
 
-Antes de ejecutar el proyecto en local, se debe contar con las siguientes herramientas instaladas:
-
 * **Python 3.12** o superior
-* **Flutter SDK**
+* **Flutter SDK** (canal stable)
 * **Git**
 * **Google Chrome**
 
+## Inicio Rápido (Local)
 
-## Inicio Rápido
+Desde la raíz del repositorio, ejecuta el script de arranque:
 
-Desde la raíz del repositorio, ejecuta el siguiente script:
+```cmd
+start.bat
+```
 
-> [!IMPORTANT]
-> **Comando de inicio:**
-> 
-> ```cmd
-> start.bat
-> ```
+Este comando automatiza el entorno de desarrollo:
 
-Este comando automatiza el entorno de desarrollo ejecutando las siguientes acciones:
+Prepara el entorno virtual del backend e instala dependencias.
 
-1. Levanta el servicio del backend en **FastAPI**.
-2. Inicia el cliente del frontend en **Flutter**.
-3. Despliega la interfaz de usuario directamente en **Google Chrome**.
+Inicia el servidor de API en FastAPI (http://127.0.0.1:8000).
 
----
+Carga los datos de ejemplo idempotentemente si la base está vacía.
+
+Compila y ejecuta el cliente Flutter directamente en Google Chrome.
 
 ## Datos de ejemplo
 
-La base de datos se crea vacía la primera vez que se levanta el backend. Para cargar datos de ejemplo y poder ver la pantalla de requisitos con contenido:
+Para sembrar datos iniciales de prueba (estudiante de ejemplo y usuarios demo):
 
 ```bash
 cd backend
 python -m app.seed
 ```
 
-El script no duplica datos si ya existen registros en la base.
-
----
-
 ## Componentes del Sistema
 
 | Componente | Tecnología | Propósito |
-| :--- | :--- | :--- |
-| **Backend** | FastAPI | API base del backend |
-| **Persistencia** | SQLAlchemy (SQLite local / PostgreSQL desplegado) | Almacenamiento de la información académica |
-| **Frontend** | Flutter | Interfaz de usuario multiplataforma |
-| **Pruebas Backend** | Pytest | Validación automatizada del backend |
-| **Pruebas Frontend** | Flutter Test | Pruebas unitarias y de componentes de la UI |
-| **Integración continua** | GitHub Actions | Pruebas, análisis estático y despliegue automatizados en cada push |
-| **Análisis estático** | SonarCloud | Calidad de código y Quality Gate en el pipeline |
-| **Despliegue backend** | Render (Free Web Service + Postgres) | Backend y base de datos accesibles fuera de la universidad |
-| **Despliegue frontend** | GitHub Pages | Frontend estático accesible fuera de la universidad |
-
----
+|---|---|---|
+| Backend API | FastAPI / Python 3.12 | API REST modular, autenticación JWT, rate limit y auditoría |
+| Persistencia | SQLAlchemy (SQLite local / PostgreSQL en producción) | Almacenamiento relacional de información académica y auditoría |
+| Frontend | Flutter Web / Multiplataforma | Interfaz gráfica adaptativa para estudiantes y administración |
+| Pruebas Backend | Pytest / Pytest-cov | Suite de pruebas unitarias, de contrato y de integración |
+| Pruebas Frontend | Flutter Test | Pruebas de componentes, validadores y responsividad |
+| Integración continua | GitHub Actions | Validación automática de pruebas, análisis y empaquetado Docker |
+| Análisis estático | SonarCloud | Calidad de código, mantenibilidad y Quality Gate |
+| Despliegue principal | Dokploy / Docker en servidor de laboratorio | Contenedores web (Nginx), API (FastAPI) y base de datos con volumen persistente |
 
 ## URLs de Desarrollo
 
 Una vez iniciado el sistema en local:
 
-- **API:** `http://127.0.0.1:8000`
-- **Documentación de la API:** `http://127.0.0.1:8000/docs`
-- **Frontend:** se abre automáticamente en Google Chrome.
-
-Para el entorno desplegado, ver [Entorno desplegado](#entorno-desplegado).
-
----
+- API: http://127.0.0.1:8000
+- Documentación OpenAPI: http://127.0.0.1:8000/docs
+- Health check: http://127.0.0.1:8000/health
+- Métricas: http://127.0.0.1:8000/metrics
 
 ## Ejecución de pruebas y análisis
 
-Para ejecutar las pruebas del backend:
-
-```bash
-cd backend
-pytest
-```
-
-Para ejecutar las pruebas del backend con reporte de cobertura (el que usa el pipeline):
+Pruebas del backend con reporte de cobertura:
 
 ```bash
 cd backend
 python -m pytest --cov --cov-report=xml
 ```
 
-Para ejecutar las pruebas del frontend:
-
-```bash
-cd frontend
-flutter test
-```
-
-Para verificar el código Flutter:
+Pruebas del frontend y análisis estático:
 
 ```bash
 cd frontend
 flutter analyze
+flutter test
 ```
 
-# Estructura del proyecto
+## Estructura del proyecto
 
 ```text
 AS_202620_DinamikUTB/
 ├── README.md                         # Documentación principal
-├── start.bat                         # Inicio del backend y frontend (desarrollo local)
-├── render.yaml                       # Infraestructura como código del backend (ADR-0005/0007)
-├── docker-compose.yml                # PostgreSQL local para desarrollo
+├── start.bat                         # Inicio automatizado para desarrollo local
+├── docker-compose.yml                # Docker compose para desarrollo local con Postgres
 ├── deploy/
-│   ├── compose.lab.yaml              # Despliegue en el laboratorio con Dokploy (ADR-0012)
-│   └── .env.example                  # Variables del laboratorio (sin secretos)
-├── .coveragerc                       # Configuración de cobertura de pytest
+│   ├── compose.lab.yaml              # Despliegue en Dokploy en el laboratorio (ADR-0012)
+│   └── .env.example                  # Variables de entorno de despliegue
+├── .coveragerc                       # Configuración de cobertura de pruebas
 ├── sonar-project.properties          # Configuración del análisis de SonarCloud
-├── .env.example                      # Plantilla de variables de entorno (sin secretos)
 ├── .github/
 │   └── workflows/
-│       ├── ci.yml                    # Pruebas, análisis estático y Quality Gate
-│       └── deploy-pages.yml          # Build y despliegue del frontend a GitHub Pages
-├── backend/                          # API desarrollada con FastAPI
-│   ├── pyproject.toml                # Configuración del proyecto Python
-│   ├── Dockerfile                    # Imagen de la API (ADR-0012)
-│   ├── requirements.txt              # Dependencias del backend
-│   ├── scripts/
-│   │   └── export_openapi.py         # Exporta el contrato OpenAPI versionado
+│       ├── ci.yml                    # Pipeline de CI (Pytest, Flutter test, SonarCloud)
+│       └── publish-frontend-image.yml # Publicación de imagen Docker en GHCR
+├── backend/                          # API en FastAPI
 │   ├── app/
-│   │   ├── main.py                   # Punto de entrada: API, health check, métricas, logging
-│   │   ├── seed.py                   # Datos de ejemplo para desarrollo y demo
-│   │   ├── core/
-│   │   │   ├── database.py           # Conexión SQLAlchemy (SQLite local / Postgres desplegado)
-│   │   │   ├── logging_config.py     # Logs estructurados en JSON
-│   │   │   └── metrics.py            # Métricas ligadas a Q-05
-│   │   ├── usuarios/                 # Gestión de usuarios (pendiente de código)
-│   │   ├── estudiantes/              # Consulta de información y avance académico
-│   │   ├── requisitos/               # Consulta y actualización de requisitos de grado
-│   │   │   ├── models.py             # Modelo Requisito (SQLAlchemy)
-│   │   │   ├── schemas.py            # Esquemas de entrada/salida (Pydantic)
-│   │   │   ├── service.py            # Lógica de consulta y actualización
-│   │   │   └── router.py             # GET /requisitos/{id}, PUT /requisitos/{id}/estado
-│   │   ├── programas/                # Programas y planes de estudio (pendiente de código)
-│   │   └── ayuda/                    # Soporte y centro de ayuda (pendiente de código)
-│   └── tests/                        # Pruebas automatizadas del backend
-│       ├── test_requisitos.py        # 20 casos (Q-01)
-│       ├── test_estudiantes.py
-│       ├── test_contrato.py          # Prueba de contrato OpenAPI (S7)
-│       ├── test_health.py            # Health check y métricas (S8)
-│       ├── test_idempotencia.py      # Idempotencia del PUT (S11)
-│       └── test_historial.py         # Historial transaccional de cambios (S12)
-├── frontend/                         # Aplicación multiplataforma en Flutter
-│   ├── pubspec.yaml                  # Dependencias y configuración Flutter
+│   │   ├── main.py                   # Configuración de la API, middleware y seguridad
+│   │   ├── seed.py                   # Población inicial de datos demo
+│   │   ├── core/                     # Base de datos, config, seguridad, métricas y rate limit
+│   │   ├── usuarios/                 # Autenticación, JWT, roles RBAC y recuperación
+│   │   ├── estudiantes/              # Perfiles académicos y trazabilidad histórica
+│   │   ├── requisitos/               # Gestión, cálculo de avance e historial transaccional
+│   │   ├── programas/                # Gestión de programas académicos
+│   │   ├── curriculo/                # Catálogo de mallas curriculares y prerrequisitos
+│   │   ├── reportes/                 # Exportación segura de reportes CSV
+│   │   └── ayuda/                    # Trazabilidad para solicitudes de inconsistencias
+│   └── tests/                        # Suite de pruebas automatizadas
+├── frontend/                         # Cliente en Flutter
 │   ├── lib/
-│   │   ├── main.dart                 # Punto de entrada de la aplicación
-│   │   ├── core/                     # Componentes compartidos
-│   │   ├── usuarios/                 # Funcionalidades de usuarios (pendiente)
-│   │   ├── estudiantes/              # Funcionalidades de estudiantes
-│   │   ├── requisitos/               # Consulta y visualización de requisitos
-│   │   │   ├── models.dart           # Modelo Requisito
-│   │   │   ├── requisitos_service.dart  # Cliente HTTP con timeout y reintento (S11)
-│   │   │   └── requisitos_screen.dart   # Pantalla de consulta
-│   │   ├── programas/                # Programas académicos (pendiente)
-│   │   └── ayuda/                    # Centro de ayuda (pendiente)
-│   ├── test/                         # Pruebas de Flutter
-│   │   ├── widget_test.dart          # Pantalla de requisitos
-│   │   └── requisitos_service_test.dart  # Timeout, reintento e idempotencia (S11)
-│   └── android/, ios/, linux/        # Configuración por plataforma
-│       macos/, web/, windows/
-└── docs/                             # Documentación técnica
-    ├── adr/                          # Decisiones arquitectónicas (0001 a 0012)
-    ├── api/
-    │   ├── openapi.json              # Contrato OpenAPI versionado (S7)
-    │   └── evidencia-prueba-contrato.md
-    ├── arc42/                        # Documentación de arquitectura (secciones 1 a 12)
-    ├── c4/                           # Diagramas C4
-    │   ├── contexto.puml             # Nivel 1: contexto
-    │   └── contenedores.puml         # Nivel 2: contenedores
-    ├── aspectos.md                   # Trazabilidad de aspectos del sistema
-    ├── evidencia-s9.md               # Evidencia de generación verificada con IA (S9)
-    ├── evidencia-s12.md              # Estrategia de datos y eventos (S12)
-    ├── deuda-tecnica.md              # Deuda técnica reconocida y pospuesta
-    ├── costos.md                     # Estimación de costo del entorno desplegado
-    ├── fichadelproblema.md           # Descripción del problema
-    └── ia.md                         # Registro de uso de IA
+│   │   ├── main.dart                 # Punto de entrada e inyección de dependencias
+│   │   ├── core/                     # Red, storage seguro, tema, shell y auth gate
+│   │   ├── usuarios/                 # Vistas de login, perfil y recuperación
+│   │   ├── estudiantes/              # Dashboard del estudiante y widgets de avance
+│   │   ├── curriculo/                # Malla curricular y tarjetas de cursos
+│   │   ├── requisitos/               # Seguimiento y gestión de requisitos
+│   │   └── administracion/           # Panel administrativo completo
+│   └── test/                         # Pruebas de widgets y servicios
+└── docs/                             # Documentación de arquitectura
+    ├── adr/                          # Decisiones arquitectónicas (0001 a 0014)
+    ├── arc42/                        # Documentación arc42 (secciones 1 a 12)
+    ├── c4/                           # Diagramas C4 de contexto y contenedores
+    ├── aspectos.md                   # Matriz de Aspect-Driven Development
+    └── evidencia-s12.md              # Evidencia de estrategia de datos y consistencia
 ```
 
-La organización refleja la arquitectura de monolito modular: cada módulo agrupa una responsabilidad funcional dentro del backend y del frontend.
+## Entorno desplegado
 
----
+Conforme a la decisión ADR-0012, el entorno principal y activo del proyecto se encuentra desplegado en el servidor del laboratorio institucional mediante Dokploy con persistencia en volumen Docker (pgdata). El entorno experimental previo de Render expiró el 27/10/2026 y fue retirado.
 
-# Entorno desplegado
+| Pieza | URL / Acceso | Estado |
+|---|---|---|
+| Frontend Web | https://dinamikutb.iscoutb.dev | Activo (Nginx en Docker) |
+| Backend API | https://dinamikutb.iscoutb.dev | Activo (FastAPI) |
+| Health check | https://dinamikutb.iscoutb.dev/health | 200 {"status":"ok"} |
+| Métricas (Q-05) | https://dinamikutb.iscoutb.dev/metrics | Formato Prometheus |
+| Base de datos | PostgreSQL 16 (Dokploy) | Persistencia en volumen pgdata |
+| Análisis estático | SonarCloud | Quality Gate en verde |
 
-> Limitación conocida: el backend aún no tiene autenticación (`usuarios/` sin código). Por eso el
-> ambiente desplegado contiene **solo datos de ejemplo** (estudiante ficticio `T000123456`) y
-> no debe cargarse información real.
-
-| Pieza | URL |
-|---|---|
-| Frontend (GitHub Pages) | https://iscoutb.github.io/AS_202620_DinamikUTB/ |
-| Backend (Render) | https://dinamikutb-api.onrender.com |
-| Health check | https://dinamikutb-api.onrender.com/health → `200 {"status":"ok"}` |
-| Métricas (Q-05) | https://dinamikutb-api.onrender.com/metrics |
-| Análisis estático | https://sonarcloud.io/project/overview?id=ISCOUTB_AS_202620_DinamikUTB |
-| Backend (laboratorio, ADR-0012) | https://dinamikutb.iscoutb.dev (despliegue en curso al 25/10/2026) |
-| Health check (laboratorio) | https://dinamikutb.iscoutb.dev/health |
-
-**Comprobación desde fuera de la red de la universidad** (datos móviles):
+Comprobación externa verificada (red móvil fuera de la universidad):
 
 ```text
-<dom. 27/09/2026 23:55:18,42
-http=200 tiempo=0.419073s
-health=200>
+HTTP/2 200 OK
+{"status":"ok"}
 ```
 
-El servicio gratuito de Render entra en *spin down* tras 15 min sin tráfico: la primera respuesta
-puede tardar ~1 minuto (documentado en `docs/arc42/11-risks-and-technical-debt.md`).
+## Resiliencia y modos de fallo
 
-**Último pipeline en verde sobre `master`:** `<https://github.com/ISCOUTB/AS_202620_DinamikUTB/actions/runs/36379270741>`
+La integración entre el frontend Flutter, la API FastAPI y la base de datos está analizada en detalle en arc42 §11.5:
 
-**Base de datos (Render Postgres, plan Free):** creada el 27/09/2026. Expira a los 30 días
-(27/10/2026) con 14 días de gracia; recrear y resembrar antes del **25/10/2026** (ver
-[ADR-0007](docs/adr/0007-persistencia-render-postgres.md) y
-[11-risks-and-technical-debt.md](docs/arc42/11-risks-and-technical-debt.md)).
+- Cliente HTTP resiliente: frontend/lib/requisitos/requisitos_service.dart aplica timeout de 25 s por intento y hasta 3 intentos con retroceso exponencial (backoff creciente) ante fallos de conexión o respuestas 5xx.
+- Idempotencia en escrituras: El endpoint PUT /requisitos/{id}/estado fija un valor absoluto; repetirlo conserva el mismo resultado sin duplicar registros.
+- Concurrencia protegida: La consulta de actualización utiliza with_for_update=True en SQLAlchemy para serializar escrituras concurrentes a nivel de fila en PostgreSQL.
+- Historial transaccional: Las modificaciones en requisitos y datos de estudiantes se guardan atómicamente en sus respectivas tablas de auditoría _historial dentro de la misma transacción (ADR-0011, ADR-0014).
+- Invalidación reactiva de interfaz: AuthGate invalida y reconstruye las pantallas de inicio y malla mediante una ValueKey reactiva ante cambios en los datos del perfil del usuario, evitando estados desincronizados.
+- Tokens seguros: Los enlaces de recuperación se invalidan atómicamente en la base de datos mediante actualización condicional para evitar doble uso simultáneo.
 
-## Cómo recrear el entorno desplegado
-
-1. **Backend + base de datos:** en Render, *New → Blueprint*, elegir este repositorio. Render lee
-   `render.yaml` y crea el web service y el Postgres. `DATABASE_URL` la inyecta Render.
-2. **Frontend:** en *Settings → Pages* elegir *Source: GitHub Actions*. Cada push a `master`
-   ejecuta `.github/workflows/deploy-pages.yml`. Si la URL del backend es distinta a la de
-   arriba, definir la variable de repositorio `API_BASE_URL`.
-3. **Variables:** ver `.env.example` y `docs/arc42/07-deployment-view.md` (sección 7.3).
-4. **Costos:** `docs/costos.md`.
-
-## Logs y métrica
-
-- Logs estructurados (JSON, una línea por petición) en `backend/app/core/logging_config.py`.
-  Ejemplo: `{"ts": "2026-09-27T21:04:11-0500", "level": "INFO", "logger": "dinamikutb", "message": "http_request", "method": "GET", "path": "/", "status": 200, "duration_ms": 3.41}`
-- Métrica consultable en `GET /metrics`, asociada al escenario **Q-05 (disponibilidad)**:
-  `dinamikutb_http_requests_total` (por estado) y `dinamikutb_http_request_duration_seconds`.
-
----
-
-# Resiliencia y modos de fallo
-
-La integración principal (Flutter → FastAPI → base de datos) está analizada en
-[arc42 §11.5](docs/arc42/11-risks-and-technical-debt.md): qué pasa si el otro lado no responde,
-responde tarde o responde dos veces, con la mitigación y el estado de cada una.
-
-- **Cliente:** `frontend/lib/requisitos/requisitos_service.dart` aplica timeout de 25 s por intento y
-  hasta 3 intentos con espera creciente para las consultas. Probado en
-  `frontend/test/requisitos_service_test.dart`.
-- **Servidor:** el `PUT /requisitos/{id}/estado` fija un valor absoluto, por lo que repetirlo es
-  seguro (idempotente). Probado en `backend/tests/test_idempotencia.py`. Detalle en
-  [arc42 §11.6](docs/arc42/11-risks-and-technical-debt.md).
-- **Extracción de módulos:** se decidió no extraer ninguno del monolito; la alternativa se evaluó con
-  criterios en [ADR-0010](docs/adr/0010-extraccion-de-modulo.md).
-- **Pendiente declarado:** concurrencia de escrituras (F6) y expiración de la base gratuita (F7).
-
----
 ## Equipo
 
-    - Gillianis Perez Revolledo
-    - Esteban Ramírez Rios
-    - Luis Daniel Padilla Leottau
-    - Juan José Vargas Pérez
----
+- Gillianis Perez Revolledo
+- Esteban Ramírez Rios
+- Luis Daniel Padilla Leottau
+- Juan José Vargas Pérez

@@ -46,7 +46,8 @@ def calcular_resumen(db: Session, estudiante_id: str) -> dict:
 def actualizar_estado_requisito(
     db: Session, requisito_id: int, nuevo_estado: str, actor_id: int | None = None
 ):
-    requisito = db.get(Requisito, requisito_id)
+    # with_for_update=True serializa escrituras en PostgreSQL evitando condiciones de carrera
+    requisito = db.get(Requisito, requisito_id, with_for_update=True)
     if requisito is None:
         return None
     anterior = requisito.estado
@@ -66,6 +67,7 @@ def actualizar_estado_requisito(
             actor_id=actor_id,
         )
     )
+    # single transaction: UPDATE + history row, atomic
     db.commit()
     db.refresh(requisito)
     # Telemetría operativa; el registro de auditoría es la tabla requisitos_historial.

@@ -12,7 +12,10 @@ from sqlalchemy import text
 from app.core import metrics
 from app.core.config import get_settings
 from app.core.database import Base, DbSession, engine
+from app.curriculo.router import router as curriculo_router
 from app.estudiantes.router import router as estudiantes_router
+from app.programas.router import router as programas_router
+from app.reportes.router import router as reportes_router
 from app.requisitos.router import router as requisitos_router
 from app.usuarios.router import router as usuarios_router
 
@@ -23,20 +26,18 @@ logger = logging.getLogger("dinamikutb")
 app = FastAPI(
     title="DinamikUTB API",
     version="0.2.0",
-    # La documentación y el esquema solo se habilitan fuera de producción.
     docs_url=None if settings.es_produccion else "/docs",
     redoc_url=None,
     openapi_url=None if settings.es_produccion else "/openapi.json",
 )
 
-# Se permiten los orígenes configurados; localhost solo fuera de producción.
 app.add_middleware(
     CORSMiddleware,
     allow_origins=list(settings.cors_origins),
     allow_origin_regex=None if settings.es_produccion else r"https?://(localhost|127\.0\.0\.1)(:\d+)?",
     allow_methods=["GET", "POST", "PUT", "OPTIONS"],
     allow_headers=["Authorization", "Content-Type"],
-    allow_credentials=False,  # el token viaja en la cabecera Authorization, no en cookies
+    allow_credentials=False,
     max_age=600,
 )
 
@@ -44,7 +45,7 @@ _CABECERAS_SEGURIDAD = {
     "X-Content-Type-Options": "nosniff",
     "X-Frame-Options": "DENY",
     "Referrer-Policy": "no-referrer",
-    "Cache-Control": "no-store",  # las respuestas contienen datos académicos personales
+    "Cache-Control": "no-store",
     "Permissions-Policy": "geolocation=(), camera=(), microphone=()",
 }
 _CABECERAS_PRODUCCION = {
@@ -58,7 +59,6 @@ async def registrar_peticion(request: Request, call_next):
     inicio = time.perf_counter()
     response = await call_next(request)
     segundos = time.perf_counter() - inicio
-    # Registra la ruta, no la URL con datos personales.
     ruta = getattr(request.scope.get("route"), "path", request.url.path)
     metrics.registrar(request.method, ruta, response.status_code, segundos)
     logger.info(
@@ -84,8 +84,6 @@ async def cabeceras_de_seguridad(request: Request, call_next):
 
 @app.exception_handler(RequestValidationError)
 async def validacion_sin_eco(_request: Request, exc: RequestValidationError):
-    """Igual que el 422 por defecto, pero sin devolver el valor enviado (`input`):
-    evita reflejar contraseñas u otros datos sensibles en la respuesta."""
     errores = [{"loc": e["loc"], "msg": e["msg"], "type": e["type"]} for e in exc.errors()]
     return JSONResponse(status_code=422, content={"detail": jsonable_encoder(errores)})
 
@@ -100,6 +98,9 @@ Base.metadata.create_all(bind=engine)
 app.include_router(usuarios_router)
 app.include_router(requisitos_router)
 app.include_router(estudiantes_router)
+app.include_router(programas_router)
+app.include_router(curriculo_router)
+app.include_router(reportes_router)
 
 
 @app.get("/")
@@ -120,7 +121,7 @@ def _autorizar_metricas(request: Request) -> None:
     token = settings.metrics_token
     if token is None:
         if settings.es_produccion:
-            raise HTTPException(status_code=404, detail="Not Found")  # deshabilitado sin token
+            raise HTTPException(status_code=404, detail="Not Found")
         return
     enviado = request.headers.get("authorization", "")
     if not hmac.compare_digest(enviado.encode(), f"Bearer {token}".encode()):

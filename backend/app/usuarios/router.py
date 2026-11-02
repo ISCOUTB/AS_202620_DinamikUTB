@@ -65,7 +65,7 @@ def login(payload: LoginIn, db: DbSession):
             detail="Correo o contraseña incorrectos",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    token, vigencia = crear_token_acceso(usuario.id, usuario.password_hash[:16])
+    token, vigencia = crear_token_acceso(usuario.id, usuario.password_hash[-16:])
     logger.info("login_exitoso", extra={"campos": {"usuario_id": usuario.id}})
     return TokenOut(access_token=token, expires_in=vigencia)
 

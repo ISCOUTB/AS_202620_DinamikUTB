@@ -92,6 +92,11 @@ class AuthGate extends StatelessWidget {
         ),
       ),
     );
+
+    // Clave reactiva: al actualizar nombre, programa o semestre en el perfil propio,
+    // se fuerza la recreación de las pantallas Dashboard y Malla sin requerir reload manual.
+    final claveDatos = ValueKey('${usuario.nombre}|${usuario.programa}|${usuario.semestre}');
+
     return [
       ShellDestination(
         label: 'Inicio',
@@ -100,6 +105,7 @@ class AuthGate extends StatelessWidget {
         builder: codigo == null
             ? sinCodigo
             : (_) => DashboardScreen(
+                key: claveDatos,
                 estudiantes: estudiantes,
                 requisitos: requisitos,
                 codigoEstudiantil: codigo,
@@ -112,6 +118,7 @@ class AuthGate extends StatelessWidget {
         builder: usuario.programa == null
             ? sinPrograma
             : (_) => MallaScreen(
+                key: claveDatos,
                 service: malla,
                 programa: usuario.programa!,
                 semestreActual: usuario.semestre,

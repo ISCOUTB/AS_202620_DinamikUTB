@@ -18,8 +18,9 @@ abstract final class Validators {
     final correo = (valor ?? '').trim();
     final error = email(correo);
     if (error != null) return error;
-    if (!correo.toLowerCase().endsWith('@utb.edu.co')) {
-      return 'Usa tu correo institucional @utb.edu.co.';
+    final lower = correo.toLowerCase();
+    if (!lower.endsWith('@utb.edu.co') && !lower.endsWith('@dinamikutb.dev')) {
+      return 'Usa tu correo institucional @utb.edu.co o @dinamikutb.dev.';
     }
     return null;
   }

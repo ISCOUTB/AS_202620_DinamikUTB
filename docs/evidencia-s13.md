@@ -110,3 +110,6 @@ Se repitió el barrido de escaneo estricto de secretos sobre el árbol del repos
 
 ```bash
 git grep -nIE '(AKIA[0-9A-Z]{16}|-----BEGIN [A-Z ]*PRIVATE KEY|ghp_[A-Za-z0-9]{36}|xox[baprs]-|sk-[A-Za-z0-9]{20,})' HEAD
+```
+Resultado: 0 coincidencias de credenciales reales.
+Todas las variables sensibles (SECRET_KEY, POSTGRES_PASSWORD, SEED_DEMO_PASSWORD, SONAR_TOKEN) se inyectan mediante variables de entorno en el host o secretos de GitHub Actions, manteniéndose fuera del control de versiones.

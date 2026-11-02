@@ -41,7 +41,7 @@ def get_current_user(
 
     # Si la contraseña cambió después de emitir el token, se invalida
     token_pwd = payload.get("sig")
-    if token_pwd and token_pwd != usuario.password_hash[:16]:
+    if token_pwd and token_pwd != usuario.password_hash[-16:]:
         raise _no_autenticado()
 
     return usuario

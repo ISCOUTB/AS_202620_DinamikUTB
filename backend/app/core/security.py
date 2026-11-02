@@ -9,11 +9,9 @@ from argon2.exceptions import InvalidHashError, VerificationError
 
 from app.core.config import get_settings
 
-_hasher = PasswordHasher()  # Argon2id con parámetros por defecto recomendados (RFC 9106)
+_hasher = PasswordHasher()
 
-# Este hash mantiene un tiempo de respuesta similar cuando el usuario no existe.
 HASH_RELLENO = _hasher.hash("relleno-para-igualar-tiempos")
-
 LARGO_MINIMO_PASSWORD = 12
 
 
@@ -28,8 +26,7 @@ def verificar_password(password_hash: str, password: str) -> bool:
         return False
 
 
-def crear_token_acceso(usuario_id: int) -> tuple[str, int]:
-    """Devuelve (token, segundos de vigencia). El rol NO va en el token: se lee de la BD."""
+def crear_token_acceso(usuario_id: int, pwd_sig: str = "") -> tuple[str, int]:
     settings = get_settings()
     ahora = datetime.now(timezone.utc)
     vigencia = timedelta(minutes=settings.access_token_minutes)
@@ -38,6 +35,7 @@ def crear_token_acceso(usuario_id: int) -> tuple[str, int]:
         "iat": ahora,
         "exp": ahora + vigencia,
         "jti": uuid.uuid4().hex,
+        "sig": pwd_sig,
     }
     token = jwt.encode(payload, settings.secret_key, algorithm=settings.jwt_algorithm)
     return token, int(vigencia.total_seconds())
@@ -49,7 +47,7 @@ def decodificar_token(token: str) -> dict | None:
         return jwt.decode(
             token,
             settings.secret_key,
-            algorithms=[settings.jwt_algorithm],  # lista fija: bloquea alg=none y confusión de algoritmo
+            algorithms=[settings.jwt_algorithm],
             options={"require": ["exp", "sub"]},
         )
     except jwt.PyJWTError:

@@ -4,6 +4,7 @@ from sqlalchemy.exc import IntegrityError
 
 from app.core.database import DbSession
 from app.estudiantes.models import Estudiante
+from app.estudiantes.service import actualizar_programa_masivo
 from app.programas.models import Programa
 from app.programas.schemas import ProgramaIn, ProgramaOut, ProgramaUpdate
 from app.usuarios.dependencies import AdminUser
@@ -71,18 +72,19 @@ def crear_programa(payload: ProgramaIn, _admin: AdminUser, db: DbSession):
         409: {"description": "El código o nombre de programa ya existe."},
     },
 )
-def actualizar_programa(programa_id: int, payload: ProgramaUpdate, _admin: AdminUser, db: DbSession):
+def actualizar_programa(programa_id: int, payload: ProgramaUpdate, admin: AdminUser, db: DbSession):
     programa = db.get(Programa, programa_id)
     if programa is None:
         raise HTTPException(status_code=404, detail="Programa no encontrado.")
     nombre_anterior = programa.nombre
     for campo, valor in payload.model_dump().items():
         setattr(programa, campo, valor)
+
     if programa.nombre != nombre_anterior:
-        db.query(Estudiante).filter(
-            Estudiante.programa == nombre_anterior
-        ).update({"programa": programa.nombre}, synchronize_session=False)
+        actualizar_programa_masivo(db, nombre_anterior, programa.nombre, actor_id=admin.id)
+
     try:
+        # single transaction: Programa UPDATE + Estudiante masivo + EstudianteHistorial
         db.commit()
     except IntegrityError:
         db.rollback()

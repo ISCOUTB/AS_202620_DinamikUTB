@@ -128,15 +128,16 @@ Efectos externos (SMTP): El servicio de correo de recuperación actúa bajo gara
 ## 8.11 Decisión de datos más costosa de revertir
 
 El mecanismo de historial de cambios transaccional (ADR-0011), extendido a los datos académicos del estudiante en el ADR-0014, dado que el pasado no se puede reconstruir si no se captura atómicamente en el instante de la mutación.
-## 8.8 Arquitectura de seguridad
 
-Esta sección describe cómo se protege DinamikUTB, indicando qué existe hoy y qué está planificado. Se agrega al final de `08-cross-cutting-concepts.md`. El detalle de amenazas está en [`docs/modelado-de-amenazas.md`](../modelado-de-amenazas.md).
+## 8.12 Arquitectura de seguridad
+
+Esta sección describe cómo se protege DinamikUTB, alineada con las decisiones estructurales del [ADR-0013](../adr/0013-controles-estructurales-de-seguridad-y-autenticacion.md) y el modelo de amenazas detallado en [`docs/evidencia-s13.md`](../evidencia-s13.md).
 
 ### Límites de confianza (según el C4 Nivel 2)
 
 ```text
- [Usuario] ──HTTP/JSON──▶ [Frontend Flutter] ──HTTP/JSON──▶ [Backend API FastAPI] ──SQLAlchemy──▶ [SQLite]
-   (no confiable)              (no confiable)            ▲ frontera de confianza principal         (confiable)
+ [Usuario] ──HTTPS/JSON──▶ [Proxy Traefik] ──HTTP──▶ [Backend API FastAPI] ──SQLAlchemy──▶ [PostgreSQL / SQLite]
+   (no confiable)            (red laboratorio)        ▲ frontera de confianza principal      (red aislada / confiable)
 ```
 
 El **Backend API** es la única frontera de confianza: todo lo que llega desde el frontend se considera no confiable y se valida y autoriza ahí, nunca en el cliente.

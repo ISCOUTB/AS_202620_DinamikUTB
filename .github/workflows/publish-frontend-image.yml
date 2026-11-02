@@ -25,12 +25,8 @@ jobs:
 
       - name: Validate API base URL
         env:
-          API_BASE_URL: ${{ vars.API_BASE_URL }}
+          API_BASE_URL: ${{ vars.API_BASE_URL || 'https://api.dinamikutb.iscoutb.dev' }}
         run: |
-          if [[ -z "$API_BASE_URL" ]]; then
-            echo "Configure the API_BASE_URL repository variable before publishing."
-            exit 1
-          fi
           if [[ "$API_BASE_URL" != https://* ]]; then
             echo "API_BASE_URL must use HTTPS."
             exit 1
@@ -61,7 +57,7 @@ jobs:
           file: ./frontend/Dockerfile
           push: true
           build-args: |
-            API_BASE_URL=${{ vars.API_BASE_URL }}
+            API_BASE_URL=${{ vars.API_BASE_URL || 'https://api.dinamikutb.iscoutb.dev' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha

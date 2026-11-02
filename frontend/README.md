@@ -109,7 +109,7 @@ descarga Dokploy.
 ### Verificación
 
 - `https://api.dinamikutb.iscoutb.dev/health` debe responder con estado `ok`.
-- `https://dinamikutb.iscoutb.dev/health` debe responder `ok`.
+- `https://api.dinamikutb.iscoutb.dev/health` debe responder `ok`.
 - Abre `https://dinamikutb.iscoutb.dev`, inicia sesión y confirma que las
   peticiones del navegador van a `https://api.dinamikutb.iscoutb.dev` sin
   errores de CORS.

@@ -281,9 +281,9 @@ Conforme a la decisión ADR-0012, el entorno principal y activo del proyecto se 
 | Pieza | URL / Acceso | Estado |
 |---|---|---|
 | Frontend Web | https://dinamikutb.iscoutb.dev | Activo (Nginx en Docker) |
-| Backend API | https://dinamikutb.iscoutb.dev | Activo (FastAPI) |
-| Health check | https://dinamikutb.iscoutb.dev/health | 200 {"status":"ok"} |
-| Métricas (Q-05) | https://dinamikutb.iscoutb.dev/metrics | Formato Prometheus |
+| Backend API | https://api.dinamikutb.iscoutb.dev | Activo (FastAPI) |
+| Health check | https://api.dinamikutb.iscoutb.dev/health | 200 {"status":"ok"} |
+| Métricas (Q-05) | https://api.dinamikutb.iscoutb.dev/metrics | Formato Prometheus |
 | Base de datos | PostgreSQL 16 (Dokploy) | Persistencia en volumen pgdata |
 | Análisis estático | SonarCloud | Quality Gate en verde |
 

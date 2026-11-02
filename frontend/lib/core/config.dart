@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 
 /// URL del backend, configurable durante la compilación:
-///   flutter build web --dart-define=API_BASE_URL=https://dinamikutb.iscoutb.dev/api
+///   flutter build web --dart-define=API_BASE_URL=https://api.dinamikutb.iscoutb.dev
 /// Por defecto apunta al backend local.
 const String apiBaseUrl = String.fromEnvironment(
   'API_BASE_URL',

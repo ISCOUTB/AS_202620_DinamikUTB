@@ -45,7 +45,7 @@ Hay además una fecha que fuerza la decisión: la base de Render gratuita se cre
 
 **Opción A: el sistema principal corre en el laboratorio.** El backend y su Postgres del laboratorio son el ambiente de referencia. Render queda como respaldo mientras dure su base (hasta el 27/10/2026), **no se recrea** y después se retira.
 
-El frontend de GitHub Pages cambia de backend con la variable de repositorio `API_BASE_URL` (`https://dinamikutb.iscoutb.dev`), y solo después de que `/health` responda 200 desde fuera de la universidad. Mientras eso no ocurra, Render sigue siendo la URL en uso.
+El frontend de GitHub Pages cambia de backend con la variable de repositorio `API_BASE_URL` (`https://api.dinamikutb.iscoutb.dev`), y solo después de que `/health` responda 200 desde fuera de la universidad. Mientras eso no ocurra, Render sigue siendo la URL en uso.
 
 Servicios (`deploy/compose.lab.yaml`): `api` (FastAPI, 0,5 CPU, 192 MB) y `db` (`postgres:16-alpine`, volumen `pgdata`, 0,5 CPU, 160 MB), detrás de Traefik. Variables obligatorias: `SECRET_KEY`, `CORS_ORIGINS`, `SEED_DEMO_PASSWORD`, `POSTGRES_*`, definidas en Dokploy, nunca en el repositorio.
 

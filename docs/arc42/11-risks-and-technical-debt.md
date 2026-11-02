@@ -1,25 +1,25 @@
 # 11. Risks and Technical Debt
 
-Esta sección registra los riesgos y modos de fallo conocidos de **DinamikUTB**.
+Esta sección registra los riesgos de seguridad que el equipo **acepta de forma explícita** y la deuda técnica relevante. Las amenazas completas y su priorización están en [`docs/modelado-de-amenazas.md`](../modelado-de-amenazas.md).
 
----
+## 11.1 Amenazas aceptadas
 
-## 11.1 Modos de fallo de la integración principal
+| ID | Amenaza | Motivo de la aceptación | Condición que obliga a revisarla |
+|---|---|---|---|
+| T-04 | Tráfico HTTP sin TLS entre Frontend y Backend | El sistema se ejecuta solo en local (`127.0.0.1`, `start.bat`) sin exposición de red; no hay entorno productivo (Q-05). | Cualquier despliegue accesible desde una red: se vuelve obligatorio HTTPS. |
+| T-09 | Denegación de servicio por ausencia de límite de tasa y escritor único en SQLite | Prototipo académico con pocos usuarios; el riesgo ya se documentó en [ADR-0003](../adr/0003-seleccion-motor-de-base-de-datos.md) y Q-05. | Despliegue institucional o más de un coordinador escribiendo en simultáneo. |
+| T-12 | Documentación `/docs` y `/openapi.json` expuesta | Facilita la verificación del equipo y de los evaluadores. | Despliegue real: deshabilitarla. |
 
-| ID | Modo de fallo | Qué pasa hoy | Mitigación asignada | Estado | Prueba |
-|---|---|---|---|---|---|
-| F1 | **No responde** (backend caído o sin conexión) | El cliente recibe un error de conexión. | Timeout de 25 s por intento y hasta 3 intentos con espera creciente (2 s, 4 s). Si se agotan, la UI muestra mensaje claro. | **Probada** | `requisitos_service_test.dart` |
-| F2 | **Responde tarde** (latencia de red) | La consulta tarda más de lo previsto. | Timeout por intento corta esperas colgadas y reintenta. UI muestra indicador de carga. | **Probada** | `requisitos_service_test.dart` |
-| F3 | **Base de datos no disponible** | `GET /health` responde 503. `pool_pre_ping` descarta conexiones caídas. | Endpoint `/health` con `SELECT 1` para orquestadores y reintento en el cliente ante 5xx. | **Probada** | `test_health.py` |
-| F4 | **Petición duplicada** (reintento del cliente, doble clic) | `PUT` fija valor absoluto idempotente. | Semántica de asignación fija. Repetir la solicitud deja exactamente el mismo estado y no duplica filas de historial. | **Probada** | `test_idempotencia.py` |
-| F5 | **Respuesta perdida tras aplicar cambio** | El cliente no sabe si se aplicó. | Reintentar es seguro por idempotencia. | **Probada** | `test_idempotencia.py` |
-| F6 | **Escrituras concurrentes en conflicto** | Dos peticiones simultáneas modifican la misma fila en PostgreSQL. | `with_for_update=True` serializa las consultas a nivel de fila antes de leer el valor anterior. | **Mitigado para el historial; sin prueba concurrente automatizada** | `test_idempotencia.py` (secuencial) |
-| F7 | **Expiración de la base de datos de Render** | La base de datos gratuita de Render expiró a los 30 días (27/10/2026). | **Ocurrido:** Según lo planificado en ADR-0012, el ambiente de Render fue retirado y el despliegue principal se consolidó definitivamente en el servidor del laboratorio con volumen Docker persistente `pgdata` sin expiración. | **Resuelto operativamente** | Verificación en `https://dinamikutb.iscoutb.dev/health` |
+Estas aceptaciones aplican **solo al entorno de desarrollo del curso**. No se aceptan T-01, T-02 ni T-03: siguen abiertas y tienen mitigación asignada en [ADR-0004](../adr/0004-autenticacion-y-control-de-acceso.md).
 
----
+## 11.2 Deuda técnica
 
-## 11.2 Diseño de idempotencia
+| Deuda | Impacto | Estado |
+|---|---|---|
+| Endpoints sin autenticación ni autorización (`usuarios/` sin código) | Alto: T-01, T-02 | Pendiente (ADR-0004) |
+| CORS abierto (`allow_origins=["*"]`) | Medio: T-07 | Pendiente |
+| Dependencia `certifi` con vulnerabilidad conocida; `httpx2`/`httpcore2` sin justificar | Medio: T-08 | En curso |
+| Historial de cambios (A-08) sin mecanismo decidido | Medio: T-06 | Pendiente (ADR-0005 por redactar) |
+| `*.db` sin verificar en `.gitignore` | Medio: T-05 | Pendiente de verificar |
+| Cálculo de avance (A-02) y alertas (A-03) sin implementar | Funcional, no de seguridad | Pendiente |
 
-- `PUT /requisitos/{id}/estado` fija un valor absoluto (`cumplido`, `pendiente`, `en_proceso`).
-- La función `actualizar_estado_requisito` comprueba si `anterior == nuevo_estado`; si son iguales, no genera ninguna fila en `requisitos_historial`.
-- Por qué no hay saga: cada mutación opera sobre una única base de datos relacional dentro de un bloque `db.commit()` atómico; no hay servicios distribuidos externos que requieran compensación.

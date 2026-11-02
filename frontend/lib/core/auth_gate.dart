@@ -14,11 +14,21 @@ import 'package:frontend/usuarios/auth_controller.dart';
 import 'package:frontend/usuarios/login_screen.dart';
 import 'package:frontend/usuarios/models.dart';
 import 'package:frontend/usuarios/perfil_screen.dart';
+import 'package:frontend/usuarios/welcome_screen.dart';
 import 'widgets/app_shell.dart';
 
 /// Muestra la pantalla según la sesión y el rol; el backend aplica los permisos.
-class AuthGate extends StatelessWidget {
+/// La bienvenida animada se ve una vez por apertura de la app: al cerrar
+/// sesión se va directo al login.
+class AuthGate extends StatefulWidget {
   const AuthGate({super.key});
+
+  @override
+  State<AuthGate> createState() => _AuthGateState();
+}
+
+class _AuthGateState extends State<AuthGate> {
+  bool _bienvenidaVista = false;
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +38,15 @@ class AuthGate extends StatelessWidget {
       case AuthStatus.desconocido:
         return const Scaffold(body: Center(child: CircularProgressIndicator()));
       case AuthStatus.noAutenticado:
-        return const LoginScreen();
+        return AnimatedSwitcher(
+          duration: const Duration(milliseconds: 500),
+          child: _bienvenidaVista
+              ? const LoginScreen(key: ValueKey('login'))
+              : WelcomeScreen(
+                  key: const ValueKey('bienvenida'),
+                  onIniciar: () => setState(() => _bienvenidaVista = true),
+                ),
+        );
       case AuthStatus.autenticado:
         if (usuario == null) return const LoginScreen();
         if (usuario.rol == Rol.administrador) {
@@ -92,11 +110,6 @@ class AuthGate extends StatelessWidget {
         ),
       ),
     );
-
-    // Clave reactiva: al actualizar nombre, programa o semestre en el perfil propio,
-    // se fuerza la recreación de las pantallas Dashboard y Malla sin requerir reload manual.
-    final claveDatos = ValueKey('${usuario.nombre}|${usuario.programa}|${usuario.semestre}');
-
     return [
       ShellDestination(
         label: 'Inicio',
@@ -105,7 +118,6 @@ class AuthGate extends StatelessWidget {
         builder: codigo == null
             ? sinCodigo
             : (_) => DashboardScreen(
-                key: claveDatos,
                 estudiantes: estudiantes,
                 requisitos: requisitos,
                 codigoEstudiantil: codigo,
@@ -118,7 +130,6 @@ class AuthGate extends StatelessWidget {
         builder: usuario.programa == null
             ? sinPrograma
             : (_) => MallaScreen(
-                key: claveDatos,
                 service: malla,
                 programa: usuario.programa!,
                 semestreActual: usuario.semestre,

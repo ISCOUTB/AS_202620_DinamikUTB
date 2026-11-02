@@ -1,4 +1,4 @@
-"""Autenticación (¿quién eres?) y autorización (¿qué puedes hacer?) como dependencias de FastAPI."""
+"""Autenticación y autorización como dependencias de FastAPI."""
 
 from typing import Annotated
 
@@ -34,10 +34,16 @@ def get_current_user(
         usuario_id = int(payload["sub"])
     except (KeyError, TypeError, ValueError):
         raise _no_autenticado() from None
-    # Lee el usuario en cada petición para aplicar cambios de estado y rol de inmediato.
+
     usuario = db.get(Usuario, usuario_id)
     if usuario is None or not usuario.activo:
         raise _no_autenticado()
+
+    # Si la contraseña cambió después de emitir el token, se invalida
+    token_pwd = payload.get("sig")
+    if token_pwd and token_pwd != usuario.password_hash[:16]:
+        raise _no_autenticado()
+
     return usuario
 
 
@@ -54,14 +60,10 @@ def require_roles(*roles: Rol):
 
 
 GestorUser = Annotated[Usuario, Depends(require_roles(*ROLES_GESTION))]
+AdminUser = Annotated[Usuario, Depends(require_roles(Rol.ADMINISTRADOR))]
 
 
 def verificar_acceso_estudiante(usuario: Usuario, codigo_estudiantil: str) -> None:
-    """Un estudiante solo accede a su propia información; coordinación y administración, a la de cualquiera.
-
-    Pendiente (ver docs/adr/0010): limitar al coordinador a los estudiantes de su programa
-    cuando exista el módulo `programas/`.
-    """
     if usuario.rol in ROLES_GESTION:
         return
     if usuario.codigo_estudiantil != codigo_estudiantil:

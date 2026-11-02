@@ -81,19 +81,24 @@ def test_cambios_sucesivos_se_conservan_en_orden():
     assert pares == [("pendiente", "en_proceso"), ("en_proceso", "cumplido")]
 
 
+
 def test_si_falla_el_historial_el_cambio_no_queda_aplicado(monkeypatch):
     """Atomicidad: el cambio y su historial se confirman juntos o no se confirma ninguno."""
     requisito_id = _crear_requisito("pendiente")
 
+    clase_real = service.RequisitoHistorial
+
     def historial_invalido(**datos):
         datos["valor_nuevo"] = None  # viola NOT NULL: falla al confirmar la transacción
-        return RequisitoHistorial(**datos)
+        return clase_real(**datos)
 
     monkeypatch.setattr(service, "RequisitoHistorial", historial_invalido)
 
     with TestingSessionLocal() as db:
         with pytest.raises(IntegrityError):
             service.actualizar_estado_requisito(db, requisito_id, "cumplido", actor_id=1)
+
+    monkeypatch.undo()
 
     with TestingSessionLocal() as db:
         assert db.get(Requisito, requisito_id).estado == "pendiente"

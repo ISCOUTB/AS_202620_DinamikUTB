@@ -10,5 +10,5 @@ def autenticar(rol: str, codigo: str | None = None, email: str | None = None) ->
     email = email or f"{rol}{codigo or ''}@test.dev".lower()
     with TestingSessionLocal() as db:
         usuario = crear_usuario(db, email, PASSWORD, rol, codigo)
-        token, _ = crear_token_acceso(usuario.id)
+        token, _ = crear_token_acceso(usuario.id, usuario.password_hash[:16])
     return {"Authorization": f"Bearer {token}"}

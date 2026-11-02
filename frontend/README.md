@@ -114,20 +114,7 @@ descarga Dokploy.
   peticiones del navegador van a `https://api.dinamikutb.iscoutb.dev` sin
   errores de CORS.
 
-PLAN A: GitHub Pages
--------------------
-
-El workflow `.github/workflows/deploy-pages.yml` se ejecuta automáticamente al
-hacer push a `master` cuando cambian archivos del frontend o el workflow. Compila
-Flutter, usa `https://api.dinamikutb.iscoutb.dev` como backend y publica el sitio
-en `https://dinamikutb.iscoutb.dev` mediante el dominio personalizado configurado
-como `CNAME`.
-
-PLAN B: Dokploy con GHCR
------------------------
-
-Cuando exista autorización para descargar el paquete privado de GHCR, se usará
-`.github/workflows/publish-frontend-image.yml` para publicar la imagen y
-`deploy/compose.lab.yaml` para desplegarla en Dokploy. El frontend seguirá usando
-`https://api.dinamikutb.iscoutb.dev` como API. No se debe publicar ni confirmar
-ningún token, contraseña o credencial dentro del repositorio.
+El workflow `.github/workflows/deploy-pages.yml` compila el frontend, usa
+`https://api.dinamikutb.iscoutb.dev` como backend y publica el sitio mediante
+GitHub Pages. El workflow `.github/workflows/publish-frontend-image.yml` publica
+una imagen Docker para despliegues compatibles con GHCR.

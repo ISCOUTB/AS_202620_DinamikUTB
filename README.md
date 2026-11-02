@@ -276,11 +276,11 @@ AS_202620_DinamikUTB/
 
 ## Entorno desplegado
 
-Plan A activo: el frontend se despliega automáticamente en GitHub Pages y la API permanece en el servidor del laboratorio institucional mediante Dokploy, con persistencia en volumen Docker (pgdata). El entorno experimental previo de Render fue retirado.
+El entorno principal de la aplicación se encuentra desplegado en el servidor del laboratorio institucional mediante Dokploy, con persistencia en volumen Docker (pgdata). El entorno experimental previo de Render fue retirado.
 
 | Pieza | URL / Acceso | Estado |
 |---|---|---|
-| Frontend Web | https://dinamikutb.iscoutb.dev | Activo (GitHub Pages) |
+| Frontend Web | https://dinamikutb.iscoutb.dev | Activo |
 | Backend API | https://api.dinamikutb.iscoutb.dev | Activo (FastAPI) |
 | Health check | https://api.dinamikutb.iscoutb.dev/health | 200 {"status":"ok"} |
 | Métricas (Q-05) | https://api.dinamikutb.iscoutb.dev/metrics | Formato Prometheus |

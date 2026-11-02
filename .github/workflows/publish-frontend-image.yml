@@ -1,11 +1,6 @@
 name: Publish frontend image
 
 on:
-  push:
-    branches: [master]
-    paths:
-      - "frontend/**"
-      - ".github/workflows/publish-frontend-image.yml"
   workflow_dispatch:
 
 permissions:

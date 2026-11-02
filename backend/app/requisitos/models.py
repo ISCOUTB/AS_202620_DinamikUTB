@@ -1,6 +1,19 @@
-from sqlalchemy import Column, DateTime, ForeignKey, Integer, String, func
+from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String, func
 
 from app.core.database import Base
+
+
+class RequisitoPrograma(Base):
+    """Catálogo de requisitos configurados por programa académico (A-06)."""
+    __tablename__ = "requisitos_programa"
+
+    id = Column(Integer, primary_key=True, index=True)
+    programa_id = Column(Integer, ForeignKey("programas.id"), nullable=False, index=True)
+    nombre = Column(String(160), nullable=False)
+    descripcion = Column(String(500), nullable=False, default="")
+    semestre_recomendado = Column(Integer, nullable=False, default=1)
+    obligatorio = Column(Boolean, nullable=False, default=True)
+    activo = Column(Boolean, nullable=False, default=True)
 
 
 class Requisito(Base):
@@ -10,15 +23,10 @@ class Requisito(Base):
     estudiante_id = Column(String, index=True, nullable=False)
     nombre = Column(String, nullable=False)
     estado = Column(String, nullable=False)  # "cumplido", "pendiente", "en_proceso"
+    catalogo_id = Column(Integer, nullable=True)
 
 
 class RequisitoHistorial(Base):
-    """Registro inmutable de cada cambio sobre un requisito (A-08, ADR-0011).
-
-    Solo se inserta, en la misma transacción que el cambio. Nunca se actualiza ni se borra.
-    `actor_id` no es clave foránea: `usuarios/` es otro módulo (ver arc42 §8.4).
-    """
-
     __tablename__ = "requisitos_historial"
 
     id = Column(Integer, primary_key=True, index=True)

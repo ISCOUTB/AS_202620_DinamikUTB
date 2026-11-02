@@ -8,11 +8,11 @@ Email = Annotated[
     str,
     StringConstraints(strip_whitespace=True, to_lower=True, min_length=6, max_length=254, pattern=_EMAIL_PATTERN),
 ]
-Password = Annotated[str, StringConstraints(min_length=8, max_length=128)]  # sin strip: no se altera la contraseña
+Password = Annotated[str, StringConstraints(min_length=8, max_length=128)]
 
 
 class LoginIn(BaseModel):
-    model_config = ConfigDict(extra="forbid")  # rechaza campos inesperados (p. ej. intentar enviar "rol")
+    model_config = ConfigDict(extra="forbid")
 
     email: Email
     password: Password
@@ -25,7 +25,7 @@ class TokenOut(BaseModel):
 
 
 class UsuarioOut(BaseModel):
-    """Datos mínimos del usuario autenticado. Nunca incluye hash, intentos ni bloqueos."""
+    """Datos mínimos del usuario autenticado."""
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -33,3 +33,6 @@ class UsuarioOut(BaseModel):
     email: str
     rol: str
     codigo_estudiantil: str | None = None
+    nombre: str | None = None
+    programa: str | None = None
+    semestre: int | None = None

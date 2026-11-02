@@ -114,6 +114,9 @@ def test_me_devuelve_solo_datos_publicos_del_usuario():
         "email": EMAIL,
         "rol": "estudiante",
         "codigo_estudiantil": "T000123456",
+        "nombre": None,
+        "programa": None,
+        "semestre": None,
     }
 
 

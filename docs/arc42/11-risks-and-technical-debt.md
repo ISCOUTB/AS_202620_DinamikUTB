@@ -1,25 +1,38 @@
 # 11. Risks and Technical Debt
 
-Esta sección registra los riesgos y modos de fallo conocidos de **DinamikUTB**.
+Esta sección registra los riesgos y modos de fallo conocidos de **DinamikUTB**, así como las amenazas de seguridad aceptadas de forma consciente por el equipo de arquitectura.
 
 ---
 
-## 11.1 Modos de fallo de la integración principal
+## 11.1 Amenazas de seguridad aceptadas
 
-| ID | Modo de fallo | Qué pasa hoy | Mitigación asignada | Estado | Prueba |
+Conforme al modelado de amenazas documentado en [`docs/evidencia-s13.md`](../evidencia-s13.md), el equipo acepta los siguientes riesgos residuales para el entorno de desarrollo y laboratorio institucional:
+
+| ID | Amenaza aceptada | Motivo técnico de la aceptación | Condición que obligaría a revisarla |
+|---|---|---|---|
+| **T-ACC-01** | Almacenamiento de token JWT en cliente web (`token_store`) | En navegadores, `flutter_secure_storage` persiste el token de acceso en web storage. El riesgo de acceso por XSS se mitiga mediante cabeceras CSP estrictas, ausencia de inyecciones HTML en Flutter y tokens de corta vigencia (30 min). | Manejo de transacciones financieras o requerimiento institucional de cookies `HttpOnly` con proxy de backend. |
+| **T-ACC-02** | Limitador de tasa en memoria volátil | El componente `LimitadorVentana` corre en la memoria del proceso FastAPI. Si el contenedor se reinicia, los contadores de intentos por IP se reinician. Es suficiente para proteger contra ataques de fuerza bruta comunes en el laboratorio. | Despliegue con múltiples réplicas detrás de balanceador de carga; requeriría Redis. |
+| **T-ACC-03** | Servicio SMTP bajo mejor esfuerzo (sin cola persistente) | El envío de correos salientes para recuperación de contraseña responde HTTP 503 si el servidor SMTP falla, sin encolar reintentos en un broker para evitar añadir RabbitMQ o Kafka. | Volúmenes de matrícula masivos donde la pérdida de una notificación requiera reintentos asíncronos garantizados. |
+| **T-ACC-04** | Exposición de `/docs` y `/openapi.json` en desarrollo | La documentación interactiva permanece visible únicamente en entornos locales y de pruebas (`APP_ENV=development`). En producción se desactiva explícitamente (`docs_url=None`). | Nunca exponer en producción. |
+
+---
+
+## 11.2 Modos de fallo de la integración principal
+
+| ID | Modo de fallo | Comportamiento | Mitigación asignada | Estado | Prueba |
 |---|---|---|---|---|---|
-| F1 | **No responde** (backend caído o sin conexión) | El cliente recibe un error de conexión. | Timeout de 25 s por intento y hasta 3 intentos con espera creciente (2 s, 4 s). Si se agotan, la UI muestra mensaje claro. | **Probada** | `requisitos_service_test.dart` |
-| F2 | **Responde tarde** (latencia de red) | La consulta tarda más de lo previsto. | Timeout por intento corta esperas colgadas y reintenta. UI muestra indicador de carga. | **Probada** | `requisitos_service_test.dart` |
-| F3 | **Base de datos no disponible** | `GET /health` responde 503. `pool_pre_ping` descarta conexiones caídas. | Endpoint `/health` con `SELECT 1` para orquestadores y reintento en el cliente ante 5xx. | **Probada** | `test_health.py` |
-| F4 | **Petición duplicada** (reintento del cliente, doble clic) | `PUT` fija valor absoluto idempotente. | Semántica de asignación fija. Repetir la solicitud deja exactamente el mismo estado y no duplica filas de historial. | **Probada** | `test_idempotencia.py` |
-| F5 | **Respuesta perdida tras aplicar cambio** | El cliente no sabe si se aplicó. | Reintentar es seguro por idempotencia. | **Probada** | `test_idempotencia.py` |
-| F6 | **Escrituras concurrentes en conflicto** | Dos peticiones simultáneas modifican la misma fila en PostgreSQL. | `with_for_update=True` serializa las consultas a nivel de fila antes de leer el valor anterior. | **Mitigado para el historial; sin prueba concurrente automatizada** | `test_idempotencia.py` (secuencial) |
-| F7 | **Expiración de la base de datos de Render** | La base de datos gratuita de Render expiró a los 30 días (27/10/2026). | **Ocurrido:** Según lo planificado en ADR-0012, el ambiente de Render fue retirado y el despliegue principal se consolidó definitivamente en el servidor del laboratorio con volumen Docker persistente `pgdata` sin expiración. | **Resuelto operativamente** | Verificación en `https://dinamikutb.iscoutb.dev/health` |
+| **F1** | Backend no responde | El cliente recibe error de conexión. | Timeout de 25 s por intento y hasta 3 intentos con retroceso exponencial (2 s, 4 s). Mensaje claro en UI. | **Probada** | `requisitos_service_test.dart` |
+| **F2** | Respuesta tardía de red | Consulta supera latencia normal. | Timeout corta llamadas colgadas y reintenta. Indicador de carga en UI. | **Probada** | `requisitos_service_test.dart` |
+| **F3** | Base de datos no disponible | `GET /health` responde 503. | `pool_pre_ping=True` descarta conexiones caídas y orquestador monitorea salud. | **Probada** | `test_health.py` |
+| **F4** | Petición de escritura duplicada | Red o usuario reenvía `PUT`. | Semántica idempotente de valor absoluto; no genera filas duplicadas en historial. | **Probada** | `test_idempotencia.py` |
+| **F5** | Escrituras concurrentes en conflicto | Modificaciones simultáneas sobre la misma fila. | `with_for_update=True` serializa transacciones a nivel de fila en PostgreSQL. | **Mitigada** | `test_idempotencia.py` |
+| **F6** | Expiración de base de datos en nube gratuita | Render expiró a los 30 días. | Consolidación definitiva en servidor de laboratorio Dokploy con volumen `pgdata`. | **Resuelta** | [ADR-0012](../adr/0012-despliegue-en-servidor-del-laboratorio.md) |
 
 ---
 
-## 11.2 Diseño de idempotencia
+## 11.3 Deuda técnica reconocida
 
-- `PUT /requisitos/{id}/estado` fija un valor absoluto (`cumplido`, `pendiente`, `en_proceso`).
-- La función `actualizar_estado_requisito` comprueba si `anterior == nuevo_estado`; si son iguales, no genera ninguna fila en `requisitos_historial`.
-- Por qué no hay saga: cada mutación opera sobre una única base de datos relacional dentro de un bloque `db.commit()` atómico; no hay servicios distribuidos externos que requieran compensación.
+| Ítem | Impacto | Estado | Justificación y plan |
+|---|---|---|---|
+| Tarea de respaldo automático del volumen `pgdata` | Disponibilidad ante desastre | Pendiente | El volumen Docker persiste entre reinicios, pero se debe programar un cron con `pg_dump` antes del paso a producción institucional. |
+| Cobertura concurrente automatizada en CI | Concurrencia | Mitigada | El bloqueo `with_for_update=True` está probado secuencialmente en SQLite; su comportamiento concurrente real se apoya en el motor PostgreSQL en laboratorio. |

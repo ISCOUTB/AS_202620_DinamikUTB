@@ -128,3 +128,39 @@ Efectos externos (SMTP): El servicio de correo de recuperación actúa bajo gara
 ## 8.11 Decisión de datos más costosa de revertir
 
 El mecanismo de historial de cambios transaccional (ADR-0011), extendido a los datos académicos del estudiante en el ADR-0014, dado que el pasado no se puede reconstruir si no se captura atómicamente en el instante de la mutación.
+
+## 8.12 Arquitectura de seguridad
+
+Esta sección describe cómo se protege DinamikUTB, alineada con las decisiones estructurales del [ADR-0013](../adr/0013-controles-estructurales-de-seguridad-y-autenticacion.md) y el modelo de amenazas detallado en [`docs/evidencia-s13.md`](../evidencia-s13.md).
+
+### Límites de confianza (según el C4 Nivel 2)
+
+```text
+ [Usuario] ──HTTPS/JSON──▶ [Proxy Traefik] ──HTTP──▶ [Backend API FastAPI] ──SQLAlchemy──▶ [PostgreSQL / SQLite]
+   (no confiable)            (red laboratorio)        ▲ frontera de confianza principal      (red aislada / confiable)
+```
+
+El Backend API es la única frontera de confianza: todo lo que llega desde el cliente se considera no confiable y se valida, autentica y autoriza ahí, nunca en la interfaz Flutter.
+
+### Controles implementados por capa
+
+| **Control**                     | **Mecanismo en código**                                                      | **Amenazas STRIDE cubiertas**           | **Estado**       |
+| ------------------------------- | ---------------------------------------------------------------------------- | --------------------------------------- | ---------------- |
+| **Validación de entrada**       | Pydantic v2 (schemas.py) y regex para códigos estudiantiles                  | T-02 (Tampering)                        | **Implementado** |
+| **Consultas seguras**           | SQLAlchemy ORM parametrizado sin SQL concatenado                             | T-02 (Tampering)                        | **Implementado** |
+| **Autenticación robusta**       | Tokens JWT HS256 e invalidación con firma sig de contraseña; hashes Argon2id | T-01 (Spoofing), T-04 (Info Disclosure) | **Implementado** |
+| **Autorización RBAC**           | Dependencias CurrentUser, GestorUser, AdminUser y verificación de código     | T-03 (Elevation of Privilege)           | **Implementado** |
+| **Cifrado en tránsito**         | HTTPS/TLS mediante proxy Traefik en el laboratorio y cabeceras HSTS          | T-09 (Info Disclosure)                  | **Implementado** |
+| **Defensa contra fuerza bruta** | Ventana deslizante LimitadorVentana por IP y bloqueo de cuenta tras 5 fallos | T-05 (Denial of Service)                | **Implementado** |
+| **Auditoría inmutable**         | Tablas transaccionales requisitos_historial y estudiantes_historial          | T-06 (Repudiation)                      | **Implementado** |
+| **Mitigación CSV Injection**    | Sanitización de celdas ante prefijos de fórmulas en reportes                 | T-07 (Tampering)                        | **Implementado** |
+| **Auditoría de dependencias**   | pip-audit en CI (dependency-audit.yml) y Dependabot                          | T-08 (Tampering)                        | **Implementado** |
+| **Cabeceras de respuesta**      | Middleware inyectando nosniff, DENY, no-store y CSP                          | T-10 (Info Disclosure)                  | **Implementado** |
+
+
+### Reglas que deben mantenerse
+
+* Ningún endpoint que lea o modifique datos académicos se publica sin la dependencia de autenticación.
+* La comparación entre el usuario del token y el recurso solicitado ocurre en el backend, nunca en Flutter.
+* Los secretos (clave de firma, futuras credenciales de base de datos) nunca se versionan; si se filtra uno, se rota de inmediato porque el historial de Git es público.
+* Los datos personales tratados y su base se documentan en la sección 5 del modelo de amenazas.

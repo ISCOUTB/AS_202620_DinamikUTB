@@ -32,6 +32,11 @@ void main() {
 
     await tester.tap(find.text('Volver al inicio'));
     await tester.pumpAndSettle();
+
+    // Al volver al inicio se ve la bienvenida; el botón lleva al login.
+    expect(find.text('DINA'), findsOneWidget);
+    await tester.tap(find.text('Iniciar sesión'));
+    await tester.pumpAndSettle();
     expect(find.text('Bienvenido a DinamikUTB'), findsOneWidget);
   });
 }

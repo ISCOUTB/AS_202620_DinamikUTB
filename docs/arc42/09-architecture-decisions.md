@@ -20,6 +20,7 @@ Esta sección funciona como índice de las decisiones arquitectónicas (ADR) de 
 | [ADR-0010](../adr/0010-extraccion-de-modulo.md) | Decisión de no extraer módulos del monolito | *Aceptado* (2026-10-18) | Evaluación formal que confirma no fragmentar el monolito. |
 | [ADR-0011](../adr/0011-historial-de-cambios-transaccional.md) | Historial de cambios transaccional en la misma base | *Aceptado* (2026-10-25) | Tabla append-only por módulo en la misma transacción; decisión más costosa de revertir. |
 | [ADR-0012](../adr/0012-despliegue-en-servidor-del-laboratorio.md) | Despliegue en el servidor del laboratorio | *Aceptado* (2026-10-25) | Migración a Dokploy con volumen persistente `pgdata` sin expiración ni spin down. |
+| [ADR-0013](../adr/0013-controles-estructurales-de-seguridad-y-autenticacion.md) | Controles estructurales de seguridad, autenticación y control de acceso | *Aceptado* (2026-11-01) | Formaliza JWT con firma de contraseña, Argon2id, RBAC y rate limiting. |
 | [ADR-0014](../adr/0014-extension-historial-datos-estudiante.md) | Extensión del historial a datos académicos del estudiante | *Aceptado* (2026-10-30) | Complementa al ADR-0011: audita nombre, programa y semestre en `estudiantes_historial`. |
 
 ---
@@ -32,7 +33,7 @@ Esta sección funciona como índice de las decisiones arquitectónicas (ADR) de 
 | [A-02](../aspectos.md#a-02--cálculo-correcto-del-estado-de-graduación) | ADR-0001, ADR-0002, ADR-0003, ADR-0004 | Aceptado |
 | [A-03](../aspectos.md#a-03--alertas-tempranas-de-requisitos-pendientes) | ADR-0009 (regla determinista en evaluación) | Pendiente de código |
 | [A-04](../aspectos.md#a-04--disponibilidad-del-sistema) | ADR-0001, ADR-0005, ADR-0007, ADR-0010, ADR-0012 | Aceptado |
-| [A-05](../aspectos.md#a-05--protección-y-control-de-acceso-a-la-información-académica) | ADR-0001, ADR-0002 | Aceptado |
+| [A-05](../aspectos.md#a-05--protección-y-control-de-acceso-a-la-información-académica) | ADR-0001, ADR-0002, ADR-0013 | Aceptado |
 | [A-06](../aspectos.md#a-06--extensibilidad-para-múltiples-programas-académicos) | ADR-0001, ADR-0003, ADR-0014 | Aceptado |
 | [A-07](../aspectos.md#a-07--gestión-de-solicitudes-de-estudiantes-en-el-centro-de-ayuda) | ADR-0001 | Pendiente de código |
 | [A-08](../aspectos.md#a-08--historial-de-cambios-sobre-la-información-académica) | ADR-0003, ADR-0011, ADR-0014 | Aceptado |

@@ -388,7 +388,7 @@ class _Insignia extends StatelessWidget {
             Icon(Icons.public_rounded, size: 14, color: Color(0xFF7DD3FC)),
             SizedBox(width: 8),
             Text(
-              'PORTAL OFICIAL DE LA UTB',
+              'PORTAL UNIVERSITARIO UTB',
               style: TextStyle(
                 fontFamily: 'Outfit',
                 fontSize: 10.5,

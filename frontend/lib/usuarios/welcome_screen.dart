@@ -1,11 +1,9 @@
 import 'dart:math' as math;
-import 'dart:ui' show lerpDouble;
+import 'dart:ui' show ImageFilter, lerpDouble;
 
 import 'package:flutter/material.dart';
 
-/// Pantalla de entrada: arranca con un zoom sobre el muñeco del portátil,
-/// la cámara se aleja hasta mostrar el grupo abajo y aparecen título y botón.
-/// Tocar la pantalla salta la animación.
+/// Pantalla de entrada
 class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({super.key, required this.onIniciar});
 
@@ -22,23 +20,38 @@ class _WelcomeScreenState extends State<WelcomeScreen>
   static const _imgH = 941.0;
 
   /// Altura (fracción de la imagen) del punto de enfoque: entre la cara
-  /// del muñeco de gafas y el portátil. Ajusta si quieres otro encuadre.
+  /// del muñeco de gafas y el portátil.
   static const _focoY = 0.80;
 
+  // Cámara: los primeros 20 % son una pausa para ver al muñeco grande.
   late final AnimationController _camara = AnimationController(
     vsync: this,
-    duration: const Duration(milliseconds: 2800),
+    duration: const Duration(milliseconds: 3400),
   );
   late final AnimationController _ui = AnimationController(
     vsync: this,
-    duration: const Duration(milliseconds: 1800),
+    duration: const Duration(milliseconds: 2600),
   );
   late final Animation<double> _t = CurvedAnimation(
     parent: _camara,
-    curve: Curves.easeInOutCubic,
+    curve: const Interval(0.2, 1.0, curve: Curves.easeInOutCubic),
   );
 
   bool _iniciada = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_iniciada) return;
+    _iniciada = true;
+    if (MediaQuery.disableAnimationsOf(context)) {
+      _saltar();
+    } else {
+      _camara.forward().whenComplete(() {
+        if (mounted) _ui.forward();
+      });
+    }
+  }
 
   @override
   void dispose() {
@@ -47,22 +60,8 @@ class _WelcomeScreenState extends State<WelcomeScreen>
     super.dispose();
   }
 
-  Future<void> _arrancar() async {
-    if (_iniciada || !mounted) return;
-    _iniciada = true;
-    if (MediaQuery.disableAnimationsOf(context)) {
-      _saltar();
-      return;
-    }
-    await Future<void>.delayed(const Duration(milliseconds: 700));
-    if (!mounted) return;
-    await _camara.forward();
-    if (mounted) _ui.forward();
-  }
-
   void _saltar() {
     if (_ui.isCompleted) return;
-    _iniciada = true;
     _camara.value = 1;
     _ui.value = 1;
   }
@@ -79,17 +78,17 @@ class _WelcomeScreenState extends State<WelcomeScreen>
     final cover = math.max(w / _imgW, stageH / _imgH);
     final drawnH = _imgH * cover;
 
-    // Punto del muñeco del portátil en pantalla (estado final) y dónde
-    // queremos verlo al inicio.
     final pFinal = Offset(w / 2, (h - drawnH) + _focoY * drawnH);
     final foco = Offset(w / 2, h * 0.62);
-    // Zoom inicial; se asegura de que la imagen cubra hasta el borde inferior.
     final s0 = math.max(
       compact ? 3.0 : 2.4,
       (h - foco.dy) / ((1 - _focoY) * drawnH) + 0.05,
     );
 
-    final titulo = (math.min(w * 0.2, h * 0.115)).clamp(44.0, 96.0);
+    final panelW = math.min(440.0, w - 48);
+    final titulo = math
+        .min(math.min(w * 0.2, h * 0.115), (panelW - 56) / 3.3)
+        .clamp(40.0, 96.0);
 
     return Scaffold(
       backgroundColor: const Color(0xFF3A0090),
@@ -114,13 +113,10 @@ class _WelcomeScreenState extends State<WelcomeScreen>
               animation: _t,
               builder: (context, child) {
                 final t = _t.value;
-                final escala = lerpDouble(s0, 1, t)!;
-                final desplazamiento =
-                    Offset.lerp(foco - pFinal, Offset.zero, t)!;
                 return Transform.translate(
-                  offset: desplazamiento,
+                  offset: Offset.lerp(foco - pFinal, Offset.zero, t)!,
                   child: Transform.scale(
-                    scale: escala,
+                    scale: lerpDouble(s0, 1, t)!,
                     alignment: Alignment(
                       pFinal.dx / w * 2 - 1,
                       pFinal.dy / h * 2 - 1,
@@ -135,8 +131,6 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                   child: SizedBox(
                     width: w,
                     height: stageH,
-                    // Difumina el borde superior hacia el fondo morado
-                    // (no oscurece nada).
                     child: ShaderMask(
                       blendMode: BlendMode.dstIn,
                       shaderCallback: (rect) => const LinearGradient(
@@ -150,18 +144,14 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                         fit: BoxFit.cover,
                         alignment: Alignment.bottomCenter,
                         filterQuality: FilterQuality.high,
-                        frameBuilder: (context, child, frame, sync) {
-                          if (frame != null || sync) {
-                            WidgetsBinding.instance
-                                .addPostFrameCallback((_) => _arrancar());
-                          }
-                          return child;
-                        },
-                        errorBuilder: (context, error, stack) {
-                          WidgetsBinding.instance
-                              .addPostFrameCallback((_) => _arrancar());
-                          return const SizedBox.shrink();
-                        },
+                        frameBuilder: (context, child, frame, sync) =>
+                            AnimatedOpacity(
+                          opacity: (frame != null || sync) ? 1 : 0,
+                          duration: const Duration(milliseconds: 400),
+                          child: child,
+                        ),
+                        errorBuilder: (context, error, stack) =>
+                            const SizedBox.shrink(),
                       ),
                     ),
                   ),
@@ -169,99 +159,106 @@ class _WelcomeScreenState extends State<WelcomeScreen>
               ),
             ),
 
-            // Textos y botón.
+            // Insignia + panel desplegable, centrados en toda la página.
             SafeArea(
-              child: Align(
-                alignment: const Alignment(0, -0.45),
+              child: Center(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 24),
                   child: FittedBox(
                     fit: BoxFit.scaleDown,
-                    child: ConstrainedBox(
-                      constraints: const BoxConstraints(maxWidth: 460),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          _Entrada(
-                            parent: _ui,
-                            inicio: 0.0,
-                            fin: 0.3,
-                            child: const _Insignia(),
-                          ),
-                          const SizedBox(height: 18),
-                          _Entrada(
-                            parent: _ui,
-                            inicio: 0.1,
-                            fin: 0.45,
-                            child: _palabra('DINA', titulo, Colors.white),
-                          ),
-                          _Entrada(
-                            parent: _ui,
-                            inicio: 0.25,
-                            fin: 0.6,
-                            child: ShaderMask(
-                              blendMode: BlendMode.srcIn,
-                              shaderCallback: (r) => const LinearGradient(
-                                colors: [
-                                  Color(0xFF7DD3FC),
-                                  Color(0xFFA5B4FC),
-                                  Color(0xFFC4B5FD),
-                                ],
-                              ).createShader(r),
-                              child: _palabra('MIK', titulo, Colors.white),
-                            ),
-                          ),
-                          _Entrada(
-                            parent: _ui,
-                            inicio: 0.4,
-                            fin: 0.75,
-                            child: _palabra(
-                              'UTB',
-                              titulo,
-                              Colors.white.withValues(alpha: 0.4),
-                            ),
-                          ),
-                          const SizedBox(height: 24),
-                          _Entrada(
-                            parent: _ui,
-                            inicio: 0.6,
-                            fin: 0.9,
-                            child: Column(
-                              children: [
-                                Text(
-                                  '¿Aún no sabes qué te falta para\ngraduarte?',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    fontFamily: 'Outfit',
-                                    fontSize: compact ? 17 : 20,
-                                    fontWeight: FontWeight.w700,
-                                    color: Colors.white,
-                                    height: 1.25,
-                                  ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        _Entrada(
+                          parent: _ui,
+                          inicio: 0.0,
+                          fin: 0.12,
+                          child: const _Insignia(),
+                        ),
+                        const SizedBox(height: 10),
+                        _PanelDesplegable(
+                          parent: _ui,
+                          inicio: 0.1,
+                          fin: 0.55,
+                          ancho: panelW,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              _Entrada(
+                                parent: _ui,
+                                inicio: 0.45,
+                                fin: 0.65,
+                                child: _palabra('DINA', titulo, Colors.white),
+                              ),
+                              _Entrada(
+                                parent: _ui,
+                                inicio: 0.55,
+                                fin: 0.75,
+                                child: ShaderMask(
+                                  blendMode: BlendMode.srcIn,
+                                  shaderCallback: (r) => const LinearGradient(
+                                    colors: [
+                                      Color(0xFF7DD3FC),
+                                      Color(0xFFA5B4FC),
+                                      Color(0xFFC4B5FD),
+                                    ],
+                                  ).createShader(r),
+                                  child: _palabra('MIK', titulo, Colors.white),
                                 ),
-                                const SizedBox(height: 8),
-                                Text(
-                                  'Tu ruta de grado clara, sin sorpresas ni enredos.',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    fontFamily: 'Outfit',
-                                    fontSize: compact ? 12.5 : 14,
-                                    fontWeight: FontWeight.w500,
-                                    color: const Color(0xFF7DD3FC),
-                                  ),
+                              ),
+                              _Entrada(
+                                parent: _ui,
+                                inicio: 0.65,
+                                fin: 0.85,
+                                child: _palabra(
+                                  'UTB',
+                                  titulo,
+                                  Colors.white.withValues(alpha: 0.45),
                                 ),
-                              ],
-                            ),
+                              ),
+                              const SizedBox(height: 22),
+                              _Entrada(
+                                parent: _ui,
+                                inicio: 0.75,
+                                fin: 0.92,
+                                child: Column(
+                                  children: [
+                                    Text(
+                                      '¿Aún no sabes qué te falta para\ngraduarte?',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontFamily: 'Outfit',
+                                        fontSize: compact ? 17 : 20,
+                                        fontWeight: FontWeight.w700,
+                                        color: Colors.white,
+                                        height: 1.25,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Text(
+                                      'Tu ruta de grado clara, sin sorpresas ni enredos.',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontFamily: 'Outfit',
+                                        fontSize: compact ? 12.5 : 14,
+                                        fontWeight: FontWeight.w500,
+                                        color: const Color(0xFF7DD3FC),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(height: 26),
+                              _Entrada(
+                                parent: _ui,
+                                inicio: 0.85,
+                                fin: 1.0,
+                                child: _Boton(onTap: widget.onIniciar),
+                              ),
+                            ],
                           ),
-                          const SizedBox(height: 28),
-                          _Entrada(
-                            parent: _ui,
-                            inicio: 0.75,
-                            fin: 1.0,
-                            child: _Boton(onTap: widget.onIniciar),
-                          ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
@@ -284,6 +281,60 @@ class _WelcomeScreenState extends State<WelcomeScreen>
           color: color,
         ),
       );
+}
+
+/// Panel de vidrio que nace de la insignia: crece hacia abajo y se ensancha.
+/// Es semitransparente (tinte morado + desenfoque leve) para dejar ver el fondo.
+class _PanelDesplegable extends StatelessWidget {
+  const _PanelDesplegable({
+    required this.parent,
+    required this.inicio,
+    required this.fin,
+    required this.ancho,
+    required this.child,
+  });
+
+  final Animation<double> parent;
+  final double inicio;
+  final double fin;
+  final double ancho;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final curva = Interval(inicio, fin, curve: Curves.easeOutCubic);
+    return AnimatedBuilder(
+      animation: parent,
+      child: child,
+      builder: (context, child) {
+        final v = curva.transform(parent.value);
+        return ClipRRect(
+          borderRadius: BorderRadius.circular(28),
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
+            child: Align(
+              alignment: Alignment.topCenter,
+              heightFactor: v,
+              widthFactor: lerpDouble(0.55, 1, v),
+              child: Container(
+                width: ancho,
+                padding: const EdgeInsets.fromLTRB(28, 28, 28, 30),
+                decoration: BoxDecoration(
+                  // Sube/baja el alpha (0.0 a 1.0) para más o menos transparencia.
+                  color: const Color(0xFF1A0640).withValues(alpha: 0.4),
+                  borderRadius: BorderRadius.circular(28),
+                  border: Border.all(
+                    color: Colors.white.withValues(alpha: 0.18),
+                  ),
+                ),
+                child: child,
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
 }
 
 /// Aparece con fundido y un pequeño desplazamiento hacia arriba.
@@ -325,11 +376,11 @@ class _Insignia extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
           color: const Color(0xFF140D2B).withValues(alpha: 0.75),
           borderRadius: BorderRadius.circular(24),
-          border: Border.all(color: Colors.white.withValues(alpha: 0.18)),
+          border: Border.all(color: Colors.white.withValues(alpha: 0.22)),
         ),
         child: const Row(
           mainAxisSize: MainAxisSize.min,
@@ -337,13 +388,13 @@ class _Insignia extends StatelessWidget {
             Icon(Icons.public_rounded, size: 14, color: Color(0xFF7DD3FC)),
             SizedBox(width: 8),
             Text(
-              'PORTAL OFICIAL DE GRADOS',
+              'PORTAL OFICIAL DE LA UTB',
               style: TextStyle(
                 fontFamily: 'Outfit',
-                fontSize: 10,
+                fontSize: 10.5,
                 fontWeight: FontWeight.w700,
                 letterSpacing: 2,
-                color: Color(0xFFCBD5E1),
+                color: Color(0xFFE2E8F0),
               ),
             ),
           ],

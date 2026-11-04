@@ -242,7 +242,7 @@ AS_202620_DinamikUTB/
 ├── .github/
 │   └── workflows/
 │       ├── ci.yml                    # Pipeline de CI (Pytest, Flutter test, SonarCloud)
-│       └── publish-frontend-image.yml # Publicación de imagen Docker en GHCR
+│       └── deploy-pages.yml          # Despliegue del frontend en GitHub Pages
 ├── backend/                          # API en FastAPI
 │   ├── app/
 │   │   ├── main.py                   # Configuración de la API, middleware y seguridad
@@ -280,7 +280,7 @@ El entorno principal de la aplicación se encuentra desplegado en el servidor de
 
 | Pieza | URL / Acceso | Estado |
 |---|---|---|
-| Frontend Web | https://dinamikutb.iscoutb.dev | Activo |
+| Frontend Web | https://iscoutb.github.io/AS_202620_DinamikUTB/ | Activo (GitHub Pages) |
 | Backend API | https://api.dinamikutb.iscoutb.dev | Activo (FastAPI) |
 | Health check | https://api.dinamikutb.iscoutb.dev/health | 200 {"status":"ok"} |
 | Métricas (Q-05) | https://api.dinamikutb.iscoutb.dev/metrics | Formato Prometheus |

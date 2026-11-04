@@ -47,11 +47,8 @@ jobs:
           API_BASE_URL: ${{ vars.API_BASE_URL || 'https://api.dinamikutb.iscoutb.dev' }}
         run: >
           flutter build web --release
-          --base-href /
+          --base-href /AS_202620_DinamikUTB/
           --dart-define=API_BASE_URL=$API_BASE_URL
-
-      - name: Configure custom domain
-        run: printf '%s\n' 'dinamikutb.iscoutb.dev' > build/web/CNAME
 
       # GitHub Pages sirve este archivo para rutas no encontradas y la app muestra su 404.
       - run: cp build/web/index.html build/web/404.html

@@ -1,14 +1,5 @@
 # deploy/compose.lab.yaml — infraestructura como código del sistema en el servidor del laboratorio.
 #
-# GitHub Actions construye y publica la imagen del frontend en GHCR. Dokploy
-# construye la API y descarga la imagen estática del frontend.
-#
-# Reglas del laboratorio (docs/politicas-uso.md):
-#   - Sin "ports:": Traefik enruta el tráfico público; usa "expose".
-#   - Sin bind mounts, docker.sock ni privileged: solo volúmenes con nombre.
-#   - Sin container_name ni redes externas (Isolated Deployment crea la red del equipo).
-#   - Límites en cada servicio: el total del equipo no pasa de 512 MB.
-#   - Secretos en Dokploy → Environment. Aquí solo se referencian con ${VARIABLE}.
 
 services:
   api:

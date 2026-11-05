@@ -56,7 +56,7 @@ class MallaScreen extends StatelessWidget {
                     runSpacing: 8,
                     children: [
                       _PlanTag(label: 'Plan ${malla.plan}'),
-                      _PlanTag(label: 'Catálogo curricular'),
+                      const _PlanTag(label: 'Catálogo curricular'),
                     ],
                   ),
                 ],

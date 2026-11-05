@@ -23,7 +23,8 @@ class ResponsiveGrid extends StatelessWidget {
           1,
           ((constraints.maxWidth + spacing) / (minTileWidth + spacing)).floor(),
         );
-        final ancho = (constraints.maxWidth - spacing * (columnas - 1)) / columnas;
+        final ancho =
+            (constraints.maxWidth - spacing * (columnas - 1)) / columnas;
         return Wrap(
           spacing: spacing,
           runSpacing: spacing,

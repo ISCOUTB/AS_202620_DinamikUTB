@@ -16,7 +16,10 @@ class PageList extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         final base = constraints.maxWidth >= Breakpoints.medium ? 24.0 : 16.0;
-        final horizontal = math.max(base, (constraints.maxWidth - maxWidth) / 2);
+        final horizontal = math.max(
+          base,
+          (constraints.maxWidth - maxWidth) / 2,
+        );
         return ListView(
           physics: const AlwaysScrollableScrollPhysics(),
           padding: EdgeInsets.symmetric(horizontal: horizontal, vertical: 20),

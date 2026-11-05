@@ -47,7 +47,7 @@ class _AppShellState extends State<AppShell> {
         appBar: AppBar(
           title: Row(
             children: [
-              _BrandIcon(size: 32),
+              const _BrandIcon(size: 32),
               const SizedBox(width: 9),
               Expanded(
                 child: Column(
@@ -119,7 +119,7 @@ class _AppShellState extends State<AppShell> {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  _BrandIcon(size: 36),
+                  const _BrandIcon(size: 36),
                   if (extendido) ...[
                     const SizedBox(width: 10),
                     const Text(

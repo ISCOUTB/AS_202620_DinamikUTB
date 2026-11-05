@@ -9,14 +9,15 @@ abstract class TokenStorage {
 /// Usa el almacén seguro de la plataforma; en web, almacenamiento cifrado del navegador.
 class SecureTokenStorage implements TokenStorage {
   SecureTokenStorage([FlutterSecureStorage? storage])
-      : _storage = storage ?? const FlutterSecureStorage();
+    : _storage = storage ?? const FlutterSecureStorage();
 
   static const _clave = 'access_token';
   final FlutterSecureStorage _storage;
   String? _sessionToken;
 
   @override
-  Future<String?> read() async => _sessionToken ?? await _storage.read(key: _clave);
+  Future<String?> read() async =>
+      _sessionToken ?? await _storage.read(key: _clave);
 
   @override
   Future<void> write(String token, {bool persist = true}) async {
@@ -44,7 +45,8 @@ class InMemoryTokenStorage implements TokenStorage {
   Future<String?> read() async => _token;
 
   @override
-  Future<void> write(String token, {bool persist = true}) async => _token = token;
+  Future<void> write(String token, {bool persist = true}) async =>
+      _token = token;
 
   @override
   Future<void> clear() async => _token = null;

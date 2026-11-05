@@ -11,6 +11,8 @@ const String apiBaseUrl = String.fromEnvironment(
 /// Exige HTTPS en compilaciones de producción.
 void validarConfiguracion() {
   if (kReleaseMode && !apiBaseUrl.startsWith('https://')) {
-    throw StateError('API_BASE_URL debe usar https:// en builds de producción.');
+    throw StateError(
+      'API_BASE_URL debe usar https:// en builds de producción.',
+    );
   }
 }

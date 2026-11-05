@@ -14,8 +14,8 @@ class ApiClient {
     required TokenStorage tokenStorage,
     http.Client? client,
     this.timeout = const Duration(seconds: 15),
-  })  : _tokens = tokenStorage,
-        _client = client ?? http.Client();
+  }) : _tokens = tokenStorage,
+       _client = client ?? http.Client();
 
   final String baseUrl;
   final Duration timeout;
@@ -114,7 +114,8 @@ class ApiClient {
       404 => 'No se encontró la información solicitada.',
       422 => 'Los datos enviados no son válidos.',
       429 => 'Demasiados intentos. Espera un momento.',
-      _ when status >= 500 => 'El servidor no está disponible. Intenta más tarde.',
+      _ when status >= 500 =>
+        'El servidor no está disponible. Intenta más tarde.',
       _ => 'No se pudo completar la solicitud.',
     };
   }

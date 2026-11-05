@@ -19,8 +19,12 @@ class RequisitoCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(requisito.nombre,
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600)),
+            Text(
+              requisito.nombre,
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+            ),
             const SizedBox(height: 10),
             RequirementStatusChip(estado: requisito.estado),
             if (pie != null) ...[const SizedBox(height: 12), pie!],

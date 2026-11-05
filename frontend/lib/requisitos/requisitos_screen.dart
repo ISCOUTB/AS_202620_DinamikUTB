@@ -32,53 +32,61 @@ class _RequisitosScreenState extends State<RequisitosScreen> {
       load: () => widget.service.obtenerRequisitos(widget.estudianteId),
       builder: (context, requisitos) {
         if (requisitos.isEmpty) {
-          return const PageList(children: [
-            Padding(
-              padding: EdgeInsets.only(top: 48),
-              child: Center(child: Text('No tienes requisitos registrados.')),
-            ),
-          ]);
+          return const PageList(
+            children: [
+              Padding(
+                padding: EdgeInsets.only(top: 48),
+                child: Center(child: Text('No tienes requisitos registrados.')),
+              ),
+            ],
+          );
         }
         final visibles = _filtro == null
             ? requisitos
             : requisitos.where((r) => r.estado == _filtro).toList();
-        return PageList(children: [
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: [
-              ChoiceChip(
-                label: const Text('Todos'),
-                selected: _filtro == null,
-                onSelected: (_) => setState(() => _filtro = null),
-              ),
-              for (final estado in EstadoRequisito.values)
+        return PageList(
+          children: [
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
                 ChoiceChip(
-                  label: Text(switch (estado) {
-                    EstadoRequisito.cumplido => 'Cumplidos',
-                    EstadoRequisito.enProceso => 'En curso',
-                    EstadoRequisito.pendiente => 'Pendientes',
-                  }),
-                  selected: _filtro == estado,
-                  onSelected: (_) => setState(() => _filtro = estado),
+                  label: const Text('Todos'),
+                  selected: _filtro == null,
+                  onSelected: (_) => setState(() => _filtro = null),
                 ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          if (visibles.isEmpty)
-            const Padding(
-              padding: EdgeInsets.only(top: 32),
-              child: Center(
-                child: Text('No hay requisitos con este estado.',
-                    style: TextStyle(color: AppColors.textMuted)),
-              ),
-            )
-          else
-            ResponsiveGrid(
-              minTileWidth: 320,
-              children: [for (final r in visibles) RequisitoCard(requisito: r)],
+                for (final estado in EstadoRequisito.values)
+                  ChoiceChip(
+                    label: Text(switch (estado) {
+                      EstadoRequisito.cumplido => 'Cumplidos',
+                      EstadoRequisito.enProceso => 'En curso',
+                      EstadoRequisito.pendiente => 'Pendientes',
+                    }),
+                    selected: _filtro == estado,
+                    onSelected: (_) => setState(() => _filtro = estado),
+                  ),
+              ],
             ),
-        ]);
+            const SizedBox(height: 16),
+            if (visibles.isEmpty)
+              const Padding(
+                padding: EdgeInsets.only(top: 32),
+                child: Center(
+                  child: Text(
+                    'No hay requisitos con este estado.',
+                    style: TextStyle(color: AppColors.textMuted),
+                  ),
+                ),
+              )
+            else
+              ResponsiveGrid(
+                minTileWidth: 320,
+                children: [
+                  for (final r in visibles) RequisitoCard(requisito: r),
+                ],
+              ),
+          ],
+        );
       },
     );
   }

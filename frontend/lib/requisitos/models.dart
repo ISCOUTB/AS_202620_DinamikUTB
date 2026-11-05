@@ -9,14 +9,19 @@ enum EstadoRequisito {
   final String etiqueta;
 
   /// Usa pendiente como valor predeterminado para estados desconocidos.
-  static EstadoRequisito desde(String valor) => EstadoRequisito.values.firstWhere(
+  static EstadoRequisito desde(String valor) =>
+      EstadoRequisito.values.firstWhere(
         (e) => e.valorApi == valor,
         orElse: () => EstadoRequisito.pendiente,
       );
 }
 
 class Requisito {
-  const Requisito({required this.id, required this.nombre, required this.estado});
+  const Requisito({
+    required this.id,
+    required this.nombre,
+    required this.estado,
+  });
 
   final int id;
   final String nombre;

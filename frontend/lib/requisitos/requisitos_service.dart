@@ -41,7 +41,8 @@ class RequisitosService {
 
   Future<ResumenRequisitos> obtenerResumen(String estudianteId) async {
     final data =
-        await _api.get('${_base(estudianteId)}/resumen') as Map<String, dynamic>;
+        await _api.get('${_base(estudianteId)}/resumen')
+            as Map<String, dynamic>;
     return ResumenRequisitos.fromJson(data);
   }
 
@@ -49,10 +50,12 @@ class RequisitosService {
     int requisitoId,
     EstadoRequisito estado,
   ) async {
-    final data = await _api.put(
-      '/requisitos/$requisitoId/estado',
-      body: {'estado': estado.valorApi},
-    ) as Map<String, dynamic>;
+    final data =
+        await _api.put(
+              '/requisitos/$requisitoId/estado',
+              body: {'estado': estado.valorApi},
+            )
+            as Map<String, dynamic>;
     return Requisito.fromJson(data);
   }
 }

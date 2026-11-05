@@ -50,7 +50,7 @@ jobs:
         run: flutter analyze
 
       - name: Run tests
-        run: flutter test
+        run: flutter test --coverage
 
   sonarcloud:
     name: SonarCloud Analysis
@@ -80,6 +80,10 @@ jobs:
 
       - name: Run backend tests with coverage
         run: python -m pytest -c backend/pyproject.toml backend/tests --cov --cov-report=xml
+
+      - name: Run frontend tests with coverage
+        working-directory: frontend
+        run: flutter test --coverage
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarqube-scan-action@0303d6b62e310685c0e34d0b9cde218036885c4d # v5.0.0

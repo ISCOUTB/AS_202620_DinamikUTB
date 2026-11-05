@@ -8,10 +8,7 @@ void main() {
         Validators.correoInstitucional('estudiante@dinamikutb.dev'),
         isNull,
       );
-      expect(
-        Validators.correoInstitucional('estudiante@utb.edu.co'),
-        isNull,
-      );
+      expect(Validators.correoInstitucional('estudiante@utb.edu.co'), isNull);
     });
 
     test('normaliza mayúsculas y espacios alrededor del correo', () {

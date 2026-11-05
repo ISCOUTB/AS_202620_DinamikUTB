@@ -37,28 +37,33 @@ Future<http.StreamedResponse> _respuesta(int status, String cuerpo) async {
 const _json = '[{"id": 1, "nombre": "Inglés B2", "estado": "pendiente"}]';
 
 RequisitosService _servicio(ClienteConGuion cliente) => RequisitosService(
-      ApiClient(
-        baseUrl: 'http://127.0.0.1:8000',
-        tokenStorage: InMemoryTokenStorage(),
-        client: cliente,
-        timeout: const Duration(milliseconds: 50),
-      ),
-      maxIntentos: 3,
-      esperaBase: Duration.zero,
-    );
+  ApiClient(
+    baseUrl: 'http://127.0.0.1:8000',
+    tokenStorage: InMemoryTokenStorage(),
+    client: cliente,
+    timeout: const Duration(milliseconds: 50),
+  ),
+  maxIntentos: 3,
+  esperaBase: Duration.zero,
+);
 
 void main() {
-  test('Fallo "no responde": reintenta tras un 503 y termina con éxito', () async {
-    final cliente = ClienteConGuion([
-      () => _respuesta(503, ''),
-      () => _respuesta(200, _json),
-    ]);
+  test(
+    'Fallo "no responde": reintenta tras un 503 y termina con éxito',
+    () async {
+      final cliente = ClienteConGuion([
+        () => _respuesta(503, ''),
+        () => _respuesta(200, _json),
+      ]);
 
-    final requisitos = await _servicio(cliente).obtenerRequisitos('T000123456');
+      final requisitos = await _servicio(
+        cliente,
+      ).obtenerRequisitos('T000123456');
 
-    expect(requisitos.length, 1);
-    expect(cliente.llamadas, 2);
-  });
+      expect(requisitos.length, 1);
+      expect(cliente.llamadas, 2);
+    },
+  );
 
   test('Fallo "no responde": reintenta tras una falla de conexión', () async {
     final cliente = ClienteConGuion([
@@ -72,48 +77,63 @@ void main() {
     expect(cliente.llamadas, 2);
   });
 
-  test('Fallo "responde tarde": corta por timeout y agota los intentos', () async {
-    final cliente = ClienteConGuion([
-      () => Completer<http.StreamedResponse>().future, // nunca responde
-    ]);
+  test(
+    'Fallo "responde tarde": corta por timeout y agota los intentos',
+    () async {
+      final cliente = ClienteConGuion([
+        () => Completer<http.StreamedResponse>().future, // nunca responde
+      ]);
 
-    await expectLater(
-      _servicio(cliente).obtenerRequisitos('T000123456'),
-      throwsA(isA<ApiException>()),
-    );
-    expect(cliente.llamadas, 3);
-  });
+      await expectLater(
+        _servicio(cliente).obtenerRequisitos('T000123456'),
+        throwsA(isA<ApiException>()),
+      );
+      expect(cliente.llamadas, 3);
+    },
+  );
 
-  test('Fallo "responde tarde": una respuesta lenta pero dentro de los intentos se recupera', () async {
-    final cliente = ClienteConGuion([
-      () => Completer<http.StreamedResponse>().future, // 1.er intento: timeout
-      () => _respuesta(200, _json),
-    ]);
+  test(
+    'Fallo "responde tarde": una respuesta lenta pero dentro de los intentos se recupera',
+    () async {
+      final cliente = ClienteConGuion([
+        () =>
+            Completer<http.StreamedResponse>().future, // 1.er intento: timeout
+        () => _respuesta(200, _json),
+      ]);
 
-    final requisitos = await _servicio(cliente).obtenerRequisitos('T000123456');
+      final requisitos = await _servicio(
+        cliente,
+      ).obtenerRequisitos('T000123456');
 
-    expect(requisitos.length, 1);
-    expect(cliente.llamadas, 2);
-  });
+      expect(requisitos.length, 1);
+      expect(cliente.llamadas, 2);
+    },
+  );
 
-  test('Un 404 no se reintenta: un error del cliente no se arregla repitiendo', () async {
-    final cliente = ClienteConGuion([() => _respuesta(404, '')]);
+  test(
+    'Un 404 no se reintenta: un error del cliente no se arregla repitiendo',
+    () async {
+      final cliente = ClienteConGuion([() => _respuesta(404, '')]);
 
-    await expectLater(
-      _servicio(cliente).obtenerRequisitos('T000123456'),
-      throwsA(isA<ApiException>()),
-    );
-    expect(cliente.llamadas, 1);
-  });
+      await expectLater(
+        _servicio(cliente).obtenerRequisitos('T000123456'),
+        throwsA(isA<ApiException>()),
+      );
+      expect(cliente.llamadas, 1);
+    },
+  );
 
-  test('Fallo "responde dos veces": la consulta repetida devuelve el mismo resultado', () async {
-    final cliente = ClienteConGuion([() => _respuesta(200, _json)]);
-    final servicio = _servicio(cliente);
+  test(
+    'Fallo "responde dos veces": la consulta repetida devuelve el mismo resultado',
+    () async {
+      final cliente = ClienteConGuion([() => _respuesta(200, _json)]);
+      final servicio = _servicio(cliente);
 
-    final primera = await servicio.obtenerRequisitos('T000123456');
-    final segunda = await servicio.obtenerRequisitos('T000123456');
+      final primera = await servicio.obtenerRequisitos('T000123456');
+      final segunda = await servicio.obtenerRequisitos('T000123456');
 
-    expect(segunda.length, primera.length);
-    expect(segunda.first.estado, primera.first.estado);
-  });
+      expect(segunda.length, primera.length);
+      expect(segunda.first.estado, primera.first.estado);
+    },
+  );
 }

@@ -146,10 +146,10 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                         filterQuality: FilterQuality.high,
                         frameBuilder: (context, child, frame, sync) =>
                             AnimatedOpacity(
-                          opacity: (frame != null || sync) ? 1 : 0,
-                          duration: const Duration(milliseconds: 400),
-                          child: child,
-                        ),
+                              opacity: (frame != null || sync) ? 1 : 0,
+                              duration: const Duration(milliseconds: 400),
+                              child: child,
+                            ),
                         errorBuilder: (context, error, stack) =>
                             const SizedBox.shrink(),
                       ),
@@ -271,16 +271,16 @@ class _WelcomeScreenState extends State<WelcomeScreen>
   }
 
   Widget _palabra(String texto, double size, Color color) => Text(
-        texto,
-        style: TextStyle(
-          fontFamily: 'Syne',
-          fontSize: size,
-          fontWeight: FontWeight.w800,
-          height: 0.92,
-          letterSpacing: 3,
-          color: color,
-        ),
-      );
+    texto,
+    style: TextStyle(
+      fontFamily: 'Syne',
+      fontSize: size,
+      fontWeight: FontWeight.w800,
+      height: 0.92,
+      letterSpacing: 3,
+      color: color,
+    ),
+  );
 }
 
 /// Panel de vidrio que nace de la insignia: crece hacia abajo y se ensancha.
@@ -376,30 +376,30 @@ class _Insignia extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        decoration: BoxDecoration(
-          color: const Color(0xFF140D2B).withValues(alpha: 0.75),
-          borderRadius: BorderRadius.circular(24),
-          border: Border.all(color: Colors.white.withValues(alpha: 0.22)),
+    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+    decoration: BoxDecoration(
+      color: const Color(0xFF140D2B).withValues(alpha: 0.75),
+      borderRadius: BorderRadius.circular(24),
+      border: Border.all(color: Colors.white.withValues(alpha: 0.22)),
+    ),
+    child: const Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(Icons.public_rounded, size: 14, color: Color(0xFF7DD3FC)),
+        SizedBox(width: 8),
+        Text(
+          'PORTAL UNIVERSITARIO UTB',
+          style: TextStyle(
+            fontFamily: 'Outfit',
+            fontSize: 10.5,
+            fontWeight: FontWeight.w700,
+            letterSpacing: 2,
+            color: Color(0xFFE2E8F0),
+          ),
         ),
-        child: const Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(Icons.public_rounded, size: 14, color: Color(0xFF7DD3FC)),
-            SizedBox(width: 8),
-            Text(
-              'PORTAL UNIVERSITARIO UTB',
-              style: TextStyle(
-                fontFamily: 'Outfit',
-                fontSize: 10.5,
-                fontWeight: FontWeight.w700,
-                letterSpacing: 2,
-                color: Color(0xFFE2E8F0),
-              ),
-            ),
-          ],
-        ),
-      );
+      ],
+    ),
+  );
 }
 
 class _Boton extends StatelessWidget {
@@ -409,45 +409,48 @@ class _Boton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => DecoratedBox(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(30),
-          gradient: const LinearGradient(
-            colors: [Color(0xFFC4B5FD), Color(0xFF818CF8), Color(0xFF38BDF8)],
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: const Color(0xFF38BDF8).withValues(alpha: 0.4),
-              blurRadius: 28,
-              offset: const Offset(0, 8),
-            ),
-          ],
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(30),
+      gradient: const LinearGradient(
+        colors: [Color(0xFFC4B5FD), Color(0xFF818CF8), Color(0xFF38BDF8)],
+      ),
+      boxShadow: [
+        BoxShadow(
+          color: const Color(0xFF38BDF8).withValues(alpha: 0.4),
+          blurRadius: 28,
+          offset: const Offset(0, 8),
         ),
-        child: Material(
-          color: Colors.transparent,
-          child: InkWell(
-            borderRadius: BorderRadius.circular(30),
-            onTap: onTap,
-            child: const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 44, vertical: 16),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    'Iniciar sesión',
-                    style: TextStyle(
-                      fontFamily: 'Outfit',
-                      fontSize: 15,
-                      fontWeight: FontWeight.w800,
-                      color: Color(0xFF0F0529),
-                    ),
-                  ),
-                  SizedBox(width: 10),
-                  Icon(Icons.arrow_forward_rounded,
-                      size: 19, color: Color(0xFF0F0529)),
-                ],
+      ],
+    ),
+    child: Material(
+      color: Colors.transparent,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(30),
+        onTap: onTap,
+        child: const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 44, vertical: 16),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Iniciar sesión',
+                style: TextStyle(
+                  fontFamily: 'Outfit',
+                  fontSize: 15,
+                  fontWeight: FontWeight.w800,
+                  color: Color(0xFF0F0529),
+                ),
               ),
-            ),
+              SizedBox(width: 10),
+              Icon(
+                Icons.arrow_forward_rounded,
+                size: 19,
+                color: Color(0xFF0F0529),
+              ),
+            ],
           ),
         ),
-      );
+      ),
+    ),
+  );
 }

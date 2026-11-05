@@ -430,16 +430,8 @@ class _AccountScreenState extends State<AccountScreen> {
       RegExp(r'\d').hasMatch(valor),
       RegExp(r'[^A-Za-z0-9]').hasMatch(valor),
     ].where((ok) => ok).length;
-    final color = puntos < 2
-        ? AppColors.danger
-        : puntos < 4
-        ? AppColors.warningText
-        : AppColors.successText;
-    final nivel = puntos < 2
-        ? 'Débil'
-        : puntos < 4
-        ? 'Aceptable'
-        : 'Fuerte';
+    final color = _colorFortaleza(puntos);
+    final nivel = _nivelFortaleza(puntos);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -474,6 +466,18 @@ class _AccountScreenState extends State<AccountScreen> {
         ),
       ],
     );
+  }
+
+  Color _colorFortaleza(int puntos) {
+    if (puntos < 2) return AppColors.danger;
+    if (puntos < 4) return AppColors.warningText;
+    return AppColors.successText;
+  }
+
+  String _nivelFortaleza(int puntos) {
+    if (puntos < 2) return 'Débil';
+    if (puntos < 4) return 'Aceptable';
+    return 'Fuerte';
   }
 
   Future<void> _procesar() async {

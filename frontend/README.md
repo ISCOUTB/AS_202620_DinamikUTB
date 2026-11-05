@@ -43,18 +43,18 @@ https://iscoutb.github.io/AS_202620_DinamikUTB/
 ```
 
 El workflow compila Flutter con `--base-href /AS_202620_DinamikUTB/` y usa
-`https://api.dinamikutb.iscoutb.dev` como backend.
+`https://api-dinamikutb.iscoutb.dev` como backend.
 
 Antes del primer despliegue, configura en GitHub
 **Settings → Secrets and variables → Actions → Variables**:
 
 ```text
-API_BASE_URL=https://api.dinamikutb.iscoutb.dev
+API_BASE_URL=https://api-dinamikutb.iscoutb.dev
 ```
 
 La API se despliega por separado en Dokploy. Configura únicamente los servicios
 `api` y `db` con `deploy/compose.lab.yaml`, vincula el dominio
-`api.dinamikutb.iscoutb.dev` al puerto interno `8000` y habilita HTTPS.
+`api-dinamikutb.iscoutb.dev` al puerto interno `8000` y habilita HTTPS.
 No publiques el servicio `db`.
 
 En Dokploy, configura como mínimo:
@@ -69,5 +69,5 @@ Completa las demás variables obligatorias de PostgreSQL y seguridad usando
 ### Verificación
 
 - Abre `https://iscoutb.github.io/AS_202620_DinamikUTB/`.
-- `https://api.dinamikutb.iscoutb.dev/health` debe responder con estado `ok`.
+- `https://api-dinamikutb.iscoutb.dev/health` debe responder con estado `ok`.
 - Inicia sesión y confirma que el navegador usa el dominio API sin errores CORS.

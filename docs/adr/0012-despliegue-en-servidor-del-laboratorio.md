@@ -35,7 +35,7 @@ Hay además una fecha que fuerza la decisión: la base de Render gratuita se cre
 
 ### 3.2 Solo el servidor del laboratorio
 * **Ventajas:** persistencia sin expiración, sin arranque en frío.
-* **Desventajas:** depende de la disponibilidad del laboratorio y de sus políticas. La accesibilidad desde fuera de la universidad se comprueba con `curl` sobre `https://api.dinamikutb.iscoutb.dev/health`; el resultado vigente está en la sección 8. El dominio pasa por Cloudflare y Traefik.
+* **Desventajas:** depende de la disponibilidad del laboratorio y de sus políticas. La accesibilidad desde fuera de la universidad se comprueba con `curl` sobre `https://api-dinamikutb.iscoutb.dev/health`; el resultado vigente está en la sección 8. El dominio pasa por Cloudflare y Traefik.
 
 ### 3.3 Ambos despliegues en paralelo
 * **Ventajas:** respaldo mutuo; la URL del backend se elige con `API_BASE_URL`.
@@ -45,7 +45,7 @@ Hay además una fecha que fuerza la decisión: la base de Render gratuita se cre
 
 **Opción A: el sistema principal corre en el laboratorio.** El backend y su Postgres del laboratorio son el ambiente de referencia. Render queda como respaldo mientras dure su base (hasta el 27/10/2026), **no se recrea** y después se retira.
 
-El frontend de GitHub Pages usa la variable de repositorio `API_BASE_URL` con el valor `https://api.dinamikutb.iscoutb.dev`. El dominio API del laboratorio debe responder con `/health` HTTP 200 desde fuera de la universidad antes de considerar el despliegue operativo.
+El frontend de GitHub Pages usa la variable de repositorio `API_BASE_URL` con el valor `https://api-dinamikutb.iscoutb.dev`. El dominio API del laboratorio debe responder con `/health` HTTP 200 desde fuera de la universidad antes de considerar el despliegue operativo.
 
 Servicios (`deploy/compose.lab.yaml`): `api` (FastAPI, 0,5 CPU, 192 MB) y `db` (`postgres:16-alpine`, volumen `pgdata`, 0,5 CPU, 160 MB), detrás de Traefik. Variables obligatorias: `SECRET_KEY`, `CORS_ORIGINS`, `SEED_DEMO_PASSWORD`, `POSTGRES_*`, definidas en Dokploy, nunca en el repositorio.
 
@@ -82,7 +82,7 @@ Servicios (`deploy/compose.lab.yaml`): `api` (FastAPI, 0,5 CPU, 192 MB) y `db` (
 | **Escenario** | [Q-05](../arc42/10-quality-requirements.md#escenario-q-05--disponibilidad-del-sistema) |
 | **C4** | `backend_lab`, `database_lab`, `proxy` en `docs/c4/contenedores.puml` |
 | **Código** | `deploy/compose.lab.yaml`, `deploy/.env.example`, `backend/Dockerfile` |
-| **URL pública** | https://api.dinamikutb.iscoutb.dev (health: https://api.dinamikutb.iscoutb.dev/health) |
+| **URL pública** | https://api-dinamikutb.iscoutb.dev (health: https://api-dinamikutb.iscoutb.dev/health) |
 | **Commits** | `8dad793` |
 
 ### Comprobación del despliegue

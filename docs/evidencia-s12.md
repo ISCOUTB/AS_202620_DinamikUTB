@@ -69,10 +69,10 @@ El despliegue en Render expiró y fue retirado. El sistema de referencia activo 
 
 | **Petición de comprobación** | **Resultado verificado** |
 |---|---|
-| GET [https://api.dinamikutb.iscoutb.dev/health](https://api.dinamikutb.iscoutb.dev/health) | **HTTP 200** ({"status":"ok"}) |
-| GET [https://api.dinamikutb.iscoutb.dev/metrics](https://api.dinamikutb.iscoutb.dev/metrics) | **HTTP 200** (métricas de Prometheus) |
-| GET [https://api.dinamikutb.iscoutb.dev/requisitos/T000123456](https://api.dinamikutb.iscoutb.dev/requisitos/T000123456) | **HTTP 401** (autenticación obligatoria) |
-| GET [https://api.dinamikutb.iscoutb.dev/docs](https://api.dinamikutb.iscoutb.dev/docs) | **HTTP 404** (desactivado en producción) |
+| GET [https://api-dinamikutb.iscoutb.dev/health](https://api-dinamikutb.iscoutb.dev/health) | **HTTP 200** ({"status":"ok"}) |
+| GET [https://api-dinamikutb.iscoutb.dev/metrics](https://api-dinamikutb.iscoutb.dev/metrics) | **HTTP 200** (métricas de Prometheus) |
+| GET [https://api-dinamikutb.iscoutb.dev/requisitos/T000123456](https://api-dinamikutb.iscoutb.dev/requisitos/T000123456) | **HTTP 401** (autenticación obligatoria) |
+| GET [https://api-dinamikutb.iscoutb.dev/docs](https://api-dinamikutb.iscoutb.dev/docs) | **HTTP 404** (desactivado en producción) |
 
 ---
 

@@ -5,7 +5,7 @@ COPY pubspec.yaml pubspec.lock ./
 RUN flutter pub get
 
 COPY . .
-ARG API_BASE_URL=https://api.dinamikutb.iscoutb.dev
+ARG API_BASE_URL=https://api-dinamikutb.iscoutb.dev
 RUN flutter build web --release --dart-define=API_BASE_URL=${API_BASE_URL}
 
 FROM nginx:1.27-alpine

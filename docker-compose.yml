@@ -32,7 +32,7 @@ services:
     build:
       context: ./frontend
       args:
-        API_BASE_URL: ${API_BASE_URL:-https://api.dinamikutb.iscoutb.dev}
+        API_BASE_URL: ${API_BASE_URL:-https://api-dinamikutb.iscoutb.dev}
     restart: unless-stopped
     ports:
       - "127.0.0.1:8080:80"

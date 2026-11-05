@@ -35,7 +35,7 @@ jobs:
 
       - name: Validate API base URL
         env:
-          API_BASE_URL: ${{ vars.API_BASE_URL || 'https://api.dinamikutb.iscoutb.dev' }}
+          API_BASE_URL: ${{ vars.API_BASE_URL || 'https://api-dinamikutb.iscoutb.dev' }}
         run: |
           if [[ "$API_BASE_URL" != https://* ]]; then
             echo "API_BASE_URL must use HTTPS."
@@ -44,7 +44,7 @@ jobs:
 
       - name: Build web
         env:
-          API_BASE_URL: ${{ vars.API_BASE_URL || 'https://api.dinamikutb.iscoutb.dev' }}
+          API_BASE_URL: ${{ vars.API_BASE_URL || 'https://api-dinamikutb.iscoutb.dev' }}
         run: >
           flutter build web --release
           --base-href /AS_202620_DinamikUTB/

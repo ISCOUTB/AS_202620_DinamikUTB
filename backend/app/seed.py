@@ -16,8 +16,12 @@ import os
 
 from app.core.database import Base, SessionLocal, engine
 from app.core.security import LARGO_MINIMO_PASSWORD
+from app.curriculo import models as curriculo_models  # noqa: F401
 from app.estudiantes.models import Estudiante
+from app.programas import models as programas_models  # noqa: F401
 from app.requisitos.models import Requisito
+from app.requisitos import models as requisitos_models  # noqa: F401
+from app.usuarios import models as usuarios_models  # noqa: F401
 from app.usuarios.roles import Rol
 from app.usuarios.service import crear_usuario, obtener_por_email
 

@@ -28,22 +28,6 @@ services:
       retries: 5
       start_period: 20s
 
-  web:
-    build:
-      context: ./frontend
-      args:
-        API_BASE_URL: ${API_BASE_URL:-https://api-dinamikutb.iscoutb.dev}
-    restart: unless-stopped
-    ports:
-      - "127.0.0.1:8080:80"
-    depends_on:
-      api:
-        condition: service_healthy
-    healthcheck:
-      test: ["CMD", "wget", "--spider", "--quiet", "http://127.0.0.1/health"]
-      interval: 10s
-      timeout: 5s
-      retries: 3
 
   db:
     image: postgres:16-alpine

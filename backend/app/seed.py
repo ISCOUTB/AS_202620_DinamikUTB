@@ -1,17 +1,3 @@
-"""
-Script de datos de ejemplo para desarrollo local y para el ambiente desplegado.
-
-Inserta un estudiante, requisitos de prueba y (opcionalmente) usuarios de demostración.
-Es idempotente: no duplica datos por tabla/correo.
-
-Las contraseñas NUNCA están en el código: los usuarios demo solo se crean si existe la
-variable de entorno SEED_DEMO_PASSWORD (mínimo 12 caracteres). En producción, bórrala
-después de la demostración.
-
-Uso: desde la carpeta backend/, con el entorno virtual activado:
-    SEED_DEMO_PASSWORD='una-clave-larga-123' python -m app.seed
-"""
-
 import os
 
 from app.core.database import Base, SessionLocal, engine

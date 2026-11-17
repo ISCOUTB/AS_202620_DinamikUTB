@@ -5,6 +5,7 @@ from fastapi.testclient import TestClient
 
 from app.core.config import get_settings
 from app.main import app
+from app.seed import _poblar_usuarios
 from app.usuarios.models import Usuario
 from app.usuarios.service import crear_usuario
 from tests.conftest import TestingSessionLocal
@@ -39,6 +40,17 @@ def test_login_exitoso_devuelve_token():
     assert cuerpo["token_type"] == "bearer"
     assert cuerpo["access_token"]
     assert cuerpo["expires_in"] > 0
+
+
+def test_seed_crea_administrador_demo(monkeypatch):
+    monkeypatch.setenv("SEED_DEMO_PASSWORD", PASSWORD)
+
+    with TestingSessionLocal() as db:
+        _poblar_usuarios(db)
+
+    response = _login("administrador.demo@dinamikutb.dev")
+
+    assert response.status_code == 200
 
 
 def test_login_normaliza_el_correo():

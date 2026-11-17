@@ -34,6 +34,7 @@ REQUISITOS_DE_EJEMPLO = [
 USUARIOS_DEMO = [
     ("estudiante.demo@dinamikutb.dev", Rol.ESTUDIANTE, "T000123456"),
     ("coordinador.demo@dinamikutb.dev", Rol.COORDINADOR, None),
+    ("administrador.demo@dinamikutb.dev", Rol.ADMINISTRADOR, None),
 ]
 
 

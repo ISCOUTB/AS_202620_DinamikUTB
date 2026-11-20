@@ -120,6 +120,7 @@ void main() {
       ),
     );
 
+    await tester.ensureVisible(find.widgetWithText(FilledButton, 'Iniciar sesión'));
     await tester.tap(find.widgetWithText(FilledButton, 'Iniciar sesión'));
     await tester.pump();
 
@@ -147,6 +148,7 @@ void main() {
     expect(passwordField.keyboardType, TextInputType.visiblePassword);
 
     await tester.enterText(find.byType(TextFormField).last, '12345678');
+    await tester.ensureVisible(find.widgetWithText(FilledButton, 'Iniciar sesión'));
     await tester.tap(find.widgetWithText(FilledButton, 'Iniciar sesión'));
     await tester.pump();
 

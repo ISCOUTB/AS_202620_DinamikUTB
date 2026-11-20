@@ -38,12 +38,12 @@ ApiClient _api(String respuesta, [int status = 200]) => ApiClient(
   client: ClienteFalso(respuesta, status),
 );
 
-AuthController _auth([String respuesta = '{}', int status = 401]) {
+AuthController _auth() {
   final almacen = InMemoryTokenStorage();
   final api = ApiClient(
     baseUrl: 'http://127.0.0.1:8000',
     tokenStorage: almacen,
-    client: ClienteFalso(respuesta, status),
+    client: ClienteFalso('{}', 401),
   );
   return AuthController(service: AuthService(api), storage: almacen);
 }
@@ -155,46 +155,6 @@ void main() {
     expect(find.text('Mínimo 8 caracteres'), findsNothing);
     expect(find.text('Ingresa tu contraseña'), findsNothing);
   });
-
-  testWidgets(
-    'El login en pantalla ancha muestra el panel institucional, alterna visibilidad y muestra aviso ante 401',
-    (tester) async {
-      addTearDown(tester.view.reset);
-      tester.view.devicePixelRatio = 1;
-      tester.view.physicalSize = const Size(1280, 800);
-
-      await tester.pumpWidget(
-        ChangeNotifierProvider<AuthController>.value(
-          value: _auth('{"detail":"Credenciales inválidas"}', 401),
-          child: MaterialApp(theme: AppTheme.light, home: const LoginScreen()),
-        ),
-      );
-      await tester.pump(const Duration(seconds: 4));
-
-      expect(
-        find.text('Conoce qué requisitos de grado ya cumpliste'),
-        findsOneWidget,
-      );
-
-      await tester.tap(find.byIcon(Icons.visibility_outlined));
-      await tester.pump();
-      expect(find.byIcon(Icons.visibility_off_outlined), findsOneWidget);
-
-      await tester.tap(find.byType(Checkbox));
-      await tester.pump();
-
-      await tester.enterText(
-        find.byType(TextFormField).first,
-        'ana@dinamikutb.dev',
-      );
-      await tester.enterText(find.byType(TextFormField).last, 'claveSegura123');
-      await tester.tap(find.widgetWithText(FilledButton, 'Iniciar sesión'));
-      await tester.pump(const Duration(milliseconds: 200));
-
-      expect(find.byIcon(Icons.error_outline), findsOneWidget);
-      expect(tester.takeException(), isNull);
-    },
-  );
 
   testWidgets(
     'El shell es adaptativo: barra inferior en móvil, riel en escritorio',

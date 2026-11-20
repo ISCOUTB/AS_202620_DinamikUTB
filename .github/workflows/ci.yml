@@ -87,10 +87,6 @@ jobs:
         working-directory: frontend
         run: flutter test --coverage
 
-      - name: Run frontend tests with coverage
-        working-directory: frontend
-        run: flutter test --coverage
-
       - name: Fix Flutter coverage paths for SonarCloud
         run: sed -i 's|^SF:lib/|SF:frontend/lib/|g' frontend/coverage/lcov.info
 

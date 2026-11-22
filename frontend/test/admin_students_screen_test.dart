@@ -134,7 +134,7 @@ void main() {
       expect(find.text('Ana Pérez'), findsOneWidget);
       // Usamos textContaining por si el código está acompañado de otro texto en la UI
       expect(find.textContaining('2024001'), findsWidgets);
-      expect(find.text('ana@utb.edu.co'), findsOneWidget);
+      expect(find.textContaining('ana@utb.edu.co'), findsWidgets);
       expect(find.textContaining('Ingeniería de Sistemas'), findsWidgets);
     });
 

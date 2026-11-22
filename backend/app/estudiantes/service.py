@@ -18,7 +18,13 @@ def actualizar_datos_estudiante(
     programa: str,
     semestre: int | None,
     actor_id: int | None = None,
+    confirmar: bool = True,
 ) -> Estudiante | None:
+    """Actualiza nombre, programa y semestre dejando una fila de historial por campo.
+
+    Con `confirmar=False` solo hace `flush`: el llamador agrega más escrituras
+    (p. ej. el correo de la cuenta) y confirma todo en una sola transacción.
+    """
     estudiante = (
         db.query(Estudiante)
         .filter(Estudiante.codigo_estudiantil == codigo_estudiantil)
@@ -47,9 +53,12 @@ def actualizar_datos_estudiante(
                 )
             )
 
-    # single transaction: UPDATE + history rows, atomic
-    db.commit()
-    db.refresh(estudiante)
+    if confirmar:
+        # single transaction: UPDATE + history rows, atomic
+        db.commit()
+        db.refresh(estudiante)
+    else:
+        db.flush()
     return estudiante
 
 

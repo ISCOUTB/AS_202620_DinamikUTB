@@ -1,0 +1,129 @@
+diff --git a/docs/adr/0015-progreso-curricular-por-estudiante.md b/docs/adr/0015-progreso-curricular-por-estudiante.md
+index 00073cf..30d4ea8 100644
+--- a/docs/adr/0015-progreso-curricular-por-estudiante.md
++++ b/docs/adr/0015-progreso-curricular-por-estudiante.md
+@@ -1,14 +1,14 @@
+ ---
+ id: ADR-0015
+ title: Progreso curricular por estudiante y guía de requisitos en el catálogo
+-status: Propuesto
++status: Aceptado
+ date: 2026-11-20
+ deciders: Equipo de arquitectura DinamikUTB
+ ---
+ 
+ # ADR-0015: Progreso curricular por estudiante y guía de requisitos en el catálogo
+ 
+-> Pasa a **Aceptado** cuando el CI quede en verde con estos cambios. Un ADR aceptado no se edita.
++> Aceptado el 2026-11-22 con la suite del backend en verde (153 pruebas). Un ADR aceptado no se edita.
+ 
+ ## 1. Contexto y descripción del problema
+ 
+@@ -83,7 +83,7 @@ El estudiante veía una lista plana de requisitos. La ficha del problema promete
+ 
+ ## 7. Estado de la decisión
+ 
+-**Propuesto.** No reemplaza ningún ADR: complementa [ADR-0011](0011-historial-de-cambios-transaccional.md) y [ADR-0014](0014-extension-historial-datos-estudiante.md).
++**Aceptado.** No reemplaza ningún ADR: complementa [ADR-0011](0011-historial-de-cambios-transaccional.md) y [ADR-0014](0014-extension-historial-datos-estudiante.md).
+ 
+ ## 8. Trazabilidad
+ 
+diff --git a/docs/adr/0016-modulo-ayuda-y-aislamiento-por-programa.md b/docs/adr/0016-modulo-ayuda-y-aislamiento-por-programa.md
+index d21ff69..c3572be 100644
+--- a/docs/adr/0016-modulo-ayuda-y-aislamiento-por-programa.md
++++ b/docs/adr/0016-modulo-ayuda-y-aislamiento-por-programa.md
+@@ -1,7 +1,7 @@
+ ---
+ id: ADR-0016
+ title: Módulo ayuda y aislamiento de solicitudes por programa
+-status: Propuesto
++status: Aceptado
+ date: 2026-11-20
+ deciders: Equipo de arquitectura DinamikUTB
+ ---
+@@ -72,7 +72,7 @@ El problema técnico: `Usuario` no tiene programa, y agregárselo haría que `us
+ 
+ ## 7. Estado de la decisión
+ 
+-**Propuesto.** Completa lo previsto en [ADR-0001](0001-seleccion-monolito-modular.md); no lo reemplaza.
++**Aceptado** (2026-11-22, suite del backend en verde: `test_ayuda.py`). Completa lo previsto en [ADR-0001](0001-seleccion-monolito-modular.md); no lo reemplaza.
+ 
+ ## 8. Trazabilidad
+ 
+diff --git a/docs/arc42/05-building-block-view.md b/docs/arc42/05-building-block-view.md
+index eb3a66c..5760f1f 100644
+--- a/docs/arc42/05-building-block-view.md
++++ b/docs/arc42/05-building-block-view.md
+@@ -18,7 +18,7 @@ Esta sección descompone **DinamikUTB** en sus bloques de construcción, siguien
+                                                                       ▼
+                                                           ┌─────────────────────────┐
+                                                           │      Base de datos       │
+-                                                          │  SQLite (vía SQLAlchemy) │
++                                                          │ PostgreSQL / SQLite (SQLAlchemy) │
+                                                           └─────────────────────────┘
+ ```
+ 
+@@ -26,7 +26,7 @@ Esta sección descompone **DinamikUTB** en sus bloques de construcción, siguien
+ |---|---|---|
+ | **Frontend** | Presentar la información al usuario según su rol y capturar sus interacciones (consultas, solicitudes al centro de ayuda). | Flutter |
+ | **Backend** | Concentrar la lógica de negocio: autenticación, cálculo de requisitos, gestión de programas y centro de ayuda. Expone la API que consume el frontend. | FastAPI (Python) |
+-| **Base de datos** | Persistir usuarios, estudiantes, requisitos, programas y solicitudes. | SQLite, a través de SQLAlchemy (ver `backend/app/core/database.py`) |
++| **Base de datos** | Persistir usuarios, estudiantes, requisitos, programas y solicitudes. | SQLAlchemy sobre PostgreSQL 16 en el entorno desplegado del laboratorio y SQLite en desarrollo local y CI (ver `backend/app/core/database.py`, [ADR-0003](../adr/0003-seleccion-motor-de-base-de-datos.md) y [ADR-0012](../adr/0012-despliegue-en-servidor-del-laboratorio.md)) |
+ 
+ El backend es, internamente, un **monolito modular**: se despliega como una sola aplicación, pero está dividido en módulos con responsabilidades delimitadas, descritos en el nivel 2.
+ 
+diff --git a/docs/arc42/09-architecture-decisions.md b/docs/arc42/09-architecture-decisions.md
+index fca3084..134ad5d 100644
+--- a/docs/arc42/09-architecture-decisions.md
++++ b/docs/arc42/09-architecture-decisions.md
+@@ -23,8 +23,8 @@ Esta sección funciona como índice de las decisiones arquitectónicas (ADR) de
+ | [ADR-0012](../adr/0012-despliegue-en-servidor-del-laboratorio.md) | Despliegue en el servidor del laboratorio | *Aceptado* (2026-10-25) | Migración a Dokploy con volumen persistente `pgdata` sin expiración ni spin down. |
+ | [ADR-0013](../adr/0013-controles-estructurales-de-seguridad-y-autenticacion.md) | Controles estructurales de seguridad, autenticación y control de acceso | *Aceptado* (2026-11-01) | Formaliza JWT con firma de contraseña, Argon2id, RBAC y rate limiting. |
+ | [ADR-0014](../adr/0014-extension-historial-datos-estudiante.md) | Extensión del historial a datos académicos del estudiante | *Aceptado* (2026-10-30) | Complementa al ADR-0011: audita nombre, programa y semestre en `estudiantes_historial`. |
+-| [ADR-0015](../adr/0015-progreso-curricular-por-estudiante.md) | Progreso curricular por estudiante y guía de requisitos en el catálogo | *Propuesto* (2026-11-20) | `cursos_estudiante` en `curriculo/`, guía en el catálogo, migración de columnas nullable. |
+-| [ADR-0016](../adr/0016-modulo-ayuda-y-aislamiento-por-programa.md) | Módulo ayuda y aislamiento por programa | *Propuesto* (2026-11-20) | Directorio de coordinación enlazado por correo; radicado derivado del id. |
++| [ADR-0015](../adr/0015-progreso-curricular-por-estudiante.md) | Progreso curricular por estudiante y guía de requisitos en el catálogo | *Aceptado* (2026-11-20) | `cursos_estudiante` en `curriculo/`, guía en el catálogo, migración de columnas nullable. |
++| [ADR-0016](../adr/0016-modulo-ayuda-y-aislamiento-por-programa.md) | Módulo ayuda y aislamiento por programa | *Aceptado* (2026-11-20) | Directorio de coordinación enlazado por correo; radicado derivado del id. |
+ 
+ ---
+ 
+diff --git a/docs/aspectos.md b/docs/aspectos.md
+index 4b61891..9b8da89 100644
+--- a/docs/aspectos.md
++++ b/docs/aspectos.md
+@@ -12,7 +12,7 @@
+ | A-01 | Seguimiento del cumplimiento de requisitos | RF-01 | [Q-01](arc42/10-quality-requirements.md#escenario-q-01--exactitud-de-la-información-académica), [Q-03](arc42/10-quality-requirements.md#escenario-q-03--facilidad-de-comprensión-de-la-información) | [C4 Nivel 2](c4/contenedores.puml) (contenedores Backend API y Base de datos) | [ADR-0001](adr/0001-seleccion-monolito-modular.md), [ADR-0002](adr/0002-seleccion-tecnologia-backend-frontend.md), [ADR-0003](adr/0003-seleccion-motor-de-base-de-datos.md), [ADR-0005](adr/0005-plataforma-despliegue-backend.md), [ADR-0006](adr/0006-plataforma-despliegue-frontend.md), [ADR-0007](adr/0007-persistencia-render-postgres.md), [ADR-0008](adr/0008-verificacion-de-artefactos-sugeridos-por-ia.md), [ADR-0010](adr/0010-extraccion-de-modulo.md), [ADR-0012](adr/0012-despliegue-en-servidor-del-laboratorio.md) | [router.py](../backend/app/requisitos/router.py), [service.py](../backend/app/requisitos/service.py), [models.py](../backend/app/requisitos/models.py), [schemas.py](../backend/app/requisitos/schemas.py), [requisitos_service.dart](../frontend/lib/requisitos/requisitos_service.dart) | [test_requisitos.py](../backend/tests/test_requisitos.py), [test_contrato.py](../backend/tests/test_contrato.py), [test_idempotencia.py](../backend/tests/test_idempotencia.py), [widget_test.dart](../frontend/test/widget_test.dart), [requisitos_service_test.dart](../frontend/test/requisitos_service_test.dart) — [run en verde](https://github.com/ISCOUTB/AS_202620_DinamikUTB/actions/runs/33475979818) | [docs/evidencia-s9.md](evidencia-s9.md): generación verificada con apoyo de IA, incidente de hash corregido (ADR-0008), medición contra Q-01 |
+ | A-02 | Cálculo correcto del estado de graduación | RF-02 | [Q-01](arc42/10-quality-requirements.md#escenario-q-01--exactitud-de-la-información-académica) | [C4 Nivel 2](c4/contenedores.puml) | [ADR-0001](adr/0001-seleccion-monolito-modular.md), [ADR-0002](adr/0002-seleccion-tecnologia-backend-frontend.md), [ADR-0003](adr/0003-seleccion-motor-de-base-de-datos.md), [ADR-0015](adr/0015-progreso-curricular-por-estudiante.md) | [progreso.py](../backend/app/curriculo/progreso.py), [service.py](../backend/app/requisitos/service.py) | [test_progreso.py](../backend/tests/test_progreso.py) | Cálculo de créditos, promedio y elegibilidad en backend; `GET /malla/progreso` y `/requisitos/{id}/resumen` |
+ | A-03 | Alertas tempranas de requisitos pendientes | RF-03 | [Q-04](arc42/10-quality-requirements.md#escenario-q-04--alertas-tempranas-de-requisitos-pendientes) | Pendiente | [ADR-0009](adr/0009-no-incorporacion-componente-generativo.md) (descarta un componente generativo; el mecanismo de disparo sigue sin decidir) | Pendiente | Pendiente | Pendiente |
+-| A-04 | Disponibilidad del sistema | RF-04 | [Q-05](arc42/10-quality-requirements.md#escenario-q-05--disponibilidad-del-sistema) | [C4 Nivel 2](c4/contenedores.puml) y [vista de despliegue](arc42/07-deployment-view.md) | [ADR-0001](adr/0001-seleccion-monolito-modular.md), [ADR-0005](adr/0005-plataforma-despliegue-backend.md), [ADR-0007](adr/0007-persistencia-render-postgres.md), [ADR-0010](adr/0010-extraccion-de-modulo.md), [ADR-0012](adr/0012-despliegue-en-servidor-del-laboratorio.md) | [main.py](../backend/app/main.py) (`/health`, `/metrics`, logging JSON), [metrics.py](../backend/app/core/metrics.py), [render.yaml](../render.yaml), [compose.lab.yaml](../deploy/compose.lab.yaml), [requisitos_service.dart](../frontend/lib/requisitos/requisitos_service.dart) (timeout y reintento) | [test_health.py](../backend/tests/test_health.py), [test_idempotencia.py](../backend/tests/test_idempotencia.py), [requisitos_service_test.dart](../frontend/test/requisitos_service_test.dart) | [README, sección «Entorno desplegado»](../README.md#entorno-desplegado) (comprobación externa con `/health` en HTTP 200), [docs/costos.md](costos.md), [modos de fallo y riesgos](arc42/11-risks-and-technical-debt.md) |
++| A-04 | Disponibilidad del sistema | RF-04 | [Q-05](arc42/10-quality-requirements.md#escenario-q-05--disponibilidad-del-sistema) | [C4 Nivel 2](c4/contenedores.puml) y [vista de despliegue](arc42/07-deployment-view.md) | [ADR-0001](adr/0001-seleccion-monolito-modular.md), [ADR-0005](adr/0005-plataforma-despliegue-backend.md), [ADR-0007](adr/0007-persistencia-render-postgres.md), [ADR-0010](adr/0010-extraccion-de-modulo.md), [ADR-0012](adr/0012-despliegue-en-servidor-del-laboratorio.md) | [main.py](../backend/app/main.py) (`/health`, `/metrics`, logging JSON), [metrics.py](../backend/app/core/metrics.py), [compose.lab.yaml](../deploy/compose.lab.yaml), [requisitos_service.dart](../frontend/lib/requisitos/requisitos_service.dart) (timeout y reintento) | [test_health.py](../backend/tests/test_health.py), [test_idempotencia.py](../backend/tests/test_idempotencia.py), [requisitos_service_test.dart](../frontend/test/requisitos_service_test.dart) | [README, sección «Entorno desplegado»](../README.md#entorno-desplegado) (comprobación externa con `/health` en HTTP 200), [docs/costos.md](costos.md), [modos de fallo y riesgos](arc42/11-risks-and-technical-debt.md) |
+ | A-05 | Protección y control de acceso a la información académica | RF-05 | [Q-02](arc42/10-quality-requirements.md#escenario-q-02--seguridad-y-aislamiento-de-la-información) | [C4 Nivel 2](c4/contenedores.puml) | [ADR-0001](adr/0001-seleccion-monolito-modular.md), [ADR-0002](adr/0002-seleccion-tecnologia-backend-frontend.md), [ADR-0013](adr/0013-controles-estructurales-de-seguridad-y-autenticacion.md) | [security.py](../backend/app/core/security.py), [dependencies.py](../backend/app/usuarios/dependencies.py), [rate_limit.py](../backend/app/core/rate_limit.py) | [test_auth.py](../backend/tests/test_auth.py), [test_seguridad.py](../backend/tests/test_seguridad.py) | [docs/evidencia-s13.md](evidencia-s13.md): modelado de amenazas STRIDE sobre C4, RBAC y análisis de dependencias sin vulnerabilidades |
+ | A-06 | Extensibilidad para múltiples programas académicos | RF-06 | [Q-06](arc42/10-quality-requirements.md#escenario-q-06--extensibilidad-para-múltiples-programas-académicos) | Pendiente | [ADR-0001](adr/0001-seleccion-monolito-modular.md), [ADR-0003](adr/0003-seleccion-motor-de-base-de-datos.md), [ADR-0015](adr/0015-progreso-curricular-por-estudiante.md) | [catalogo_utb.py](../backend/app/requisitos/catalogo_utb.py), [models.py](../backend/app/requisitos/models.py) | [test_progreso.py](../backend/tests/test_progreso.py) | Parcial: catálogo y malla reales solo para Sistemas |
+ | A-07 | Gestión de solicitudes de estudiantes en el centro de ayuda | RF-07 | [Q-07](arc42/10-quality-requirements.md#escenario-q-07--gestión-de-solicitudes-del-centro-de-ayuda) | Pendiente | [ADR-0001](adr/0001-seleccion-monolito-modular.md), [ADR-0016](adr/0016-modulo-ayuda-y-aislamiento-por-programa.md) | [ayuda/](../backend/app/ayuda/) | [test_ayuda.py](../backend/tests/test_ayuda.py) | Aislamiento por programa con 15 solicitudes en dos programas |
+@@ -36,7 +36,7 @@
+ 
+ **Escenarios relacionados:** [Q-01](arc42/10-quality-requirements.md#escenario-q-01--exactitud-de-la-información-académica), [Q-03](arc42/10-quality-requirements.md#escenario-q-03--facilidad-de-comprensión-de-la-información).
+ 
+-**Estado de implementación:** el endpoint `GET /requisitos/{estudiante_id}` ya consulta el estado real desde la base de datos (SQLite en local, Postgres en el ambiente desplegado), con pantalla en Flutter que lo muestra (`frontend/lib/requisitos/`). El cálculo del porcentaje de avance (A-02) se implementa mediante el módulo curricular y sus servicios asociados. Desde [ADR-0005](adr/0005-plataforma-despliegue-backend.md), [ADR-0006](adr/0006-plataforma-despliegue-frontend.md) y [ADR-0007](adr/0007-persistencia-render-postgres.md), el aspecto también depende de que el backend (Render), la base (Render Postgres) y el frontend (GitHub Pages) estén desplegados y accesibles fuera de la universidad.
++**Estado de implementación:** el endpoint `GET /requisitos/{estudiante_id}` ya consulta el estado real desde la base de datos (SQLite en local y CI, PostgreSQL 16 en el ambiente desplegado), con pantalla en Flutter que lo muestra (`frontend/lib/requisitos/`). El cálculo del porcentaje de avance (A-02) se implementa mediante el módulo curricular y sus servicios asociados. Desde [ADR-0006](adr/0006-plataforma-despliegue-frontend.md) y [ADR-0012](adr/0012-despliegue-en-servidor-del-laboratorio.md), el aspecto también depende de que el backend y la base PostgreSQL (servidor del laboratorio, Dokploy) y el frontend (GitHub Pages) estén desplegados y accesibles fuera de la universidad. El despliegue inicial en Render ([ADR-0005](adr/0005-plataforma-despliegue-backend.md), [ADR-0007](adr/0007-persistencia-render-postgres.md)) quedó retirado.
+ 
+ **Modos de fallo:** la integración Flutter → FastAPI → base de datos que sostiene este aspecto está analizada en [arc42/11, sección 11.5](arc42/11-risks-and-technical-debt.md) (no responde, responde tarde, responde dos veces), con timeout y reintento en el cliente y `PUT` idempotente; la decisión de no extraer módulos está en [ADR-0010](adr/0010-extraccion-de-modulo.md).
+ 
+@@ -84,7 +84,7 @@
+ 
+ **Escenario relacionado:** [Q-05](arc42/10-quality-requirements.md#escenario-q-05--disponibilidad-del-sistema).
+ 
+-**Estado de la decisión:** [ADR-0005](adr/0005-plataforma-despliegue-backend.md) fija Render (Free Web Service) como plataforma del backend, con el *spin down* por inactividad como riesgo aceptado y documentado en `arc42/11-risks-and-technical-debt.md`. [ADR-0007](adr/0007-persistencia-render-postgres.md) fija Render Postgres (Free) para la persistencia, cuya expiración a los 30 días también está registrada como riesgo. El aspecto se observa mediante `GET /health` y la métrica `GET /metrics`.
++**Estado de la decisión:** [ADR-0012](adr/0012-despliegue-en-servidor-del-laboratorio.md) fija el servidor del laboratorio (Dokploy, PostgreSQL 16 con volumen `pgdata`) como plataforma vigente del backend y la base, sin *spin down* ni expiración. Reemplaza el despliegue inicial en Render ([ADR-0005](adr/0005-plataforma-despliegue-backend.md), [ADR-0007](adr/0007-persistencia-render-postgres.md)), retirado por la expiración de su base gratuita a los 30 días (arc42 §11, F6). El aspecto se observa mediante `GET /health` y la métrica `GET /metrics`.
+ 
+ **Modos de fallo:** analizados en [arc42/11, sección 11.5](arc42/11-risks-and-technical-debt.md); decisión de no extraer módulos en [ADR-0010](adr/0010-extraccion-de-modulo.md).
+ 
+@@ -152,7 +152,7 @@
+ 
+ **Estado de la decisión:** [ADR-0011](adr/0011-historial-de-cambios-transaccional.md) fija una tabla de historial *append-only* por módulo dueño, escrita en la misma transacción que el cambio. Está implementada en `requisitos/` para cambios de estado y en `curriculo/` mediante el modelo `CursoEstudianteHistorial` para registrar cambios del avance curricular. Las pruebas de progreso se encuentran en `backend/tests/test_progreso.py`.
+ 
+-**Pendiente:** endpoint general de consulta para coordinador/administrador y extensión del historial a otros módulos cuando incorporen escrituras. La persistencia definitiva también debe considerar los riesgos de la base gratuita de Render, documentados en `arc42/11-risks-and-technical-debt.md`.
++**Pendiente:** endpoint general de consulta para coordinador/administrador y extensión del historial a otros módulos cuando incorporen escrituras. La persistencia definitiva depende del respaldo del volumen `pgdata` del laboratorio (cron `pg_dump` pendiente), registrado en `arc42/11-risks-and-technical-debt.md`.
+ 
+ ---
+ 

@@ -27,10 +27,7 @@ class ClienteFalso extends http.BaseClient {
   }
 }
 
-ApiClient crearApi(
-  String respuesta, [
-  int status = 200,
-]) {
+ApiClient crearApi(String respuesta, [int status = 200]) {
   return ApiClient(
     baseUrl: 'http://127.0.0.1:8000',
     tokenStorage: InMemoryTokenStorage(),
@@ -60,9 +57,21 @@ Widget crearPantalla({
 }
 
 void main() {
+  // ESTA ES LA SOLUCIÓN: Forzar un tamaño de pantalla grande para los tests
+  setUp(() {
+    final binding = TestWidgetsFlutterBinding.ensureInitialized();
+    binding.window.physicalSizeTestValue = const Size(1920, 1080);
+    binding.window.devicePixelRatioTestValue = 1.0;
+  });
+
+  tearDown(() {
+    final binding = TestWidgetsFlutterBinding.ensureInitialized();
+    binding.window.clearPhysicalSizeTestValue();
+    binding.window.clearDevicePixelRatioTestValue();
+  });
+
   group('AdminStudentsScreen', () {
-    testWidgets('muestra el estado vacío cuando no hay estudiantes',
-        (tester) async {
+    testWidgets('muestra el estado vacío cuando no hay estudiantes', (tester) async {
       final api = crearApi('[]');
       final admin = AdminService(api);
       final requisitos = RequisitosService(
@@ -70,23 +79,15 @@ void main() {
       );
 
       await tester.pumpWidget(
-        crearPantalla(
-          adminService: admin,
-          requisitosService: requisitos,
-        ),
+        crearPantalla(adminService: admin, requisitosService: requisitos),
       );
-
       await tester.pumpAndSettle();
 
       expect(find.text('No se encontraron estudiantes'), findsOneWidget);
-      expect(
-        find.text('Ajusta los filtros o registra un nuevo estudiante.'),
-        findsOneWidget,
-      );
+      expect(find.text('Ajusta los filtros o registra un nuevo estudiante.'), findsOneWidget);
     });
 
-    testWidgets('muestra los estudiantes recibidos del servicio',
-        (tester) async {
+    testWidgets('muestra los estudiantes recibidos del servicio', (tester) async {
       final api = crearApi('''
 [
   {
@@ -107,12 +108,8 @@ void main() {
       );
 
       await tester.pumpWidget(
-        crearPantalla(
-          adminService: admin,
-          requisitosService: requisitos,
-        ),
+        crearPantalla(adminService: admin, requisitosService: requisitos),
       );
-
       await tester.pumpAndSettle();
 
       expect(find.text('Ana Pérez'), findsOneWidget);
@@ -129,27 +126,18 @@ void main() {
       );
 
       await tester.pumpWidget(
-        crearPantalla(
-          adminService: admin,
-          requisitosService: requisitos,
-        ),
+        crearPantalla(adminService: admin, requisitosService: requisitos),
       );
-
       await tester.pumpAndSettle();
 
       final buscador = find.byType(TextField);
       expect(buscador, findsOneWidget);
 
-      await tester.enterText(
-        buscador,
-        'Ana',
-      );
-
+      await tester.enterText(buscador, 'Ana');
       expect(find.text('Ana'), findsOneWidget);
     });
 
-    testWidgets('muestra el botón para registrar estudiantes',
-        (tester) async {
+    testWidgets('muestra el botón para registrar estudiantes', (tester) async {
       final api = crearApi('[]');
       final admin = AdminService(api);
       final requisitos = RequisitosService(
@@ -157,19 +145,14 @@ void main() {
       );
 
       await tester.pumpWidget(
-        crearPantalla(
-          adminService: admin,
-          requisitosService: requisitos,
-        ),
+        crearPantalla(adminService: admin, requisitosService: requisitos),
       );
-
       await tester.pumpAndSettle();
 
       expect(find.text('Registrar estudiante'), findsOneWidget);
     });
 
-    testWidgets('muestra error cuando falla la consulta de estudiantes',
-        (tester) async {
+    testWidgets('muestra error cuando falla la consulta de estudiantes', (tester) async {
       final api = crearApi('{"detail":"Error interno"}', 500);
       final admin = AdminService(api);
       final requisitos = RequisitosService(
@@ -177,12 +160,8 @@ void main() {
       );
 
       await tester.pumpWidget(
-        crearPantalla(
-          adminService: admin,
-          requisitosService: requisitos,
-        ),
+        crearPantalla(adminService: admin, requisitosService: requisitos),
       );
-
       await tester.pumpAndSettle();
 
       expect(find.text('Reintentar'), findsOneWidget);

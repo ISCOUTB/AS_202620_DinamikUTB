@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 
-import 'package:frontend/core/api/api_client.dart';
-import 'package:frontend/core/auth/token_storage.dart';
-import 'package:frontend/administracion/screens/admin_programs_screen.dart';
+import 'package:frontend/core/network/api_client.dart';
+import 'package:frontend/core/storage/token_storage.dart';
+import 'package:frontend/administracion/admin_programs_screen.dart';
 import 'package:frontend/administracion/service/admin_service.dart';
 
 class ClienteProgramasFalso extends http.BaseClient {

@@ -1,4 +1,3 @@
-
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -48,9 +47,13 @@ Widget crearPantalla({
       Provider<RequisitosService>.value(value: requisitosService),
     ],
     child: MaterialApp(
-      home: AdminStudentsScreen(
-        service: adminService,
-        initialSearch: '',
+      home: Scaffold(
+        body: Material(
+          child: AdminStudentsScreen(
+            service: adminService,
+            initialSearch: '',
+          ),
+        ),
       ),
     ),
   );

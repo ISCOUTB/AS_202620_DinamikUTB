@@ -96,3 +96,13 @@ class RequisitoCatalogoIn(BaseModel):
     tiempo_estimado: Annotated[str, StringConstraints(max_length=80)] | None = None
     guia_resumen: Annotated[str, StringConstraints(max_length=800)] | None = None
     pasos_guia: list[PasoGuia] | None = None
+
+
+class RequisitoCatalogoUpdate(RequisitoCatalogoIn):
+    """Edición de un requisito del catálogo.
+
+    Solo se escriben los campos que el cliente envía (`exclude_unset`): el panel
+    de administración no manda la guía, y no debe borrarla al guardar.
+    """
+
+    activo: bool = True

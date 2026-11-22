@@ -170,7 +170,10 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('?'), findsOneWidget);
-      expect(find.text(' · Semestre —'), findsOneWidget);
+      expect(
+        find.text('Ingeniería de Sistemas · Semestre —'),
+        findsOneWidget,
+      );
       expect(find.text('Inactivo'), findsOneWidget);
     });
 

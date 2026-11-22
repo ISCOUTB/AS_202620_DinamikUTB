@@ -18,7 +18,7 @@ Esta sección descompone **DinamikUTB** en sus bloques de construcción, siguien
                                                                       ▼
                                                           ┌─────────────────────────┐
                                                           │      Base de datos       │
-                                                          │  SQLite (vía SQLAlchemy) │
+                                                          │ PostgreSQL / SQLite (SQLAlchemy) │
                                                           └─────────────────────────┘
 ```
 
@@ -26,7 +26,7 @@ Esta sección descompone **DinamikUTB** en sus bloques de construcción, siguien
 |---|---|---|
 | **Frontend** | Presentar la información al usuario según su rol y capturar sus interacciones (consultas, solicitudes al centro de ayuda). | Flutter |
 | **Backend** | Concentrar la lógica de negocio: autenticación, cálculo de requisitos, gestión de programas y centro de ayuda. Expone la API que consume el frontend. | FastAPI (Python) |
-| **Base de datos** | Persistir usuarios, estudiantes, requisitos, programas y solicitudes. | SQLite, a través de SQLAlchemy (ver `backend/app/core/database.py`) |
+| **Base de datos** | Persistir usuarios, estudiantes, requisitos, programas y solicitudes. | SQLAlchemy sobre PostgreSQL 16 en el entorno desplegado del laboratorio y SQLite en desarrollo local y CI (ver `backend/app/core/database.py`, [ADR-0003](../adr/0003-seleccion-motor-de-base-de-datos.md) y [ADR-0012](../adr/0012-despliegue-en-servidor-del-laboratorio.md)) |
 
 El backend es, internamente, un **monolito modular**: se despliega como una sola aplicación, pero está dividido en módulos con responsabilidades delimitadas, descritos en el nivel 2.
 

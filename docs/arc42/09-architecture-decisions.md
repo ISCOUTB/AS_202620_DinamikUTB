@@ -23,8 +23,8 @@ Esta sección funciona como índice de las decisiones arquitectónicas (ADR) de 
 | [ADR-0012](../adr/0012-despliegue-en-servidor-del-laboratorio.md) | Despliegue en el servidor del laboratorio | *Aceptado* (2026-10-25) | Migración a Dokploy con volumen persistente `pgdata` sin expiración ni spin down. |
 | [ADR-0013](../adr/0013-controles-estructurales-de-seguridad-y-autenticacion.md) | Controles estructurales de seguridad, autenticación y control de acceso | *Aceptado* (2026-11-01) | Formaliza JWT con firma de contraseña, Argon2id, RBAC y rate limiting. |
 | [ADR-0014](../adr/0014-extension-historial-datos-estudiante.md) | Extensión del historial a datos académicos del estudiante | *Aceptado* (2026-10-30) | Complementa al ADR-0011: audita nombre, programa y semestre en `estudiantes_historial`. |
-| [ADR-0015](../adr/0015-progreso-curricular-por-estudiante.md) | Progreso curricular por estudiante y guía de requisitos en el catálogo | *Propuesto* (2026-11-20) | `cursos_estudiante` en `curriculo/`, guía en el catálogo, migración de columnas nullable. |
-| [ADR-0016](../adr/0016-modulo-ayuda-y-aislamiento-por-programa.md) | Módulo ayuda y aislamiento por programa | *Propuesto* (2026-11-20) | Directorio de coordinación enlazado por correo; radicado derivado del id. |
+| [ADR-0015](../adr/0015-progreso-curricular-por-estudiante.md) | Progreso curricular por estudiante y guía de requisitos en el catálogo | *Aceptado* (2026-11-20) | `cursos_estudiante` en `curriculo/`, guía en el catálogo, migración de columnas nullable. |
+| [ADR-0016](../adr/0016-modulo-ayuda-y-aislamiento-por-programa.md) | Módulo ayuda y aislamiento por programa | *Aceptado* (2026-11-20) | Directorio de coordinación enlazado por correo; radicado derivado del id. |
 
 ---
 

@@ -49,6 +49,13 @@ void main() {
     };
   }
 
+  Finder dialogTitle() {
+    return find.descendant(
+      of: find.byType(AlertDialog),
+      matching: find.text('Editar estudiante'),
+    );
+  }
+
   Future<void> openDialog(
     WidgetTester tester,
     AdminService service,
@@ -66,14 +73,14 @@ void main() {
                   student: student,
                 );
               },
-              child: const Text('Editar estudiante'),
+              child: const Text('Abrir edición'),
             ),
           ),
         ),
       ),
     );
 
-    await tester.tap(find.text('Editar estudiante'));
+    await tester.tap(find.text('Abrir edición'));
     await tester.pumpAndSettle();
   }
 
@@ -108,6 +115,7 @@ void main() {
           expect(body['nombre'], 'Estudiante Actualizado');
           expect(body['email'], 'estudiante@dinamikutb.dev');
           expect(body['codigo_estudiantil'], 'T1234567');
+          expect(body['programa'], 'Ingeniería de Sistemas');
           expect(body['semestre'], 4);
           expect(body['activo'], false);
 
@@ -144,17 +152,17 @@ void main() {
                     ) ??
                     false;
               },
-              child: const Text('Editar estudiante'),
+              child: const Text('Abrir edición'),
             ),
           ),
         ),
       ),
     );
 
-    await tester.tap(find.text('Editar estudiante'));
+    await tester.tap(find.text('Abrir edición'));
     await tester.pumpAndSettle();
 
-    expect(find.text('Editar estudiante'), findsOneWidget);
+    expect(dialogTitle(), findsOneWidget);
     expect(find.text('Estudiante Original'), findsOneWidget);
     expect(find.text('T1234567'), findsOneWidget);
     expect(find.text('Ingeniería de Sistemas'), findsOneWidget);
@@ -177,6 +185,7 @@ void main() {
 
     expect(updated, isTrue);
     expect(updateRequestCount, 1);
+    expect(find.byType(AlertDialog), findsNothing);
     expect(tester.takeException(), isNull);
   });
 
@@ -220,10 +229,10 @@ void main() {
 
     expect(find.text('Ingresa el nombre completo.'), findsOneWidget);
     expect(find.text('Semestre entre 1 y 12.'), findsOneWidget);
-    expect(find.text('Editar estudiante'), findsOneWidget);
+    expect(dialogTitle(), findsOneWidget);
   });
 
-  testWidgets('muestra un error cuando no hay programas disponibles', (
+  testWidgets('muestra el formulario sin selección si no hay programas', (
     tester,
   ) async {
     tester.view.physicalSize = const Size(800, 1000);
@@ -248,14 +257,9 @@ void main() {
 
     await openDialog(tester, AdminService(api));
 
-    await tester.tap(find.text('Guardar cambios'));
-    await tester.pumpAndSettle();
-
-    expect(
-      find.text('Selecciona un programa académico válido.'),
-      findsOneWidget,
-    );
-    expect(find.text('Editar estudiante'), findsOneWidget);
+    expect(dialogTitle(), findsOneWidget);
+    expect(find.text('Programa académico'), findsOneWidget);
+    expect(find.byType(DropdownButtonFormField<String>), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 
@@ -297,20 +301,63 @@ void main() {
                     ) ??
                     false;
               },
-              child: const Text('Editar estudiante'),
+              child: const Text('Abrir edición'),
             ),
           ),
         ),
       ),
     );
 
-    await tester.tap(find.text('Editar estudiante'));
+    await tester.tap(find.text('Abrir edición'));
     await tester.pumpAndSettle();
+
+    expect(dialogTitle(), findsOneWidget);
 
     await tester.tap(find.text('Cancelar'));
     await tester.pumpAndSettle();
 
     expect(result, isFalse);
-    expect(find.text('Editar estudiante'), findsNothing);
+    expect(find.byType(AlertDialog), findsNothing);
+  });
+
+  testWidgets('muestra el error cuando falla la actualización', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(800, 1000);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+
+    final api = ApiClient(
+      baseUrl: 'https://example.test',
+      tokenStorage: InMemoryTokenStorage(),
+      client: MockClient((request) async {
+        if (request.url.path == '/programas') {
+          return http.Response(
+            jsonEncode([program]),
+            200,
+            headers: {'content-type': 'application/json; charset=utf-8'},
+          );
+        }
+
+        if (request.method == 'PUT') {
+          return http.Response(
+            jsonEncode({'detail': 'No se pudo actualizar el estudiante'}),
+            400,
+            headers: {'content-type': 'application/json; charset=utf-8'},
+          );
+        }
+
+        return http.Response('{}', 404);
+      }),
+    );
+
+    await openDialog(tester, AdminService(api));
+
+    await tester.tap(find.text('Guardar cambios'));
+    await tester.pumpAndSettle();
+
+    expect(dialogTitle(), findsOneWidget);
+    expect(find.textContaining('No se pudo actualizar'), findsOneWidget);
+    expect(tester.takeException(), isNull);
   });
 }

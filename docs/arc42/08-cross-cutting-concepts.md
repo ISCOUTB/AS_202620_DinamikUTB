@@ -1,3 +1,4 @@
+
 # 8. Cross-cutting Concepts
 
 ## 8.1 Lenguaje ubicuo
@@ -43,7 +44,7 @@ Términos del dominio compartidos entre el equipo, el código y la documentació
 | programas/ | S2 (ADR-0001) | Sí — modelo Programa, administración de carreras y sincronización de renombre con estudiantes/. |
 | curriculo/ | S2 (ADR-0001) | Sí — modelos PlanEstudio, Curso, prerrequisitos y servicio de carga curricular. |
 | reportes/ | S2 (ADR-0001) | Sí — router de exportación CSV con saneamiento de celdas contra inyección de fórmulas. |
-| ayuda/ | S2 (ADR-0001) | Pendiente — estructura de carpetas definida. |
+| ayuda/ | S2 (ADR-0001) | Sí — modelos `SolicitudDiscrepancia` y `CoordinadorPrograma`, servicio, router y pruebas de aislamiento (ADR-0016). |
 
 ## 8.4 Propiedad de datos por módulo
 
@@ -54,6 +55,8 @@ Términos del dominio compartidos entre el equipo, el código y la documentació
 | estudiantes/ | Estudiante, EstudianteHistorial | backend/app/estudiantes/ | Leído por reportes/ y programas/ vía consultas específicas. |
 | programas/ | Programa | backend/app/programas/ | Leído por curriculo/ y validadores de alta de estudiantes. |
 | curriculo/ | PlanEstudio, Curso, curso_prerrequisitos | backend/app/curriculo/ | Solo lectura curricular vía servicio. |
+| curriculo/ | CursoEstudiante, CursoEstudianteHistorial | backend/app/curriculo/ | Leído por `requisitos/` solo vía `curriculo.progreso.creditos_del_estudiante`. |
+| ayuda/ | SolicitudDiscrepancia, CoordinadorPrograma | backend/app/ayuda/ | Ninguno. |
 
 ## 8.5 Auditoría de propiedad de datos en el código
 
@@ -102,6 +105,8 @@ No aplica: los límites modulares se mantuvieron estables según lo definido en 
 | 15 | POST /requisitos/catalogo | Fuerte | Crea el requisito en catálogo y lo asocia a los estudiantes del programa en un solo commit | Todo o nada en la asignación masiva | test_account_management.py |
 | 16 | POST /auth/password/restablecer | Fuerte | update(usado_en=ahora).filter(usado_en.is_(None)) atómico | Previene doble consumo concurrente del enlace; falla con error si ya fue usado | test_account_management.py |
 | 17 | GET /reportes/estudiantes.csv | Fuerte por petición | INNER JOIN entre Estudiante, Usuario y Requisito | Refleja el estado de la base al momento de ejecutar la consulta | test_account_management.py |
+| 18 | PUT /malla/progreso/{codigo}/{curso} | Fuerte | Un `commit` con filas de historial; sin escritura si no hay cambios | Ninguno: el avance y su historial se confirman en una misma transacción | test_progreso.py |
+| 19 | POST /ayuda/solicitudes | Fuerte por fila | Radicado derivado del `id` en la misma transacción | Ninguno: la solicitud y su radicado se generan en la misma transacción | test_ayuda.py |
 
 ## 8.9 Estrategia de caché
 
@@ -136,27 +141,26 @@ Esta sección describe cómo se protege DinamikUTB, alineada con las decisiones 
 ### Límites de confianza (según el C4 Nivel 2)
 
 ```text
- [Usuario] ──HTTPS/JSON──▶ [Proxy Traefik] ──HTTP──▶ [Backend API FastAPI] ──SQLAlchemy──▶ [PostgreSQL / SQLite]
-   (no confiable)            (red laboratorio)        ▲ frontera de confianza principal      (red aislada / confiable)
+[Usuario] ──HTTPS/JSON──▶ [Proxy Traefik] ──HTTP──▶ [Backend API FastAPI] ──SQLAlchemy──▶ [PostgreSQL / SQLite]
+  (no confiable)            (red laboratorio)        ▲ frontera de confianza principal      (red aislada / confiable)
 ```
 
 El Backend API es la única frontera de confianza: todo lo que llega desde el cliente se considera no confiable y se valida, autentica y autoriza ahí, nunca en la interfaz Flutter.
 
 ### Controles implementados por capa
 
-| **Control**                     | **Mecanismo en código**                                                      | **Amenazas STRIDE cubiertas**           | **Estado**       |
-| ------------------------------- | ---------------------------------------------------------------------------- | --------------------------------------- | ---------------- |
-| **Validación de entrada**       | Pydantic v2 (schemas.py) y regex para códigos estudiantiles                  | T-02 (Tampering)                        | **Implementado** |
-| **Consultas seguras**           | SQLAlchemy ORM parametrizado sin SQL concatenado                             | T-02 (Tampering)                        | **Implementado** |
-| **Autenticación robusta**       | Tokens JWT HS256 e invalidación con firma sig de contraseña; hashes Argon2id | T-01 (Spoofing), T-04 (Info Disclosure) | **Implementado** |
-| **Autorización RBAC**           | Dependencias CurrentUser, GestorUser, AdminUser y verificación de código     | T-03 (Elevation of Privilege)           | **Implementado** |
-| **Cifrado en tránsito**         | HTTPS/TLS mediante proxy Traefik en el laboratorio y cabeceras HSTS          | T-09 (Info Disclosure)                  | **Implementado** |
-| **Defensa contra fuerza bruta** | Ventana deslizante LimitadorVentana por IP y bloqueo de cuenta tras 5 fallos | T-05 (Denial of Service)                | **Implementado** |
-| **Auditoría inmutable**         | Tablas transaccionales requisitos_historial y estudiantes_historial          | T-06 (Repudiation)                      | **Implementado** |
-| **Mitigación CSV Injection**    | Sanitización de celdas ante prefijos de fórmulas en reportes                 | T-07 (Tampering)                        | **Implementado** |
-| **Auditoría de dependencias**   | pip-audit en CI (dependency-audit.yml) y Dependabot                          | T-08 (Tampering)                        | **Implementado** |
-| **Cabeceras de respuesta**      | Middleware inyectando nosniff, DENY, no-store y CSP                          | T-10 (Info Disclosure)                  | **Implementado** |
-
+| **Control** | **Mecanismo en código** | **Amenazas STRIDE cubiertas** | **Estado** |
+|---|---|---|---|
+| **Validación de entrada** | Pydantic v2 (schemas.py) y regex para códigos estudiantiles | T-02 (Tampering) | **Implementado** |
+| **Consultas seguras** | SQLAlchemy ORM parametrizado sin SQL concatenado | T-02 (Tampering) | **Implementado** |
+| **Autenticación robusta** | Tokens JWT HS256 e invalidación con firma sig de contraseña; hashes Argon2id | T-01 (Spoofing), T-04 (Info Disclosure) | **Implementado** |
+| **Autorización RBAC** | Dependencias CurrentUser, GestorUser, AdminUser y verificación de código | T-03 (Elevation of Privilege) | **Implementado** |
+| **Cifrado en tránsito** | HTTPS/TLS mediante proxy Traefik en el laboratorio y cabeceras HSTS | T-09 (Info Disclosure) | **Implementado** |
+| **Defensa contra fuerza bruta** | Ventana deslizante LimitadorVentana por IP y bloqueo de cuenta tras 5 fallos | T-05 (Denial of Service) | **Implementado** |
+| **Auditoría inmutable** | Tablas transaccionales requisitos_historial y estudiantes_historial | T-06 (Repudiation) | **Implementado** |
+| **Mitigación CSV Injection** | Sanitización de celdas ante prefijos de fórmulas en reportes | T-07 (Tampering) | **Implementado** |
+| **Auditoría de dependencias** | pip-audit en CI (dependency-audit.yml) y Dependabot | T-08 (Tampering) | **Implementado** |
+| **Cabeceras de respuesta** | Middleware inyectando nosniff, DENY, no-store y CSP | T-10 (Info Disclosure) | **Implementado** |
 
 ### Reglas que deben mantenerse
 

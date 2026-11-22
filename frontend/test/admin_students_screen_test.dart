@@ -57,21 +57,17 @@ Widget crearPantalla({
 }
 
 void main() {
-  // ESTA ES LA SOLUCIÓN: Forzar un tamaño de pantalla grande para los tests
-  setUp(() {
-    final binding = TestWidgetsFlutterBinding.ensureInitialized();
-    binding.window.physicalSizeTestValue = const Size(1920, 1080);
-    binding.window.devicePixelRatioTestValue = 1.0;
-  });
-
-  tearDown(() {
-    final binding = TestWidgetsFlutterBinding.ensureInitialized();
-    binding.window.clearPhysicalSizeTestValue();
-    binding.window.clearDevicePixelRatioTestValue();
-  });
-
   group('AdminStudentsScreen', () {
+    // Función auxiliar para configurar una pantalla grande antes de cada test
+    Future<void> configurarPantallaGrande(WidgetTester tester) async {
+      tester.view.physicalSize = const Size(1920, 1080);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.reset); // Restablece el tamaño al terminar
+    }
+
     testWidgets('muestra el estado vacío cuando no hay estudiantes', (tester) async {
+      await configurarPantallaGrande(tester);
+      
       final api = crearApi('[]');
       final admin = AdminService(api);
       final requisitos = RequisitosService(
@@ -88,6 +84,8 @@ void main() {
     });
 
     testWidgets('muestra los estudiantes recibidos del servicio', (tester) async {
+      await configurarPantallaGrande(tester);
+
       final api = crearApi('''
 [
   {
@@ -119,6 +117,8 @@ void main() {
     });
 
     testWidgets('permite escribir en el buscador', (tester) async {
+      await configurarPantallaGrande(tester);
+
       final api = crearApi('[]');
       final admin = AdminService(api);
       final requisitos = RequisitosService(
@@ -138,6 +138,8 @@ void main() {
     });
 
     testWidgets('muestra el botón para registrar estudiantes', (tester) async {
+      await configurarPantallaGrande(tester);
+
       final api = crearApi('[]');
       final admin = AdminService(api);
       final requisitos = RequisitosService(
@@ -153,6 +155,8 @@ void main() {
     });
 
     testWidgets('muestra error cuando falla la consulta de estudiantes', (tester) async {
+      await configurarPantallaGrande(tester);
+
       final api = crearApi('{"detail":"Error interno"}', 500);
       final admin = AdminService(api);
       final requisitos = RequisitosService(

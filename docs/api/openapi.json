@@ -273,6 +273,8 @@
           },
           "semestre": {
             "default": 1,
+            "maximum": 12.0,
+            "minimum": 1.0,
             "title": "Semestre",
             "type": "integer"
           }
@@ -306,6 +308,8 @@
           },
           "semestre": {
             "default": 1,
+            "maximum": 12.0,
+            "minimum": 1.0,
             "title": "Semestre",
             "type": "integer"
           }
@@ -901,6 +905,138 @@
           "nombre"
         ],
         "title": "RequisitoCatalogoIn",
+        "type": "object"
+      },
+      "RequisitoCatalogoUpdate": {
+        "description": "Edición de un requisito del catálogo.\n\nSolo se escriben los campos que el cliente envía (`exclude_unset`): el panel\nde administración no manda la guía, y no debe borrarla al guardar.",
+        "properties": {
+          "activo": {
+            "default": true,
+            "title": "Activo",
+            "type": "boolean"
+          },
+          "categoria": {
+            "anyOf": [
+              {
+                "enum": [
+                  "Academico",
+                  "Idiomas",
+                  "Evaluacion",
+                  "Proyeccion",
+                  "Administrativo"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Categoria"
+          },
+          "codigo_interno": {
+            "anyOf": [
+              {
+                "maxLength": 30,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Codigo Interno"
+          },
+          "descripcion": {
+            "default": "",
+            "title": "Descripcion",
+            "type": "string"
+          },
+          "guia_resumen": {
+            "anyOf": [
+              {
+                "maxLength": 800,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Guia Resumen"
+          },
+          "nombre": {
+            "title": "Nombre",
+            "type": "string"
+          },
+          "obligatorio": {
+            "default": true,
+            "title": "Obligatorio",
+            "type": "boolean"
+          },
+          "pasos_guia": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/PasoGuia"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pasos Guia"
+          },
+          "porcentaje_creditos_requerido": {
+            "anyOf": [
+              {
+                "maximum": 100.0,
+                "minimum": 1.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Porcentaje Creditos Requerido"
+          },
+          "portal_oficial": {
+            "anyOf": [
+              {
+                "maxLength": 300,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Portal Oficial"
+          },
+          "programa_id": {
+            "title": "Programa Id",
+            "type": "integer"
+          },
+          "semestre_recomendado": {
+            "default": 1,
+            "title": "Semestre Recomendado",
+            "type": "integer"
+          },
+          "tiempo_estimado": {
+            "anyOf": [
+              {
+                "maxLength": 80,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tiempo Estimado"
+          }
+        },
+        "required": [
+          "programa_id",
+          "nombre"
+        ],
+        "title": "RequisitoCatalogoUpdate",
         "type": "object"
       },
       "RequisitoDetalleOut": {
@@ -2398,6 +2534,8 @@
             "required": false,
             "schema": {
               "default": 50,
+              "maximum": 200,
+              "minimum": 1,
               "title": "Limite",
               "type": "integer"
             }
@@ -2408,6 +2546,7 @@
             "required": false,
             "schema": {
               "default": 0,
+              "minimum": 0,
               "title": "Desplazamiento",
               "type": "integer"
             }
@@ -2574,10 +2713,13 @@
         "operationId": "actualizar_estudiante_admin_estudiantes__codigo__administrativo_put",
         "parameters": [
           {
+            "description": "Código estudiantil (alfanumérico, 4 a 20 caracteres)",
             "in": "path",
             "name": "codigo",
             "required": true,
             "schema": {
+              "description": "Código estudiantil (alfanumérico, 4 a 20 caracteres)",
+              "pattern": "^[A-Za-z0-9]{4,20}$",
               "title": "Codigo",
               "type": "string"
             }
@@ -2602,15 +2744,14 @@
             },
             "description": "Successful Response"
           },
+          "404": {
+            "description": "Estudiante no encontrado"
+          },
+          "409": {
+            "description": "El correo ya pertenece a otra cuenta"
+          },
           "422": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            },
-            "description": "Validation Error"
+            "description": "Correo, programa o semestre inválidos"
           }
         },
         "security": [
@@ -3023,6 +3164,9 @@
             },
             "description": "Successful Response"
           },
+          "401": {
+            "description": "No autenticado"
+          },
           "422": {
             "content": {
               "application/json": {
@@ -3034,6 +3178,11 @@
             "description": "Validation Error"
           }
         },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
         "summary": "Listar Catalogo",
         "tags": [
           "requisitos"
@@ -3077,6 +3226,65 @@
           }
         ],
         "summary": "Crear Requisito Catalogo",
+        "tags": [
+          "requisitos"
+        ]
+      }
+    },
+    "/requisitos/catalogo/{catalogo_id}": {
+      "put": {
+        "operationId": "actualizar_requisito_catalogo_requisitos_catalogo__catalogo_id__put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "catalogo_id",
+            "required": true,
+            "schema": {
+              "maximum": 2147483647,
+              "minimum": 1,
+              "title": "Catalogo Id",
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RequisitoCatalogoUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "description": "No autenticado"
+          },
+          "403": {
+            "description": "Sin permisos sobre este recurso"
+          },
+          "404": {
+            "description": "Requisito o programa no encontrado"
+          },
+          "422": {
+            "description": "No se puede mover un requisito a otro programa"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Actualizar Requisito Catalogo",
         "tags": [
           "requisitos"
         ]

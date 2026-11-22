@@ -1,13 +1,3 @@
-"""Agrega columnas nuevas a tablas que ya existen.
-
-`Base.metadata.create_all` crea las tablas que faltan, pero nunca altera una que
-ya existe. Como el proyecto no usa Alembic, una columna nueva en un modelo
-rompería la base del laboratorio (volumen `pgdata`) en el siguiente arranque.
-
-Este módulo cubre ese hueco solo para el caso simple: columnas nullable (o con
-server_default). Cualquier otro cambio sigue necesitando una migración real.
-"""
-
 import logging
 
 from sqlalchemy import inspect, text

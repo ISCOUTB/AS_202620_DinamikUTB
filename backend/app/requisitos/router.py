@@ -10,6 +10,7 @@ from app.requisitos import service
 from app.requisitos.models import Requisito, RequisitoPrograma
 from app.requisitos.schemas import (
     RequisitoCatalogoIn,
+    RequisitoCatalogoUpdate,
     RequisitoDetalleOut,
     RequisitoDetalleUpdate,
     RequisitoEstadoUpdate,
@@ -49,8 +50,8 @@ def _catalogo_dict(item: RequisitoPrograma, programa: str) -> dict:
     }
 
 
-@router.get("/catalogo")
-def listar_catalogo(db: DbSession, programa_id: int | None = None):
+@router.get("/catalogo", responses={401: {"description": "No autenticado"}})
+def listar_catalogo(_usuario: CurrentUser, db: DbSession, programa_id: int | None = None):
     q = db.query(RequisitoPrograma)
     if programa_id:
         q = q.filter(RequisitoPrograma.programa_id == programa_id)
@@ -84,6 +85,52 @@ def crear_requisito_catalogo(payload: RequisitoCatalogoIn, _admin: AdminUser, db
     db.commit()
     db.refresh(req_prog)
     return _catalogo_dict(req_prog, prog.nombre)
+
+
+@router.put(
+    "/catalogo/{catalogo_id}",
+    responses={
+        **_RESPUESTAS_PROTEGIDAS,
+        404: {"description": "Requisito o programa no encontrado"},
+        422: {"description": "No se puede mover un requisito a otro programa"},
+    },
+)
+def actualizar_requisito_catalogo(
+    catalogo_id: RequisitoIdPath,
+    payload: RequisitoCatalogoUpdate,
+    _admin: AdminUser,
+    db: DbSession,
+):
+    item = db.get(RequisitoPrograma, catalogo_id, with_for_update=True)
+    if item is None:
+        raise HTTPException(status_code=404, detail="Requisito no encontrado")
+    prog = db.get(Programa, item.programa_id)
+    if prog is None:
+        raise HTTPException(status_code=404, detail="Programa no encontrado")
+    if payload.programa_id != item.programa_id:
+        # Los estudiantes ya tienen este requisito asignado por programa: moverlo
+        # dejaría filas huérfanas. Se crea uno nuevo en el otro programa.
+        raise HTTPException(
+            status_code=422,
+            detail="No se puede cambiar el programa de un requisito existente.",
+        )
+
+    cambios = payload.model_dump(exclude_unset=True)
+    cambios.pop("programa_id", None)
+    nombre_anterior = item.nombre
+    for campo, valor in cambios.items():
+        setattr(item, campo, valor)
+
+    if item.nombre != nombre_anterior:
+        # El nombre vive en el catálogo y se copia a cada estudiante: se mantiene alineado.
+        db.query(Requisito).filter(Requisito.catalogo_id == item.id).update(
+            {"nombre": item.nombre}, synchronize_session=False
+        )
+
+    # single transaction: RequisitoPrograma + nombre en Requisitos asignados, atomic
+    db.commit()
+    db.refresh(item)
+    return _catalogo_dict(item, prog.nombre)
 
 
 @router.get(

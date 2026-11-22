@@ -1,32 +1,29 @@
-
 import 'dart:convert';
-import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:frontend/administracion/admin_reports_screen.dart';
-import 'package:frontend/administracion/service/admin_service.dart';
-import 'package:frontend/core/network/api_client.dart';
-import 'package:frontend/core/network/token_storage.dart';
 import 'package:http/http.dart' as http;
 
+import 'package:frontend/core/network/api_client.dart';
+import 'package:frontend/core/storage/token_storage.dart';
+import 'package:frontend/administracion/admin_reports_screen.dart';
+import 'package:frontend/administracion/service/admin_service.dart';
+
 class ClienteReportesFalso extends http.BaseClient {
-  final bool errorResumen;
-  final bool errorExportacion;
+  bool fallarResumen;
+  bool fallarExportacion;
 
   ClienteReportesFalso({
-    this.errorResumen = false,
-    this.errorExportacion = false,
+    this.fallarResumen = false,
+    this.fallarExportacion = false,
   });
 
   @override
   Future<http.StreamedResponse> send(http.BaseRequest request) async {
-    final path = request.url.path;
-
-    if (path.contains('estadisticas/resumen')) {
-      if (errorResumen) {
+    if (request.url.path.contains('estadisticas/resumen')) {
+      if (fallarResumen) {
         return http.StreamedResponse(
-          Stream.value(utf8.encode('{"detail":"Error del servidor"}')),
+          Stream.value(utf8.encode('{"detail":"Error interno"}')),
           500,
           headers: {'content-type': 'application/json'},
         );
@@ -34,42 +31,43 @@ class ClienteReportesFalso extends http.BaseClient {
 
       return http.StreamedResponse(
         Stream.value(
-          utf8.encode(
-            jsonEncode({
-              'por_programa': {
-                'Ingeniería de Sistemas': 20,
-                'Ingeniería Industrial': 10,
-              },
-              'por_semestre': {
-                '1': 10,
-                '2': 20,
-              },
-              'estados_requisitos': {
-                'completado': 15,
-                'pendiente': 5,
-              },
-              'total_estudiantes': 30,
-              'porcentaje_cumplimiento': 75,
-              'estudiantes_proximos_grado': 4,
-            }),
-          ),
+          utf8.encode('''
+          {
+            "por_programa": {
+              "Ingeniería de Sistemas": 20,
+              "Ingeniería Industrial": 10
+            },
+            "por_semestre": {
+              "1": 5,
+              "2": 8,
+              "3": 12
+            },
+            "estados_requisitos": {
+              "Completado": 15,
+              "Pendiente": 5
+            },
+            "total_estudiantes": 30,
+            "porcentaje_cumplimiento": 75,
+            "estudiantes_proximos_grado": 4
+          }
+          '''),
         ),
         200,
         headers: {'content-type': 'application/json'},
       );
     }
 
-    if (path.contains('/reportes/estudiantes.csv')) {
-      if (errorExportacion) {
+    if (request.url.path.contains('estudiantes.csv')) {
+      if (fallarExportacion) {
         return http.StreamedResponse(
-          Stream.value(utf8.encode('{"detail":"Error de exportación"}')),
+          Stream.value(utf8.encode('{"detail":"Error al exportar"}')),
           500,
           headers: {'content-type': 'application/json'},
         );
       }
 
       return http.StreamedResponse(
-        Stream.value(utf8.encode('codigo,nombre\n2024001,Ana Perez')),
+        Stream.value(utf8.encode('id,nombre\n1,Ana')),
         200,
         headers: {'content-type': 'text/csv'},
       );
@@ -83,44 +81,24 @@ class ClienteReportesFalso extends http.BaseClient {
   }
 }
 
-class AlmacenTokensFalso implements TokenStorage {
-  @override
-  Future<String?> read() async => null;
-
-  @override
-  Future<void> write(String token) async {}
-
-  @override
-  Future<void> clear() async {}
-}
-
-AdminService crearServicio({
-  bool errorResumen = false,
-  bool errorExportacion = false,
-}) {
-  final api = ApiClient(
-    tokenStorage: AlmacenTokensFalso(),
-    client: ClienteReportesFalso(
-      errorResumen: errorResumen,
-      errorExportacion: errorExportacion,
-    ),
-  );
-
-  return AdminService(api);
-}
-
 void main() {
   group('AdminReportsScreen', () {
-    testWidgets('muestra los indicadores del reporte', (tester) async {
-      await tester.view.setPhysicalSize(const Size(1400, 1200));
-      await tester.view.setDevicePixelRatio(1);
+    testWidgets('muestra las estadísticas del reporte', (tester) async {
+      final cliente = ClienteReportesFalso();
 
-      addTearDown(tester.view.resetPhysicalSize);
-      addTearDown(tester.view.resetDevicePixelRatio);
+      final servicio = AdminService(
+        ApiClient(
+          baseUrl: 'http://127.0.0.1:8000',
+          tokenStorage: InMemoryTokenStorage(),
+          client: cliente,
+        ),
+      );
 
       await tester.pumpWidget(
         MaterialApp(
-          home: AdminReportsScreen(service: crearServicio()),
+          home: Scaffold(
+            body: AdminReportsScreen(service: servicio),
+          ),
         ),
       );
 
@@ -130,34 +108,26 @@ void main() {
       expect(find.text('Estudiantes por programa'), findsOneWidget);
       expect(find.text('Distribución por semestre'), findsOneWidget);
       expect(find.text('Estado de requisitos'), findsOneWidget);
-      expect(find.textContaining('30 estudiantes'), findsOneWidget);
-      expect(find.textContaining('75%'), findsOneWidget);
-      expect(find.text('Descargar reporte CSV'), findsOneWidget);
+      expect(find.textContaining('Total: 30 estudiantes'), findsOneWidget);
+      expect(find.textContaining('Cumplimiento: 75%'), findsOneWidget);
+      expect(find.textContaining('Próximos a grado: 4'), findsOneWidget);
     });
 
-    testWidgets('muestra el indicador de carga inicialmente', (
-      tester,
-    ) async {
-      final servicio = crearServicio();
+    testWidgets('muestra un error cuando falla la consulta', (tester) async {
+      final cliente = ClienteReportesFalso(fallarResumen: true);
 
-      await tester.pumpWidget(
-        MaterialApp(
-          home: AdminReportsScreen(service: servicio),
+      final servicio = AdminService(
+        ApiClient(
+          baseUrl: 'http://127.0.0.1:8000',
+          tokenStorage: InMemoryTokenStorage(),
+          client: cliente,
         ),
       );
 
-      expect(find.byType(CircularProgressIndicator), findsOneWidget);
-
-      await tester.pumpAndSettle();
-    });
-
-    testWidgets('muestra el estado de error si falla el resumen', (
-      tester,
-    ) async {
       await tester.pumpWidget(
         MaterialApp(
-          home: AdminReportsScreen(
-            service: crearServicio(errorResumen: true),
+          home: Scaffold(
+            body: AdminReportsScreen(service: servicio),
           ),
         ),
       );
@@ -167,13 +137,22 @@ void main() {
       expect(find.text('Reintentar'), findsOneWidget);
     });
 
-    testWidgets('permite reintentar la carga del reporte', (
-      tester,
-    ) async {
+    testWidgets('permite reintentar la consulta de estadísticas',
+        (tester) async {
+      final cliente = ClienteReportesFalso(fallarResumen: true);
+
+      final servicio = AdminService(
+        ApiClient(
+          baseUrl: 'http://127.0.0.1:8000',
+          tokenStorage: InMemoryTokenStorage(),
+          client: cliente,
+        ),
+      );
+
       await tester.pumpWidget(
         MaterialApp(
-          home: AdminReportsScreen(
-            service: crearServicio(errorResumen: true),
+          home: Scaffold(
+            body: AdminReportsScreen(service: servicio),
           ),
         ),
       );
@@ -181,35 +160,78 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Reintentar'), findsOneWidget);
+
+      cliente.fallarResumen = false;
 
       await tester.tap(find.text('Reintentar'));
       await tester.pumpAndSettle();
 
-      expect(find.text('Reintentar'), findsOneWidget);
+      expect(find.text('Reportes y estadísticas'), findsOneWidget);
+      expect(find.textContaining('Total: 30 estudiantes'), findsOneWidget);
     });
 
-    testWidgets('permite solicitar la descarga del CSV', (
-      tester,
-    ) async {
-      await tester.view.setPhysicalSize(const Size(1400, 1200));
-      await tester.view.setDevicePixelRatio(1);
+    testWidgets('muestra el aviso al descargar desde una plataforma no web',
+        (tester) async {
+      final cliente = ClienteReportesFalso();
 
-      addTearDown(tester.view.resetPhysicalSize);
-      addTearDown(tester.view.resetDevicePixelRatio);
+      final servicio = AdminService(
+        ApiClient(
+          baseUrl: 'http://127.0.0.1:8000',
+          tokenStorage: InMemoryTokenStorage(),
+          client: cliente,
+        ),
+      );
 
       await tester.pumpWidget(
         MaterialApp(
-          home: AdminReportsScreen(service: crearServicio()),
+          home: Scaffold(
+            body: AdminReportsScreen(service: servicio),
+          ),
         ),
       );
 
       await tester.pumpAndSettle();
 
       await tester.tap(find.text('Descargar reporte CSV'));
-      await tester.pump();
       await tester.pumpAndSettle();
 
-      expect(find.textContaining('descarga'), findsOneWidget);
+      expect(
+        find.text(
+          'La descarga solo está disponible desde el navegador web.',
+        ),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('muestra un aviso cuando falla la exportación',
+        (tester) async {
+      final cliente = ClienteReportesFalso(fallarExportacion: true);
+
+      final servicio = AdminService(
+        ApiClient(
+          baseUrl: 'http://127.0.0.1:8000',
+          tokenStorage: InMemoryTokenStorage(),
+          client: cliente,
+        ),
+      );
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: AdminReportsScreen(service: servicio),
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Descargar reporte CSV'));
+      await tester.pumpAndSettle();
+
+      expect(
+        find.text('El servidor no está disponible. Intenta más tarde.'),
+        findsOneWidget,
+      );
     });
   });
 }

@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:frontend/core/theme/app_colors.dart';
 import 'package:frontend/administracion/service/admin_service.dart';
@@ -5,16 +6,24 @@ import 'widgets/admin_common_widgets.dart';
 
 class AdminRequirementsScreen extends StatefulWidget {
   const AdminRequirementsScreen({super.key, required this.service});
+
   final AdminService service;
 
   @override
-  State<AdminRequirementsScreen> createState() => _AdminRequirementsPageState();
+  State<AdminRequirementsScreen> createState() =>
+      _AdminRequirementsPageState();
 }
 
 class _AdminRequirementsPageState extends State<AdminRequirementsScreen> {
-  late Future<List<AdminRequirement>> _future = widget.service.requisitos();
+  late Future<List<AdminRequirement>> _future =
+      widget.service.requisitos();
 
-  void _refresh() => setState(() => _future = widget.service.requisitos());
+  // Corrección: setState no debe devolver el Future.
+  void _refresh() {
+    setState(() {
+      _future = widget.service.requisitos();
+    });
+  }
 
   @override
   Widget build(BuildContext context) => AdminPageFrame(
@@ -36,6 +45,7 @@ class _AdminRequirementsPageState extends State<AdminRequirementsScreen> {
               retry: _refresh,
             );
           }
+
           if (!snapshot.hasData) {
             return const Center(
               child: Padding(
@@ -44,6 +54,7 @@ class _AdminRequirementsPageState extends State<AdminRequirementsScreen> {
               ),
             );
           }
+
           if (snapshot.data!.isEmpty) {
             return const AdminEmptyState(
               icon: Icons.fact_check_outlined,
@@ -52,6 +63,7 @@ class _AdminRequirementsPageState extends State<AdminRequirementsScreen> {
                   'Agrega los requisitos oficiales para asignarlos por programa.',
             );
           }
+
           return Column(
             children: [
               for (final item in snapshot.data!)
@@ -80,13 +92,19 @@ class _AdminRequirementsPageState extends State<AdminRequirementsScreen> {
                     ),
                     subtitle: Text(
                       '${item.programa} · Etapa recomendada: semestre ${item.semestre}\n${item.descripcion.isEmpty ? 'Sin descripción' : item.descripcion} · ${item.obligatorio ? 'Obligatorio' : 'Opcional'}',
-                      style: const TextStyle(fontSize: 10, height: 1.6),
+                      style: const TextStyle(
+                        fontSize: 10,
+                        height: 1.6,
+                      ),
                     ),
                     isThreeLine: true,
                     trailing: IconButton(
                       tooltip: 'Editar requisito',
                       onPressed: () => _edit(context, item),
-                      icon: const Icon(Icons.edit_outlined, size: 18),
+                      icon: const Icon(
+                        Icons.edit_outlined,
+                        size: 18,
+                      ),
                     ),
                   ),
                 ),
@@ -101,20 +119,32 @@ class _AdminRequirementsPageState extends State<AdminRequirementsScreen> {
     BuildContext context, [
     AdminRequirement? requirement,
   ]) async {
-    final programs = await widget.service.programas(administrar: true);
+    final programs = await widget.service.programas(
+      administrar: true,
+    );
+
     if (!context.mounted) return;
 
     final key = GlobalKey<FormState>();
-    final name = TextEditingController(text: requirement?.nombre ?? '');
+
+    final name = TextEditingController(
+      text: requirement?.nombre ?? '',
+    );
+
     final description = TextEditingController(
       text: requirement?.descripcion ?? '',
     );
+
     final semester = TextEditingController(
       text: '${requirement?.semestre ?? 1}',
     );
-    var programId = programs.any((p) => p.id == requirement?.programaId)
+
+    var programId = programs.any(
+      (p) => p.id == requirement?.programaId,
+    )
         ? requirement!.programaId
         : programs.firstOrNull?.id;
+
     var mandatory = requirement?.obligatorio ?? true;
     var active = requirement?.activo ?? true;
 
@@ -123,7 +153,9 @@ class _AdminRequirementsPageState extends State<AdminRequirementsScreen> {
       builder: (dialogContext) => StatefulBuilder(
         builder: (context, setDialogState) => AlertDialog(
           title: Text(
-            requirement == null ? 'Crear requisito' : 'Editar requisito',
+            requirement == null
+                ? 'Crear requisito'
+                : 'Editar requisito',
           ),
           content: SizedBox(
             width: 460,
@@ -137,13 +169,14 @@ class _AdminRequirementsPageState extends State<AdminRequirementsScreen> {
                       controller: name,
                       label: 'Nombre del requisito',
                     ),
+
                     AdminFormField(
                       controller: description,
                       label: 'Descripción',
                       maxLines: 3,
                     ),
 
-                    // Selector de Programa con borde redondeado
+                    // Selector de programa académico.
                     DropdownButtonFormField<int>(
                       initialValue: programId,
                       borderRadius: BorderRadius.circular(10),
@@ -152,15 +185,19 @@ class _AdminRequirementsPageState extends State<AdminRequirementsScreen> {
                       ),
                       items: [
                         for (final p in programs)
-                          DropdownMenuItem(value: p.id, child: Text(p.nombre)),
+                          DropdownMenuItem(
+                            value: p.id,
+                            child: Text(p.nombre),
+                          ),
                       ],
                       onChanged: (value) =>
                           setDialogState(() => programId = value),
                       validator: (value) =>
-                          value == null ? 'Crea primero un programa.' : null,
+                          value == null
+                              ? 'Crea primero un programa.'
+                              : null,
                     ),
 
-                    // ESPACIO CORREGIDO ENTRE PROGRAMA Y SEMESTRE
                     const SizedBox(height: 14),
 
                     AdminFormField(
@@ -168,6 +205,7 @@ class _AdminRequirementsPageState extends State<AdminRequirementsScreen> {
                       label: 'Semestre recomendado',
                       keyboard: TextInputType.number,
                     ),
+
                     SwitchListTile(
                       contentPadding: EdgeInsets.zero,
                       title: const Text(
@@ -178,6 +216,7 @@ class _AdminRequirementsPageState extends State<AdminRequirementsScreen> {
                       onChanged: (value) =>
                           setDialogState(() => mandatory = value),
                     ),
+
                     if (requirement != null)
                       SwitchListTile(
                         contentPadding: EdgeInsets.zero,
@@ -199,17 +238,21 @@ class _AdminRequirementsPageState extends State<AdminRequirementsScreen> {
               onPressed: () => Navigator.pop(context, false),
               child: const Text('Cancelar'),
             ),
+
             FilledButton(
               onPressed: () async {
                 if (!key.currentState!.validate()) return;
+
                 final payload = <String, Object>{
                   'programa_id': programId!,
                   'nombre': name.text.trim(),
                   'descripcion': description.text.trim(),
-                  'semestre_recomendado': int.tryParse(semester.text) ?? 1,
+                  'semestre_recomendado':
+                      int.tryParse(semester.text) ?? 1,
                   'obligatorio': mandatory,
                   if (requirement != null) 'activo': active,
                 };
+
                 try {
                   if (requirement == null) {
                     await widget.service.crearRequisito(payload);
@@ -219,9 +262,14 @@ class _AdminRequirementsPageState extends State<AdminRequirementsScreen> {
                       payload,
                     );
                   }
-                  if (context.mounted) Navigator.pop(context, true);
+
+                  if (context.mounted) {
+                    Navigator.pop(context, true);
+                  }
                 } catch (error) {
-                  if (context.mounted) showAdminDialogError(context, error);
+                  if (context.mounted) {
+                    showAdminDialogError(context, error);
+                  }
                 }
               },
               child: const Text('Guardar'),
@@ -231,7 +279,10 @@ class _AdminRequirementsPageState extends State<AdminRequirementsScreen> {
       ),
     );
 
-    if (result == true) _refresh();
+    if (result == true) {
+      _refresh();
+    }
+
     name.dispose();
     description.dispose();
     semester.dispose();

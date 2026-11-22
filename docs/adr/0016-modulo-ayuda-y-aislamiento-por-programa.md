@@ -83,4 +83,4 @@ El problema técnico: `Usuario` no tiene programa, y agregárselo haría que `us
 | **C4** | Backend API y bases de datos en `docs/c4/contenedores.puml` |
 | **Código** | `backend/app/ayuda/` (`models.py`, `schemas.py`, `service.py`, `router.py`) |
 | **Pruebas** | `backend/tests/test_ayuda.py` |
-| **Commits** | `<completar con el hash del merge>` |
+| **Commits** | `646b292` |

@@ -94,4 +94,4 @@ El estudiante veía una lista plana de requisitos. La ficha del problema promete
 | **C4** | Backend API y bases de datos en `docs/c4/contenedores.puml` (tablas nuevas en la lista) |
 | **Código** | `backend/app/curriculo/models.py`, `progreso.py`, `router.py`; `backend/app/requisitos/service.py`; `backend/app/core/migraciones.py` |
 | **Pruebas** | `backend/tests/test_progreso.py`, `backend/tests/test_migraciones.py` |
-| **Commits** | `<completar con el hash del merge>` |
+| **Commits** | `f06b09f` |

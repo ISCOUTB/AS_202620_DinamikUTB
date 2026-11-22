@@ -51,7 +51,16 @@ void main() {
     WidgetTester tester, {
     required dynamic Function(dynamic request) handler,
   }) async {
+    // Evita desbordamientos por el tamaño reducido de pantalla
+    // que utiliza Flutter en las pruebas.
+    tester.view.physicalSize = const Size(1400, 1000);
+    tester.view.devicePixelRatio = 1.0;
+
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
     client = FakeAdminApiClient((request) => handler(request));
+
     final api = ApiClient(
       baseUrl: 'http://localhost',
       tokenStorage: InMemoryTokenStorage(),
@@ -59,6 +68,7 @@ void main() {
     );
 
     adminService = AdminService(api);
+
     requisitosService = RequisitosService(
       api,
       maxIntentos: 1,
@@ -68,11 +78,15 @@ void main() {
     await tester.pumpWidget(
       MultiProvider(
         providers: [
-          Provider<RequisitosService>.value(value: requisitosService),
+          Provider<RequisitosService>.value(
+            value: requisitosService,
+          ),
         ],
         child: MaterialApp(
           home: Scaffold(
-            body: AdminProgressScreen(service: adminService),
+            body: AdminProgressScreen(
+              service: adminService,
+            ),
           ),
         ),
       ),
@@ -81,19 +95,24 @@ void main() {
     await tester.pumpAndSettle();
   }
 
-  testWidgets('muestra estudiantes y su resumen académico', (tester) async {
+  testWidgets('muestra estudiantes y su resumen académico', (
+    tester,
+  ) async {
     await abrirPantalla(
       tester,
       handler: (request) {
         if (request.url.path == '/estudiantes') {
           return [estudiante()];
         }
+
         if (request.url.path == '/programas') {
           return [programa()];
         }
+
         if (request.url.path == '/requisitos/2026001/resumen') {
           return resumen(65);
         }
+
         return [];
       },
     );
@@ -112,7 +131,11 @@ void main() {
       handler: (request) => [],
     );
 
-    expect(find.text('Sin estudiantes para mostrar'), findsOneWidget);
+    expect(
+      find.text('Sin estudiantes para mostrar'),
+      findsOneWidget,
+    );
+
     expect(
       find.text('Registra estudiantes para iniciar el seguimiento.'),
       findsOneWidget,
@@ -131,6 +154,7 @@ void main() {
             statusCode: 500,
           );
         }
+
         return [];
       },
     );
@@ -139,24 +163,32 @@ void main() {
     expect(find.text('Reintentar'), findsOneWidget);
   });
 
-  testWidgets('permite filtrar por nivel de avance', (tester) async {
+  testWidgets('permite filtrar por nivel de avance', (
+    tester,
+  ) async {
     await abrirPantalla(
       tester,
       handler: (request) {
         if (request.url.path == '/estudiantes') {
           return [
             estudiante(),
-            estudiante(codigo: '2026002', nombre: 'Luis Gómez'),
+            estudiante(
+              codigo: '2026002',
+              nombre: 'Luis Gómez',
+            ),
           ];
         }
+
         if (request.url.path == '/programas') {
           return [programa()];
         }
+
         if (request.url.path.endsWith('/resumen')) {
           return request.url.path.contains('2026001')
               ? resumen(30)
               : resumen(90);
         }
+
         return [];
       },
     );
@@ -164,54 +196,75 @@ void main() {
     expect(find.text('Ana Pérez'), findsOneWidget);
     expect(find.text('Luis Gómez'), findsOneWidget);
 
-    await tester.tap(find.byType(DropdownButtonFormField<String>).at(2));
+    await tester.tap(
+      find.byType(DropdownButtonFormField<String>).at(2),
+    );
     await tester.pumpAndSettle();
 
-    await tester.tap(find.text('Atención (<50%)').last);
+    await tester.tap(
+      find.text('Atención (<50%)').last,
+    );
     await tester.pumpAndSettle();
 
     expect(find.text('Ana Pérez'), findsOneWidget);
     expect(find.text('Luis Gómez'), findsNothing);
   });
 
-  testWidgets('permite filtrar por programa y semestre', (tester) async {
+  testWidgets('permite filtrar por programa y semestre', (
+    tester,
+  ) async {
     await abrirPantalla(
       tester,
       handler: (request) {
         if (request.url.path == '/estudiantes') {
           return [estudiante()];
         }
+
         if (request.url.path == '/programas') {
           return [programa()];
         }
+
         if (request.url.path.endsWith('/resumen')) {
           return resumen(65);
         }
+
         return [];
       },
     );
 
-    await tester.tap(find.byType(DropdownButtonFormField<String>).first);
+    await tester.tap(
+      find.byType(DropdownButtonFormField<String>).first,
+    );
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Ingeniería de Sistemas').last);
+
+    await tester.tap(
+      find.text('Ingeniería de Sistemas').last,
+    );
     await tester.pumpAndSettle();
 
     expect(
       client.requests.any(
-        (request) => request.url.queryParameters['programa'] ==
+        (request) =>
+            request.url.queryParameters['programa'] ==
             'Ingeniería de Sistemas',
       ),
       isTrue,
     );
 
-    await tester.tap(find.byType(DropdownButtonFormField<String>).at(1));
+    await tester.tap(
+      find.byType(DropdownButtonFormField<String>).at(1),
+    );
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Semestre 5').last);
+
+    await tester.tap(
+      find.text('Semestre 5').last,
+    );
     await tester.pumpAndSettle();
 
     expect(
       client.requests.any(
-        (request) => request.url.queryParameters['semestre'] == '5',
+        (request) =>
+            request.url.queryParameters['semestre'] == '5',
       ),
       isTrue,
     );
@@ -226,12 +279,14 @@ void main() {
         if (request.url.path == '/estudiantes') {
           return [estudiante()];
         }
+
         if (request.url.path.endsWith('/resumen')) {
           return const FakeApiResponse(
             {'detail': 'Error de resumen'},
             statusCode: 500,
           );
         }
+
         return [];
       },
     );

@@ -145,9 +145,9 @@ La usabilidad ocupa el tercer nivel porque el sistema debe permitir que los estu
 | **Fuente** | Estudiante, coordinador o administrador |
 | **Estímulo** | El usuario intenta acceder al sistema para consultar o gestionar información, incluyendo momentos de mayor demanda (por ejemplo, cierre de semestre). |
 | **Artefacto** | Backend de DinamikUTB desplegado como monolito modular. |
-| **Entorno** | Ambiente desplegado en Render (Free Web Service), según [ADR-0005](../adr/0005-plataforma-despliegue-backend.md). |
-| **Respuesta** | El sistema responde a las solicitudes sin interrupciones prolongadas; si ocurre un fallo, no debe dejar el sistema completo inaccesible más allá de un tiempo acotado. |
-| **Medida** | El sistema debe mantenerse disponible durante la ventana de prueba definida por el equipo, con una recuperación ante fallos en menos de **5 minutos**. El *spin down* de ~15 minutos de inactividad y ~1 minuto de reactivación del plan gratuito de Render, documentado en [ADR-0005](../adr/0005-plataforma-despliegue-backend.md) y en `11-risks-and-technical-debt.md`, se acepta como una interrupción conocida dentro de esta medida. |
+| **Entorno** | Ambiente desplegado en el servidor del laboratorio (Dokploy), según [ADR-0012](../adr/0012-despliegue-en-servidor-del-laboratorio.md). |  
+| **Respuesta** | El sistema responde a las solicitudes sin interrupciones prolongadas; si ocurre un fallo, no debe dejar el sistema completo inaccesible más allá de un tiempo acotado. |  
+| **Medida** | El sistema debe mantenerse disponible durante la ventana de prueba definida por el equipo, con una recuperación ante fallos en menos de **5 minutos**. En el laboratorio no aplica *spin down*; la interrupción histórica de Render (~15 min de inactividad, ~1 min de reactivación) quedó resuelta con la migración de [ADR-0012](../adr/0012-despliegue-en-servidor-del-laboratorio.md). |
 | **Herramienta** | Prueba de carga o monitoreo simple sobre el ambiente desplegado (por ejemplo, un script que reintenta solicitudes y registra tiempos de caída). |
 | **Carga** | Ventana de prueba definida por el equipo (por ejemplo, 100 solicitudes concurrentes sostenidas durante 10 minutos). |
 

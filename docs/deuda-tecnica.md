@@ -1,7 +1,7 @@
-
 # Deuda técnica reconocida
 
-Este documento registra decisiones conscientes de posponer una mejora, con el motivo y la evidencia de que fue una decisión informada, no un olvido.
+Este documento registra decisiones conscientes de posponer una mejora, con el motivo y
+la evidencia de que fue una decisión informada, no un olvido.
 
 | Ítem | Detectado por | Fecha | Motivo de posponer | Cómo resolverlo | Estado |
 |---|---|---|---|---|---|
@@ -9,5 +9,3 @@ Este documento registra decisiones conscientes de posponer una mejora, con el mo
 | Gradle sin lock file (`frontend/android/build.gradle.kts`, hotspot similar) | SonarCloud | 20/09/2026 | Mismo motivo. | Correr `./gradlew dependencies --write-locks` para generar `gradle.lockfile`. | Pendiente |
 | Migración de SQLite a PostgreSQL, recomendada por el docente | Docente (recomendación en clase) | 20/09/2026 | Requería ADR, actualización de C4, dependencias y configuración. | Ver [ADR-0007](adr/0007-persistencia-render-postgres.md): `backend/app/core/database.py` lee `DATABASE_URL` y el ambiente desplegado usa Render Postgres. | **Resuelta operativamente (27/09/2026)** para el ambiente desplegado. El CI y el desarrollo local siguen en SQLite; ver riesgo de divergencia en `arc42/11`. |
 | Autenticación ausente (`usuarios/` sin código) con backend público | Revisión de riesgos S8 | 27/09/2026 | Fuera del alcance de la semana de despliegue. | Implementar A-05; hasta entonces, solo datos de seed en el ambiente desplegado (`arc42/11`, sección 11.1). | Pendiente |
-| Un coordinador puede escribir el avance de cualquier estudiante (`PUT /malla/progreso`, `PUT /requisitos/*`) | Revisión de ADR-0015 | 20/11/2026 | El modelo de roles actual no liga coordinador y programa fuera de `ayuda/`. | Reusar `programas_de_coordinador` para exigir que el estudiante sea de su programa. | Pendiente |
-| Mallas de Ingeniería Industrial y Administración sin cargar | Revisión de A-06 | 20/11/2026 | Sin pensum oficial verificable; alcance acotado a un caso completo. | Agregar su catálogo como el de Sistemas y llamar su `poblar_*` desde `seed.py`. | Pendiente |

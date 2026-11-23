@@ -1,18 +1,11 @@
-
 import 'package:flutter/material.dart';
 
 import 'package:frontend/core/network/api_exception.dart';
 
 /// Presenta los estados de carga, error y datos de una consulta asíncrona.
-///
-/// El [builder] debe devolver un widget desplazable para permitir
-/// actualizar deslizando.
+/// El [builder] debe devolver un widget desplazable para permitir actualizar deslizando.
 class AsyncView<T> extends StatefulWidget {
-  const AsyncView({
-    super.key,
-    required this.load,
-    required this.builder,
-  });
+  const AsyncView({super.key, required this.load, required this.builder});
 
   final Future<T> Function() load;
   final Widget Function(BuildContext context, T data) builder;
@@ -32,15 +25,8 @@ class _AsyncViewState<T> extends State<AsyncView<T>> {
 
   Future<void> _recargar() {
     final nuevo = widget.load();
-
-    setState(() {
-      _future = nuevo;
-    });
-
-    return nuevo.then<void>(
-      (_) {},
-      onError: (Object error) {},
-    );
+    setState(() => _future = nuevo);
+    return nuevo.then<void>((_) {}, onError: (_) {});
   }
 
   @override
@@ -50,7 +36,6 @@ class _AsyncViewState<T> extends State<AsyncView<T>> {
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           final error = snapshot.error;
-
           return _VistaError(
             mensaje: error is ApiException
                 ? error.message
@@ -58,19 +43,12 @@ class _AsyncViewState<T> extends State<AsyncView<T>> {
             onReintentar: _recargar,
           );
         }
-
         if (!snapshot.hasData) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
+          return const Center(child: CircularProgressIndicator());
         }
-
         return RefreshIndicator(
           onRefresh: _recargar,
-          child: widget.builder(
-            context,
-            snapshot.data as T,
-          ),
+          child: widget.builder(context, snapshot.data as T),
         );
       },
     );
@@ -78,10 +56,7 @@ class _AsyncViewState<T> extends State<AsyncView<T>> {
 }
 
 class _VistaError extends StatelessWidget {
-  const _VistaError({
-    required this.mensaje,
-    required this.onReintentar,
-  });
+  const _VistaError({required this.mensaje, required this.onReintentar});
 
   final String mensaje;
   final VoidCallback onReintentar;
@@ -94,15 +69,9 @@ class _VistaError extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(
-              Icons.cloud_off_rounded,
-              size: 48,
-            ),
+            const Icon(Icons.cloud_off_rounded, size: 48),
             const SizedBox(height: 12),
-            Text(
-              mensaje,
-              textAlign: TextAlign.center,
-            ),
+            Text(mensaje, textAlign: TextAlign.center),
             const SizedBox(height: 16),
             FilledButton.icon(
               onPressed: onReintentar,

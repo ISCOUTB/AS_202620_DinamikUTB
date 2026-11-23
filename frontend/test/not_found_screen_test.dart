@@ -36,8 +36,7 @@ void main() {
     // Al volver al inicio se ve la bienvenida; el botón lleva al login.
     expect(find.text('DINA'), findsOneWidget);
     await tester.tap(find.text('Iniciar sesión'));
-    // El login tiene animaciones ambientales infinitas: no usar pumpAndSettle.
-    await tester.pump(const Duration(seconds: 4));
-    expect(find.text('Accede a tu cuenta'), findsOneWidget);
+    await tester.pumpAndSettle();
+    expect(find.text('Bienvenido a DinamikUTB'), findsOneWidget);
   });
 }

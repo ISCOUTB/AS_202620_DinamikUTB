@@ -1,4 +1,3 @@
-
 import hmac
 import logging
 import time
@@ -19,10 +18,6 @@ from app.programas.router import router as programas_router
 from app.reportes.router import router as reportes_router
 from app.requisitos.router import router as requisitos_router
 from app.usuarios.router import router as usuarios_router
-
-# NUEVOS IMPORTS
-from app.ayuda.router import router as ayuda_router
-from app.core.migraciones import asegurar_columnas
 
 settings = get_settings()
 logging.basicConfig(level=logging.INFO)
@@ -100,15 +95,12 @@ async def error_interno(request: Request, exc: Exception):
 
 
 Base.metadata.create_all(bind=engine)
-asegurar_columnas(engine, Base.metadata)
-
 app.include_router(usuarios_router)
 app.include_router(requisitos_router)
 app.include_router(estudiantes_router)
 app.include_router(programas_router)
 app.include_router(curriculo_router)
 app.include_router(reportes_router)
-app.include_router(ayuda_router)
 
 
 @app.get("/")

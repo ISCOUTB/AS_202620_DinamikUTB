@@ -1,16 +1,4 @@
-from sqlalchemy import (
-    Boolean,
-    Column,
-    Date,
-    DateTime,
-    Float,
-    ForeignKey,
-    Integer,
-    String,
-    Table,
-    UniqueConstraint,
-    func,
-)
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, Table, UniqueConstraint
 from sqlalchemy.orm import relationship
 
 from app.core.database import Base
@@ -78,46 +66,3 @@ class Curso(Base):
         back_populates="prerequisitos",
         order_by="Curso.codigo",
     )
-
-
-class CursoEstudiante(Base):
-    """Estado de un curso para un estudiante (ADR-0015).
-
-    `estudiante_id` es un valor (código estudiantil), no una clave foránea hacia
-    `estudiantes/`: la propiedad de datos se respeta igual que en `Requisito`.
-    `curso_id` sí es FK porque el curso es del mismo módulo.
-    Un curso sin fila equivale a «pendiente».
-    """
-
-    __tablename__ = "cursos_estudiante"
-    __table_args__ = (
-        UniqueConstraint("estudiante_id", "curso_id", name="uq_curso_estudiante"),
-    )
-
-    id = Column(Integer, primary_key=True, index=True)
-    estudiante_id = Column(String(20), nullable=False, index=True)
-    curso_id = Column(Integer, ForeignKey("cursos.id"), nullable=False, index=True)
-    estado = Column(String(20), nullable=False, default="pendiente")  # aprobado | en_curso | pendiente
-    fecha_aprobacion = Column(Date, nullable=True)
-    periodo = Column(String(10), nullable=True)  # "2025-1"
-    nota = Column(Float, nullable=True)
-
-    curso = relationship("Curso")
-
-
-class CursoEstudianteHistorial(Base):
-    """Auditoría append-only de `cursos_estudiante` (ADR-0011, mismo patrón)."""
-
-    __tablename__ = "cursos_estudiante_historial"
-
-    id = Column(Integer, primary_key=True, index=True)
-    curso_estudiante_id = Column(
-        Integer, ForeignKey("cursos_estudiante.id"), nullable=False, index=True
-    )
-    estudiante_id = Column(String(20), nullable=False, index=True)
-    curso_codigo = Column(String(20), nullable=False)
-    campo = Column(String(50), nullable=False)
-    valor_anterior = Column(String, nullable=False)
-    valor_nuevo = Column(String, nullable=False)
-    actor_id = Column(Integer, nullable=True)
-    creado_en = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)

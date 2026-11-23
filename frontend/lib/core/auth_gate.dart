@@ -39,25 +39,7 @@ class _AuthGateState extends State<AuthGate> {
         return const Scaffold(body: Center(child: CircularProgressIndicator()));
       case AuthStatus.noAutenticado:
         return AnimatedSwitcher(
-          duration: const Duration(milliseconds: 800),
-          transitionBuilder: (child, animation) {
-            // La bienvenida "se zambulle" (zoom + fundido) y el login entra suave.
-            final esBienvenida = child.key == const ValueKey('bienvenida');
-            final curva = CurvedAnimation(
-              parent: animation,
-              curve: Curves.easeInOut,
-            );
-            return FadeTransition(
-              opacity: curva,
-              child: ScaleTransition(
-                scale: Tween<double>(
-                  begin: esBienvenida ? 1.35 : 0.96,
-                  end: 1,
-                ).animate(curva),
-                child: child,
-              ),
-            );
-          },
+          duration: const Duration(milliseconds: 500),
           child: _bienvenidaVista
               ? const LoginScreen(key: ValueKey('login'))
               : WelcomeScreen(

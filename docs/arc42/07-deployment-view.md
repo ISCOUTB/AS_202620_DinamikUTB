@@ -4,12 +4,6 @@ Esta sección describe dónde se ejecuta cada pieza de **DinamikUTB** en el ambi
 
 > **Estado de implementación:** la infraestructura está descrita como código (`render.yaml` y `.github/workflows/deploy-pages.yml`) y el ambiente fue desplegado el 27/09/2026. Las URLs y la fecha de creación de la base se confirmaron con la comprobación externa registrada en el [README](../../README.md#entorno-desplegado).
 
-> **Topología vigente:** el entorno de referencia es el servidor del laboratorio  
-> (Dokploy + Traefik, PostgreSQL 16 en volumen `pgdata`), según  
-> [ADR-0012](../adr/0012-despliegue-en-servidor-del-laboratorio.md). El despliegue  
-> en Render descrito abajo se conserva como registro histórico del ambiente  
-> experimental retirado el 25/10/2026.
-
 ---
 
 ## 7.1 Infrastructure Level 1 — Vista general
@@ -20,22 +14,19 @@ Cada pieza se despliega y opera de forma independiente; ninguna comparte proceso
 flowchart TD
     A[Internet<br>fuera de la universidad]
     B[GitHub Pages<br>Frontend Flutter web<br>Estático, siempre activo]
-    C[Traefik/Dockploy<br>Proxy inverso del laboratorio]
-    D[Servidor del laboratorio<br>Backend FastAPI en Docker<br>Siempre activo, sin spin down]
-    E[PostgreSQL 16 en Docker<br>Volumen pgdata, sin expiración]
+    C[Render - Free Web Service<br>Backend FastAPI<br>Se duerme a los 15 min de inactividad]
+    D[(Render Postgres - Free<br>1 GB, expira a los 30 días)]
 
     A --> B
-    A --> C
     B <-->|"HTTP/JSON fetch"| C
-    C --> D
-    D <-->|"SQL vía SQLAlchemy"| E
+    C <-->|"SQL vía SQLAlchemy"| D
 ```
 
 | Pieza | Dónde corre | URL pública | Siempre activo | Costo mensual | ADR |
 |---|---|---|---|---|---|
 | Frontend (Flutter web) | GitHub Pages | `https://iscoutb.github.io/AS_202620_DinamikUTB/` | Sí (contenido estático) | $0 | [ADR-0006](../adr/0006-plataforma-despliegue-frontend.md) |
-| Backend (FastAPI) | Render — Free Web Service (**retirado**) | `https://dinamikutb-api.onrender.com` — verificada el 27/09/2026 (HTTP 200); dada de baja tras la migración | No aplica — servicio retirado | $0 | [ADR-0005](../adr/0005-plataforma-despliegue-backend.md), [ADR-0012](../adr/0012-despliegue-en-servidor-del-laboratorio.md) |
-| Base de datos | Render Postgres (Free) | interna, no pública | Sí, mientras no expire | $0, expira a los 30 días de creada (14 días de gracia). Creada el 27/09/2026; expira el 27/10/2026; recrear y resembrar antes del 25/10/2026. (**expirada el 27/10/2026**, ver F6 en §11) | [ADR-0007](../adr/0007-persistencia-render-postgres.md) |
+| Backend (FastAPI) | Render — Free Web Service | `https://dinamikutb-api.onrender.com` (`/health`, `/metrics`) — comprobada desde fuera de la universidad el 27/09/2026 (HTTP 200) | No — *spin down* tras 15 min sin tráfico, ~1 min para reactivarse | $0, dentro de 750 h/mes | [ADR-0005](../adr/0005-plataforma-despliegue-backend.md) |
+| Base de datos | Render Postgres (Free) | interna, no pública | Sí, mientras no expire | $0, expira a los 30 días de creada (14 días de gracia). Creada el 27/09/2026; expira el 27/10/2026; recrear y resembrar antes del 25/10/2026 | [ADR-0007](../adr/0007-persistencia-render-postgres.md) |
 | Ficheros | No aplica | — | — | — | Ningún módulo sube archivos hoy |
 | Trabajos programados | GitHub Actions (`schedule:`) | — | Se ejecuta según el cron configurado | $0 | Pendiente de un ADR propio cuando A-03 tenga código (ver [09-architecture-decisions.md](./09-architecture-decisions.md)) |
 | Pipeline de CI | GitHub Actions | — | Se ejecuta en cada push/PR | $0 | Cubierto por `ci.yml` |
@@ -52,7 +43,7 @@ El costo detallado, sus supuestos y el punto de ruptura de cada capa gratuita es
 |---|---|---|---|
 | [Q-01](./10-quality-requirements.md#escenario-q-01--exactitud-de-la-información-académica) | Render Postgres (Free) | Persiste los datos entre reinicios del backend; SQLite en el filesystem efímero de Render los habría perdido. | [ADR-0007](../adr/0007-persistencia-render-postgres.md) |
 | [Q-03](./10-quality-requirements.md#escenario-q-03--facilidad-de-comprensión-de-la-información) | GitHub Pages | El frontend está siempre disponible sin latencia de arranque, para no confundir un *spin down* del backend con un error de la interfaz. | [ADR-0006](../adr/0006-plataforma-despliegue-frontend.md) |
-| [Q-05](./10-quality-requirements.md#escenario-q-05--disponibilidad-del-sistema) | Backend en Dokploy (laboratorio), `GET /health` y `GET /metrics` | Sin *spin down*: el contenedor `api` corre siempre con `restart: unless-stopped` y healthcheck cada 30 s (`deploy/compose.lab.yaml`). El riesgo vigente es la disponibilidad del propio laboratorio, fuera del control del equipo ([ADR-0012](../adr/0012-despliegue-en-servidor-del-laboratorio.md) §5). La métrica `dinamikutb_http_request_duration_seconds` y el contador `dinamikutb_http_requests_total` (por estado) permiten observar latencia y errores 5xx. | [ADR-0012](../adr/0012-despliegue-en-servidor-del-laboratorio.md) |
+| [Q-05](./10-quality-requirements.md#escenario-q-05--disponibilidad-del-sistema) | Backend en Render Free, `GET /health` y `GET /metrics` | Riesgo aceptado: el *spin down* de 15 minutos es una interrupción real ([11](./11-risks-and-technical-debt.md)). La métrica `dinamikutb_http_request_duration_seconds` y el contador `dinamikutb_http_requests_total` (por estado) permiten observar la latencia de arranque en frío y los errores 5xx. | [ADR-0005](../adr/0005-plataforma-despliegue-backend.md) |
 | [Q-04](./10-quality-requirements.md#escenario-q-04--alertas-tempranas-de-requisitos-pendientes) | GitHub Actions (`schedule:`) | Es la pieza donde correría, a futuro, el disparo periódico de alertas tempranas una vez A-03 tenga código. | Pendiente |
 
 ---

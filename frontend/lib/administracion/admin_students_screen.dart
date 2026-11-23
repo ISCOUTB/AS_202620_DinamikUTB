@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:frontend/core/theme/app_colors.dart';
 import 'package:frontend/administracion/service/admin_service.dart';
@@ -48,7 +49,19 @@ class _AdminStudentsScreenState extends State<AdminStudentsScreen> {
     offset: _offset,
   );
 
-  void _refresh() => setState(() => _future = _load());
+  void _refresh() {
+    setState(() {
+      _future = _load();
+    });
+  }
+
+  Widget _filterText(String value) {
+    return Text(
+      value,
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+    );
+  }
 
   @override
   Widget build(BuildContext context) => AdminPageFrame(
@@ -56,13 +69,11 @@ class _AdminStudentsScreenState extends State<AdminStudentsScreen> {
     subtitle:
         'Consulta perfiles académicos, estado de cuenta y avance de requisitos.',
     trailing: FilledButton.icon(
-      // Llamada directa al diálogo de registro conservado
       onPressed: _registerStudent,
       icon: const Icon(Icons.person_add_alt_1_outlined, size: 16),
       label: const Text('Registrar estudiante'),
     ),
     children: [
-      // Buscador
       Row(
         children: [
           Expanded(
@@ -101,11 +112,12 @@ class _AdminStudentsScreenState extends State<AdminStudentsScreen> {
       ),
       const SizedBox(height: 12),
 
-      // Filtros compactos, con bordes redondeados y adaptables a pantallas pequeñas
       LayoutBuilder(
         builder: (context, constraints) {
-          final isNarrow = constraints.maxWidth < 600;
-          final itemWidth = isNarrow ? (constraints.maxWidth - 10) / 2 : 200.0;
+          final isNarrow = constraints.maxWidth < 620;
+          final programWidth = isNarrow ? constraints.maxWidth : 240.0;
+          final semesterWidth = isNarrow ? constraints.maxWidth : 200.0;
+          final stateWidth = isNarrow ? constraints.maxWidth : 200.0;
 
           return Wrap(
             spacing: 10,
@@ -114,27 +126,32 @@ class _AdminStudentsScreenState extends State<AdminStudentsScreen> {
               FutureBuilder<List<AdminProgram>>(
                 future: widget.service.programas(),
                 builder: (context, snapshot) => SizedBox(
-                  width: isNarrow ? constraints.maxWidth : 240,
-                  height: 40,
+                  width: programWidth,
+                  height: 44,
                   child: DropdownButtonFormField<String>(
+                    isExpanded: true,
                     initialValue: _program ?? '',
                     borderRadius: BorderRadius.circular(12),
-                    style: const TextStyle(fontSize: 12, color: Colors.black87),
+                    style: const TextStyle(
+                      fontSize: 12,
+                      color: Colors.black87,
+                    ),
                     decoration: adminFilterInputDecoration('Programa'),
                     items: [
-                      const DropdownMenuItem(
+                      DropdownMenuItem(
                         value: '',
-                        child: Text('Todos los programas'),
+                        child: _filterText('Todos los programas'),
                       ),
                       if (snapshot.hasData)
                         for (final program in snapshot.data!)
                           DropdownMenuItem(
                             value: program.nombre,
-                            child: Text(program.nombre),
+                            child: _filterText(program.nombre),
                           ),
                     ],
                     onChanged: (value) {
-                      _program = value == null || value.isEmpty ? null : value;
+                      _program =
+                          value == null || value.isEmpty ? null : value;
                       _offset = 0;
                       _refresh();
                     },
@@ -142,22 +159,26 @@ class _AdminStudentsScreenState extends State<AdminStudentsScreen> {
                 ),
               ),
               SizedBox(
-                width: itemWidth,
-                height: 40,
+                width: semesterWidth,
+                height: 44,
                 child: DropdownButtonFormField<String>(
+                  isExpanded: true,
                   initialValue: _semester?.toString() ?? '',
                   borderRadius: BorderRadius.circular(12),
-                  style: const TextStyle(fontSize: 12, color: Colors.black87),
+                  style: const TextStyle(
+                    fontSize: 12,
+                    color: Colors.black87,
+                  ),
                   decoration: adminFilterInputDecoration('Semestre'),
                   items: [
-                    const DropdownMenuItem(
+                    DropdownMenuItem(
                       value: '',
-                      child: Text('Todos los semestres'),
+                      child: _filterText('Todos los semestres'),
                     ),
                     for (var semester = 1; semester <= 12; semester++)
                       DropdownMenuItem(
                         value: '$semester',
-                        child: Text('Semestre $semester'),
+                        child: _filterText('Semestre $semester'),
                       ),
                   ],
                   onChanged: (value) {
@@ -168,24 +189,34 @@ class _AdminStudentsScreenState extends State<AdminStudentsScreen> {
                 ),
               ),
               SizedBox(
-                width: itemWidth,
-                height: 40,
+                width: stateWidth,
+                height: 44,
                 child: DropdownButtonFormField<String>(
+                  isExpanded: true,
                   initialValue: _active == null
                       ? ''
                       : _active!
-                      ? 'true'
-                      : 'false',
+                          ? 'true'
+                          : 'false',
                   borderRadius: BorderRadius.circular(12),
-                  style: const TextStyle(fontSize: 12, color: Colors.black87),
+                  style: const TextStyle(
+                    fontSize: 12,
+                    color: Colors.black87,
+                  ),
                   decoration: adminFilterInputDecoration('Estado'),
-                  items: const [
+                  items: [
                     DropdownMenuItem(
                       value: '',
-                      child: Text('Todos los estados'),
+                      child: _filterText('Todos los estados'),
                     ),
-                    DropdownMenuItem(value: 'true', child: Text('Activo')),
-                    DropdownMenuItem(value: 'false', child: Text('Inactivo')),
+                    DropdownMenuItem(
+                      value: 'true',
+                      child: _filterText('Activo'),
+                    ),
+                    DropdownMenuItem(
+                      value: 'false',
+                      child: _filterText('Inactivo'),
+                    ),
                   ],
                   onChanged: (value) {
                     _active = value == null || value.isEmpty
@@ -202,7 +233,6 @@ class _AdminStudentsScreenState extends State<AdminStudentsScreen> {
       ),
       const SizedBox(height: 14),
 
-      // Lista de estudiantes
       FutureBuilder<List<AdminStudent>>(
         future: _future,
         builder: (context, snapshot) {
@@ -220,7 +250,9 @@ class _AdminStudentsScreenState extends State<AdminStudentsScreen> {
               ),
             );
           }
+
           final students = snapshot.data!;
+
           if (students.isEmpty) {
             return const AdminEmptyState(
               icon: Icons.groups_2_outlined,
@@ -272,7 +304,9 @@ class _AdminStudentsScreenState extends State<AdminStudentsScreen> {
                     trailing: Wrap(
                       crossAxisAlignment: WrapCrossAlignment.center,
                       children: [
-                        AdminStatusTag(student.activo ? 'Activo' : 'Inactivo'),
+                        AdminStatusTag(
+                          student.activo ? 'Activo' : 'Inactivo',
+                        ),
                         IconButton(
                           tooltip: 'Editar estudiante',
                           onPressed: () => _editStudent(student),
@@ -282,7 +316,6 @@ class _AdminStudentsScreenState extends State<AdminStudentsScreen> {
                     ),
                   ),
                 ),
-              // Paginación
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8),
                 child: Row(
@@ -325,7 +358,7 @@ class _AdminStudentsScreenState extends State<AdminStudentsScreen> {
       context,
       widget.service,
     );
-    if (created == true) _refresh();
+    if (created == true && mounted) _refresh();
   }
 
   Future<void> _editStudent(AdminStudent student) async {
@@ -334,7 +367,7 @@ class _AdminStudentsScreenState extends State<AdminStudentsScreen> {
       service: widget.service,
       student: student,
     );
-    if (updated == true) _refresh();
+    if (updated == true && mounted) _refresh();
   }
 
   void _showStudentDetails(AdminStudent student) {

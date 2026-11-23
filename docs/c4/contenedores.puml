@@ -12,7 +12,7 @@ System_Boundary(dinamik, "DinamikUTB") {
     Container(token_store, "Almacén de sesión del cliente", "flutter_secure_storage (navegador)", "Guarda el token JWT de acceso (30 min).")
 
     Container(proxy, "Proxy inverso (laboratorio)", "Traefik, gestionado por Dokploy", "Enruta el tráfico público hacia la web y la API.")
-    Container(web_lab, "Frontend Web ", "GitHub Page", "Sirve la SPA estática de Flutter compilada con API_BASE_URL.")
+    Container(web_lab, "Frontend Web (laboratorio)", "Nginx en Docker (GHCR)", "Sirve la SPA estática de Flutter compilada con API_BASE_URL.")
 
     Container(backend_lab, "Backend API (laboratorio)", "FastAPI / Python en Docker", "Módulos: usuarios, estudiantes, requisitos, programas, curriculo y reportes. Desplegado con deploy/compose.lab.yaml. Límite: 0,5 CPU y 192 MB (ADR-0012).")
     ContainerDb(database_lab, "Base de datos (laboratorio)", "PostgreSQL 16 en Docker, volumen pgdata", "Tablas: usuarios, password_reset_tokens, estudiantes, estudiantes_historial, requisitos, requisitos_historial, programas, planes_estudio, cursos, curso_prerrequisitos. Límite: 0,5 CPU y 160 MB (ADR-0011, ADR-0012).")
@@ -21,6 +21,7 @@ System_Boundary(dinamik, "DinamikUTB") {
     ContainerDb(logs, "Registro operativo", "Logs JSON por stdout", "Telemetría operativa estructurada (ADR-0011).")
 }
 
+System_Ext(smtp, "Servidor SMTP", "Servidor de correo saliente para restablecimiento de contraseñas.")
 
 Rel(estudiante, proxy, "Accede a la interfaz", "HTTPS")
 Rel(coordinador, proxy, "Accede a la interfaz", "HTTPS")
@@ -32,7 +33,7 @@ Rel(proxy, backend_lab, "Enruta llamadas API", "HTTP:8000")
 
 Rel(web_lab, backend_lab, "Consume API vía proxy", "JSON / HTTPS síncrono (ADR-0004)")
 Rel(backend_lab, database_lab, "Persiste y audita", "SQL vía SQLAlchemy + psycopg")
-
+Rel(backend_lab, smtp, "Envía correo de recuperación", "SMTP / TLS (mejor esfuerzo)")
 Rel(backend_lab, logs, "Emite telemetría", "stdout, JSON")
 
 footer Integración síncrona (ADR-0004), sin broker de eventos (arc42 §8.10). Ambiente Render retirado tras vencimiento de base (ADR-0012).

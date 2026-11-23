@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:frontend/core/theme/app_colors.dart';
@@ -6,15 +7,22 @@ import 'package:frontend/administracion/service/admin_service.dart';
 import 'widgets/admin_common_widgets.dart';
 
 class AdminProgressScreen extends StatefulWidget {
-  const AdminProgressScreen({super.key, required this.service});
+  const AdminProgressScreen({
+    super.key,
+    required this.service,
+  });
+
   final AdminService service;
 
   @override
-  State<AdminProgressScreen> createState() => _AdminProgressPageState();
+  State<AdminProgressScreen> createState() =>
+      _AdminProgressPageState();
 }
 
 class _AdminProgressPageState extends State<AdminProgressScreen> {
-  late Future<List<AdminStudent>> _future = widget.service.estudiantes();
+  late Future<List<AdminStudent>> _future =
+      widget.service.estudiantes();
+
   String? _program;
   int? _semester;
   String _level = 'all';
@@ -28,147 +36,211 @@ class _AdminProgressPageState extends State<AdminProgressScreen> {
 
   @override
   Widget build(BuildContext context) => AdminPageFrame(
-    title: 'Seguimiento académico',
-    subtitle:
-        'Identifica el avance individual y los requisitos que necesitan atención.',
-    children: [
-      // Filtros adaptativos y compactos
-      LayoutBuilder(
-        builder: (context, constraints) {
-          final isNarrow = constraints.maxWidth < 620;
-          final itemWidth = isNarrow ? (constraints.maxWidth - 10) / 2 : 200.0;
+        title: 'Seguimiento académico',
+        subtitle:
+            'Identifica el avance individual y los requisitos que necesitan atención.',
+        children: [
+          LayoutBuilder(
+            builder: (context, constraints) {
+              final isNarrow = constraints.maxWidth < 620;
 
-          return Wrap(
-            spacing: 10,
-            runSpacing: 10,
-            children: [
-              FutureBuilder<List<AdminProgram>>(
-                future: widget.service.programas(),
-                builder: (context, snapshot) => SizedBox(
-                  width: isNarrow ? constraints.maxWidth : 240,
-                  height: 40,
-                  child: DropdownButtonFormField<String>(
-                    initialValue: _program ?? '',
-                    borderRadius: BorderRadius.circular(12),
-                    style: const TextStyle(fontSize: 12, color: Colors.black87),
-                    decoration: adminFilterInputDecoration('Programa'),
-                    items: [
-                      const DropdownMenuItem(
-                        value: '',
-                        child: Text('Todos los programas'),
-                      ),
-                      if (snapshot.hasData)
-                        for (final p in snapshot.data!)
-                          DropdownMenuItem(
-                            value: p.nombre,
-                            child: Text(p.nombre),
+              final programWidth =
+                  isNarrow ? constraints.maxWidth : 240.0;
+              final semesterWidth =
+                  isNarrow ? constraints.maxWidth : 200.0;
+              final levelWidth =
+                  isNarrow ? constraints.maxWidth : 210.0;
+
+              return Wrap(
+                spacing: 10,
+                runSpacing: 10,
+                children: [
+                  FutureBuilder<List<AdminProgram>>(
+                    future: widget.service.programas(),
+                    builder: (context, snapshot) => SizedBox(
+                      width: programWidth,
+                      height: 44,
+                      child: DropdownButtonFormField<String>(
+                        isExpanded: true,
+                        initialValue: _program ?? '',
+                        borderRadius: BorderRadius.circular(12),
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: Colors.black87,
+                        ),
+                        decoration:
+                            adminFilterInputDecoration('Programa'),
+                        items: [
+                          const DropdownMenuItem(
+                            value: '',
+                            child: Text(
+                              'Todos los programas',
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                            ),
                           ),
-                    ],
-                    onChanged: (value) => setState(() {
-                      _program = value == null || value.isEmpty ? null : value;
-                      _loadStudents();
-                    }),
-                  ),
-                ),
-              ),
-              SizedBox(
-                width: itemWidth,
-                height: 40,
-                child: DropdownButtonFormField<String>(
-                  initialValue: _semester?.toString() ?? '',
-                  borderRadius: BorderRadius.circular(12),
-                  style: const TextStyle(fontSize: 12, color: Colors.black87),
-                  decoration: adminFilterInputDecoration('Semestre'),
-                  items: [
-                    const DropdownMenuItem(value: '', child: Text('Todos')),
-                    for (var semester = 1; semester <= 12; semester++)
-                      DropdownMenuItem(
-                        value: '$semester',
-                        child: Text('Semestre $semester'),
+                          if (snapshot.hasData)
+                            for (final p in snapshot.data!)
+                              DropdownMenuItem(
+                                value: p.nombre,
+                                child: Text(
+                                  p.nombre,
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
+                                ),
+                              ),
+                        ],
+                        onChanged: (value) => setState(() {
+                          _program = value == null || value.isEmpty
+                              ? null
+                              : value;
+                          _loadStudents();
+                        }),
                       ),
-                  ],
-                  onChanged: (value) => setState(() {
-                    _semester = int.tryParse(value ?? '');
-                    _loadStudents();
-                  }),
-                ),
-              ),
-              SizedBox(
-                width: isNarrow ? constraints.maxWidth : 210,
-                height: 40,
-                child: DropdownButtonFormField<String>(
-                  initialValue: _level,
-                  borderRadius: BorderRadius.circular(12),
-                  style: const TextStyle(fontSize: 12, color: Colors.black87),
-                  decoration: adminFilterInputDecoration('Nivel de avance'),
-                  items: const [
-                    DropdownMenuItem(
-                      value: 'all',
-                      child: Text('Todos los niveles'),
                     ),
-                    DropdownMenuItem(
-                      value: 'attention',
-                      child: Text('Atención (<50%)'),
-                    ),
-                    DropdownMenuItem(
-                      value: 'progress',
-                      child: Text('En progreso (50–79%)'),
-                    ),
-                    DropdownMenuItem(
-                      value: 'near',
-                      child: Text('Próximo (≥80%)'),
-                    ),
-                  ],
-                  onChanged: (value) => setState(() => _level = value ?? 'all'),
-                ),
-              ),
-            ],
-          );
-        },
-      ),
-      const SizedBox(height: 14),
+                  ),
 
-      // Lista de estudiantes con avance
-      FutureBuilder<List<AdminStudent>>(
-        future: _future,
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return AdminLoadError(
-              message: adminErrorMessage(snapshot.error),
-              retry: () => setState(
-                () => _future = widget.service.estudiantes(programa: _program),
-              ),
-            );
-          }
-          if (!snapshot.hasData) {
-            return const Center(
-              child: Padding(
-                padding: EdgeInsets.all(30),
-                child: CircularProgressIndicator(),
-              ),
-            );
-          }
-          if (snapshot.data!.isEmpty) {
-            return const AdminEmptyState(
-              icon: Icons.trending_up,
-              title: 'Sin estudiantes para mostrar',
-              detail: 'Registra estudiantes para iniciar el seguimiento.',
-            );
-          }
-          return Column(
-            children: [
-              for (final student in snapshot.data!)
-                _StudentProgressCard(
-                  student: student,
-                  level: _level,
-                  onRetry: () => setState(() {}),
-                ),
-            ],
-          );
-        },
-      ),
-    ],
-  );
+                  SizedBox(
+                    width: semesterWidth,
+                    height: 44,
+                    child: DropdownButtonFormField<String>(
+                      isExpanded: true,
+                      initialValue: _semester?.toString() ?? '',
+                      borderRadius: BorderRadius.circular(12),
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: Colors.black87,
+                      ),
+                      decoration:
+                          adminFilterInputDecoration('Semestre'),
+                      items: [
+                        const DropdownMenuItem(
+                          value: '',
+                          child: Text(
+                            'Todos',
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        for (var semester = 1;
+                            semester <= 12;
+                            semester++)
+                          DropdownMenuItem(
+                            value: '$semester',
+                            child: Text(
+                              'Semestre $semester',
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                            ),
+                          ),
+                      ],
+                      onChanged: (value) => setState(() {
+                        _semester = int.tryParse(value ?? '');
+                        _loadStudents();
+                      }),
+                    ),
+                  ),
+
+                  SizedBox(
+                    width: levelWidth,
+                    height: 44,
+                    child: DropdownButtonFormField<String>(
+                      isExpanded: true,
+                      initialValue: _level,
+                      borderRadius: BorderRadius.circular(12),
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: Colors.black87,
+                      ),
+                      decoration:
+                          adminFilterInputDecoration('Nivel de avance'),
+                      items: const [
+                        DropdownMenuItem(
+                          value: 'all',
+                          child: Text(
+                            'Todos los niveles',
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                          ),
+                        ),
+                        DropdownMenuItem(
+                          value: 'attention',
+                          child: Text(
+                            'Atención (<50%)',
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                          ),
+                        ),
+                        DropdownMenuItem(
+                          value: 'progress',
+                          child: Text(
+                            'En progreso (50–79%)',
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                          ),
+                        ),
+                        DropdownMenuItem(
+                          value: 'near',
+                          child: Text(
+                            'Próximo (≥80%)',
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                          ),
+                        ),
+                      ],
+                      onChanged: (value) => setState(() {
+                        _level = value ?? 'all';
+                      }),
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
+
+          const SizedBox(height: 14),
+
+          FutureBuilder<List<AdminStudent>>(
+            future: _future,
+            builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                return AdminLoadError(
+                  message: adminErrorMessage(snapshot.error),
+                  retry: () => setState(_loadStudents),
+                );
+              }
+
+              if (!snapshot.hasData) {
+                return const Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(30),
+                    child: CircularProgressIndicator(),
+                  ),
+                );
+              }
+
+              if (snapshot.data!.isEmpty) {
+                return const AdminEmptyState(
+                  icon: Icons.trending_up,
+                  title: 'Sin estudiantes para mostrar',
+                  detail:
+                      'Registra estudiantes para iniciar el seguimiento.',
+                );
+              }
+
+              return Column(
+                children: [
+                  for (final student in snapshot.data!)
+                    _StudentProgressCard(
+                      student: student,
+                      level: _level,
+                      onRetry: () => setState(() {}),
+                    ),
+                ],
+              );
+            },
+          ),
+        ],
+      );
 }
 
 class _StudentProgressCard extends StatelessWidget {
@@ -190,12 +262,14 @@ class _StudentProgressCard extends StatelessWidget {
       future: service.obtenerResumen(student.codigo),
       builder: (context, snapshot) {
         final summary = snapshot.data;
+
         if (snapshot.hasError) {
           return AdminLoadError(
             message: adminErrorMessage(snapshot.error),
             retry: onRetry,
           );
         }
+
         if (summary == null) {
           return const Padding(
             padding: EdgeInsets.symmetric(vertical: 4),
@@ -204,13 +278,17 @@ class _StudentProgressCard extends StatelessWidget {
         }
 
         final percent = summary.porcentajeAvance;
+
         final matchesLevel = switch (level) {
           'attention' => percent < 50,
           'progress' => percent >= 50 && percent < 80,
           'near' => percent >= 80,
           _ => true,
         };
-        if (!matchesLevel) return const SizedBox.shrink();
+
+        if (!matchesLevel) {
+          return const SizedBox.shrink();
+        }
 
         return Card(
           elevation: 0.5,
@@ -258,16 +336,22 @@ class _StudentProgressCard extends StatelessWidget {
                     ),
                   ],
                 ),
+
                 const SizedBox(height: 10),
+
                 LinearProgressIndicator(
                   value: percent / 100,
                   minHeight: 7,
                   borderRadius: BorderRadius.circular(8),
                   backgroundColor: AppColors.surfaceLow,
                 ),
+
                 const SizedBox(height: 8),
+
                 Text(
-                  '${summary.cumplidos} cumplidos · ${summary.enProceso} en revisión · ${summary.pendientes} pendientes',
+                  '${summary.cumplidos} cumplidos · '
+                  '${summary.enProceso} en revisión · '
+                  '${summary.pendientes} pendientes',
                   style: const TextStyle(
                     fontSize: 10,
                     color: AppColors.textMuted,

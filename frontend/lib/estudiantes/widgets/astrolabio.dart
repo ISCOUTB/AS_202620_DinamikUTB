@@ -23,6 +23,7 @@ class Astrolabio extends StatefulWidget {
     required this.hitos,
     this.promedio,
     this.periodoGrado,
+    this.adorno,
   });
 
   final double creditosPct;
@@ -37,6 +38,10 @@ class Astrolabio extends StatefulWidget {
   final List<double> hitos;
   final double? promedio;
   final String? periodoGrado;
+
+  /// Pieza que se posa sobre el reloj, en la esquina superior derecha de
+  /// los anillos (la cara de la mascota, en el inicio del estudiante).
+  final Widget? adorno;
 
   @override
   State<Astrolabio> createState() => _AstrolabioState();
@@ -74,7 +79,8 @@ class _AstrolabioState extends State<Astrolabio> with TickerProviderStateMixin {
     super.dispose();
   }
 
-  void _alternar(int valor) => setState(() => _foco = _foco == valor ? 0 : valor);
+  void _alternar(int valor) =>
+      setState(() => _foco = _foco == valor ? 0 : valor);
 
   @override
   Widget build(BuildContext context) {
@@ -99,7 +105,9 @@ class _AstrolabioState extends State<Astrolabio> with TickerProviderStateMixin {
           }
           return Column(
             children: [
-              Center(child: SizedBox(width: lado, child: anillo)),
+              Center(
+                child: SizedBox(width: lado, child: anillo),
+              ),
               const SizedBox(height: 20),
               datos,
             ],
@@ -149,7 +157,10 @@ class _AstrolabioState extends State<Astrolabio> with TickerProviderStateMixin {
                           ),
                           Padding(
                             padding: const EdgeInsets.only(bottom: 8, left: 2),
-                            child: Text('%', style: Dash.display(22, color: Dash.sky)),
+                            child: Text(
+                              '%',
+                              style: Dash.display(22, color: Dash.sky),
+                            ),
                           ),
                         ],
                       ),
@@ -163,6 +174,8 @@ class _AstrolabioState extends State<Astrolabio> with TickerProviderStateMixin {
                   ),
                 ),
               ),
+              if (widget.adorno != null)
+                Positioned(top: 4, right: 4, child: widget.adorno!),
             ],
           ),
         ),
@@ -182,7 +195,8 @@ class _AstrolabioState extends State<Astrolabio> with TickerProviderStateMixin {
             _Leyenda(
               color: Dash.amber,
               titulo: 'Requisitos de grado',
-              valor: '${widget.requisitosCumplidos} de ${widget.requisitosTotal}',
+              valor:
+                  '${widget.requisitosCumplidos} de ${widget.requisitosTotal}',
               activo: _foco == 2,
               onTap: () => _alternar(2),
             ),
@@ -201,7 +215,11 @@ class _AstrolabioState extends State<Astrolabio> with TickerProviderStateMixin {
         Text(
           'El anillo de afuera mide tus créditos; el de adentro, los requisitos '
           'institucionales. Toca la leyenda para resaltar uno.',
-          style: Dash.body(14, color: Colors.white.withValues(alpha: 0.8), height: 1.4),
+          style: Dash.body(
+            14,
+            color: Colors.white.withValues(alpha: 0.8),
+            height: 1.4,
+          ),
         ),
         const SizedBox(height: 18),
         Wrap(
@@ -321,9 +339,13 @@ class _Leyenda extends StatelessWidget {
         duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         decoration: BoxDecoration(
-          color: activo ? color.withValues(alpha: 0.22) : Colors.white.withValues(alpha: 0.08),
+          color: activo
+              ? color.withValues(alpha: 0.22)
+              : Colors.white.withValues(alpha: 0.08),
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: activo ? color : Colors.white.withValues(alpha: 0.2)),
+          border: Border.all(
+            color: activo ? color : Colors.white.withValues(alpha: 0.2),
+          ),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
@@ -372,24 +394,16 @@ class _AstrolabioPainter extends CustomPainter {
     final rExt = radio - 34;
     final rInt = rExt - 32;
 
-    _anillo(
-      canvas,
-      c,
-      rExt,
-      16,
-      cred / 100 * avance,
-      const [Dash.aqua, Dash.sky, Dash.aqua],
-      atenuado: foco == 2,
-    );
-    _anillo(
-      canvas,
-      c,
-      rInt,
-      12,
-      req / 100 * avance,
-      const [Dash.amber, Color(0xFFFB923C), Dash.amber],
-      atenuado: foco == 1,
-    );
+    _anillo(canvas, c, rExt, 16, cred / 100 * avance, const [
+      Dash.aqua,
+      Dash.sky,
+      Dash.aqua,
+    ], atenuado: foco == 2);
+    _anillo(canvas, c, rInt, 12, req / 100 * avance, const [
+      Dash.amber,
+      Color(0xFFFB923C),
+      Dash.amber,
+    ], atenuado: foco == 1);
 
     // Hitos de créditos sobre el anillo exterior.
     for (final h in hitos) {
@@ -443,7 +457,11 @@ class _AstrolabioPainter extends CustomPainter {
       final a = i * 2 * math.pi / 120;
       final largo = i % 10 == 0;
       final d = Offset(math.cos(a), math.sin(a));
-      canvas.drawLine(d * (radio - (largo ? 14 : 7)), d * (radio - 1), largo ? larga : corta);
+      canvas.drawLine(
+        d * (radio - (largo ? 14 : 7)),
+        d * (radio - 1),
+        largo ? larga : corta,
+      );
     }
     final rombo = Paint()..color = Dash.amber;
     for (var k = 0; k < 4; k++) {
@@ -452,7 +470,10 @@ class _AstrolabioPainter extends CustomPainter {
       canvas.save();
       canvas.translate(o.dx, o.dy);
       canvas.rotate(a + math.pi / 4);
-      canvas.drawRect(Rect.fromCenter(center: Offset.zero, width: 7, height: 7), rombo);
+      canvas.drawRect(
+        Rect.fromCenter(center: Offset.zero, width: 7, height: 7),
+        rombo,
+      );
       canvas.restore();
     }
     canvas.restore();
@@ -479,7 +500,10 @@ class _AstrolabioPainter extends CustomPainter {
     final barrido = 2 * math.pi * c01(fraccion);
     if (barrido <= 0) return;
     final filtro = atenuado
-        ? ColorFilter.mode(Colors.white.withValues(alpha: 0.3), BlendMode.modulate)
+        ? ColorFilter.mode(
+            Colors.white.withValues(alpha: 0.3),
+            BlendMode.modulate,
+          )
         : null;
     canvas.drawArc(
       rect,
@@ -513,5 +537,8 @@ class _AstrolabioPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(_AstrolabioPainter old) =>
-      old.cred != cred || old.req != req || old.foco != foco || old.hitos != hitos;
+      old.cred != cred ||
+      old.req != req ||
+      old.foco != foco ||
+      old.hitos != hitos;
 }

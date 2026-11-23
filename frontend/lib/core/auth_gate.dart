@@ -23,8 +23,8 @@ import 'widgets/app_shell.dart';
 /// Muestra la pantalla según la sesión y el rol.
 /// El backend aplica los permisos.
 ///
-/// La bienvenida animada se ve una vez por apertura de la app:
-/// al cerrar sesión se va directo al login.
+/// La bienvenida animada se ve una vez por apertura de la app.
+/// Al cerrar sesión se va directamente al login.
 class AuthGate extends StatefulWidget {
   const AuthGate({super.key});
 
@@ -52,7 +52,6 @@ class _AuthGateState extends State<AuthGate> {
         return AnimatedSwitcher(
           duration: const Duration(milliseconds: 800),
           transitionBuilder: (child, animation) {
-            // La bienvenida "se zambulle" (zoom + fundido).
             final esBienvenida =
                 child.key == const ValueKey('bienvenida');
 
@@ -143,6 +142,7 @@ class _AuthGateState extends State<AuthGate> {
     }
 
     final codigo = usuario.codigoEstudiantil;
+    final programa = usuario.programa;
 
     Widget sinCodigo(BuildContext _) => const Center(
           child: Padding(
@@ -167,7 +167,6 @@ class _AuthGateState extends State<AuthGate> {
         );
 
     return [
-      // NUEVO INICIO DEL ESTUDIANTE
       ShellDestination(
         label: 'Inicio',
         icon: Icons.dashboard_outlined,
@@ -186,11 +185,11 @@ class _AuthGateState extends State<AuthGate> {
         label: 'Malla',
         icon: Icons.account_tree_outlined,
         selectedIcon: Icons.account_tree,
-        builder: usuario.programa == null
+        builder: programa == null
             ? sinPrograma
             : (_) => MallaScreen(
                   service: malla,
-                  programa: usuario.programa!,
+                  programa: programa,
                   semestreActual: usuario.semestre,
                 ),
       ),

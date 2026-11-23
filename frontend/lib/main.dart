@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
@@ -11,6 +12,7 @@ import 'core/theme/app_theme.dart';
 import 'administracion/service/admin_service.dart';
 import 'curriculo/malla_service.dart';
 import 'estudiantes/estudiantes_service.dart';
+import 'estudiantes/progreso_service.dart';
 import 'requisitos/requisitos_service.dart';
 import 'usuarios/auth_controller.dart';
 import 'usuarios/auth_service.dart';
@@ -27,6 +29,7 @@ class AppDependencias {
     this.estudiantes,
     this.requisitos,
     this.malla,
+    this.progreso,
   );
 
   factory AppDependencias.crear({
@@ -35,20 +38,27 @@ class AppDependencias {
     http.Client? client,
   }) {
     final almacen = storage ?? SecureTokenStorage();
+
     final api = ApiClient(
       baseUrl: baseUrl,
       tokenStorage: almacen,
       client: client,
     );
-    final auth = AuthController(service: AuthService(api), storage: almacen);
-    api.onUnauthorized = () =>
-        auth.cerrarSesion(); // sesión vencida → vuelve al login
+
+    final auth = AuthController(
+      service: AuthService(api),
+      storage: almacen,
+    );
+
+    api.onUnauthorized = () => auth.cerrarSesion();
+
     return AppDependencias._(
       api,
       auth,
       EstudiantesService(api),
       RequisitosService(api),
       MallaService(api),
+      ProgresoService(api),
     );
   }
 
@@ -57,10 +67,12 @@ class AppDependencias {
   final EstudiantesService estudiantes;
   final RequisitosService requisitos;
   final MallaService malla;
+  final ProgresoService progreso;
 }
 
 void main() {
   validarConfiguracion();
+
   runApp(
     DinamikApp(
       dependencias: AppDependencias.crear(),
@@ -71,14 +83,22 @@ void main() {
 
 String? _tokenRecuperacion(Uri uri) {
   final queryToken = uri.queryParameters['reset_token'];
+
   if (queryToken != null) return queryToken;
+
   final fragment = uri.fragment;
+
   if (fragment.isEmpty) return null;
+
   return Uri.splitQueryString(fragment)['reset_token'];
 }
 
 class DinamikApp extends StatefulWidget {
-  const DinamikApp({super.key, required this.dependencias, this.resetToken});
+  const DinamikApp({
+    super.key,
+    required this.dependencias,
+    this.resetToken,
+  });
 
   final AppDependencias dependencias;
   final String? resetToken;
@@ -97,14 +117,30 @@ class _DinamikAppState extends State<DinamikApp> {
   @override
   Widget build(BuildContext context) {
     final deps = widget.dependencias;
+
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider<AuthController>.value(value: deps.auth),
-        Provider<ApiClient>.value(value: deps.api),
-        Provider<AdminService>.value(value: AdminService(deps.api)),
-        Provider<EstudiantesService>.value(value: deps.estudiantes),
-        Provider<RequisitosService>.value(value: deps.requisitos),
-        Provider<MallaService>.value(value: deps.malla),
+        ChangeNotifierProvider<AuthController>.value(
+          value: deps.auth,
+        ),
+        Provider<ApiClient>.value(
+          value: deps.api,
+        ),
+        Provider<AdminService>.value(
+          value: AdminService(deps.api),
+        ),
+        Provider<EstudiantesService>.value(
+          value: deps.estudiantes,
+        ),
+        Provider<RequisitosService>.value(
+          value: deps.requisitos,
+        ),
+        Provider<MallaService>.value(
+          value: deps.malla,
+        ),
+        Provider<ProgresoService>.value(
+          value: deps.progreso,
+        ),
       ],
       child: MaterialApp(
         title: 'DinamikUTB',

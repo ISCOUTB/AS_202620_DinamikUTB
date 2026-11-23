@@ -30,6 +30,7 @@ flutter:
     - assets/images/login_character.png
     - assets/images/login_swirl.png
     - assets/images/login_sparks.png
+    - assets/images/recover_scene.jpg
 
   fonts:
     - family: Syne

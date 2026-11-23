@@ -11,6 +11,7 @@ import 'core/theme/app_theme.dart';
 import 'administracion/service/admin_service.dart';
 import 'curriculo/malla_service.dart';
 import 'estudiantes/estudiantes_service.dart';
+import 'estudiantes/progreso_service.dart';
 import 'requisitos/requisitos_service.dart';
 import 'usuarios/auth_controller.dart';
 import 'usuarios/auth_service.dart';
@@ -26,6 +27,7 @@ class AppDependencias {
     this.auth,
     this.estudiantes,
     this.requisitos,
+    this.progreso,
     this.malla,
   );
 
@@ -48,6 +50,7 @@ class AppDependencias {
       auth,
       EstudiantesService(api),
       RequisitosService(api),
+      ProgresoService(api),
       MallaService(api),
     );
   }
@@ -56,6 +59,7 @@ class AppDependencias {
   final AuthController auth;
   final EstudiantesService estudiantes;
   final RequisitosService requisitos;
+  final ProgresoService progreso;
   final MallaService malla;
 }
 
@@ -104,6 +108,7 @@ class _DinamikAppState extends State<DinamikApp> {
         Provider<AdminService>.value(value: AdminService(deps.api)),
         Provider<EstudiantesService>.value(value: deps.estudiantes),
         Provider<RequisitosService>.value(value: deps.requisitos),
+        Provider<ProgresoService>.value(value: deps.progreso),
         Provider<MallaService>.value(value: deps.malla),
       ],
       child: MaterialApp(

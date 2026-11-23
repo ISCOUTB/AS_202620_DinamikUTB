@@ -23,6 +23,7 @@ class Astrolabio extends StatefulWidget {
     required this.hitos,
     this.promedio,
     this.periodoGrado,
+    this.adorno,
   });
 
   final double creditosPct;
@@ -37,6 +38,7 @@ class Astrolabio extends StatefulWidget {
   final List<double> hitos;
   final double? promedio;
   final String? periodoGrado;
+  final Widget? adorno;
 
   @override
   State<Astrolabio> createState() => _AstrolabioState();
@@ -163,6 +165,12 @@ class _AstrolabioState extends State<Astrolabio> with TickerProviderStateMixin {
                   ),
                 ),
               ),
+              if (widget.adorno != null)
+                Positioned(
+                  top: lado * 0.02,
+                  right: lado * 0.08,
+                  child: widget.adorno!,
+                ),
             ],
           ),
         ),

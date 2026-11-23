@@ -1,7 +1,7 @@
 ---
 id: ADR-0016
 title: Módulo ayuda y aislamiento de solicitudes por programa
-status: Propuesto
+status: Aceptado
 date: 2026-11-20
 deciders: Equipo de arquitectura DinamikUTB
 ---
@@ -72,7 +72,7 @@ El problema técnico: `Usuario` no tiene programa, y agregárselo haría que `us
 
 ## 7. Estado de la decisión
 
-**Propuesto.** Completa lo previsto en [ADR-0001](0001-seleccion-monolito-modular.md); no lo reemplaza.
+**Aceptado** (2026-11-22, suite del backend en verde: `test_ayuda.py`). Completa lo previsto en [ADR-0001](0001-seleccion-monolito-modular.md); no lo reemplaza.
 
 ## 8. Trazabilidad
 

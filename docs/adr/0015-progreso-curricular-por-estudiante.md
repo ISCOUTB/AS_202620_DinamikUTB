@@ -1,14 +1,14 @@
 ---
 id: ADR-0015
 title: Progreso curricular por estudiante y guía de requisitos en el catálogo
-status: Propuesto
+status: Aceptado
 date: 2026-11-20
 deciders: Equipo de arquitectura DinamikUTB
 ---
 
 # ADR-0015: Progreso curricular por estudiante y guía de requisitos en el catálogo
 
-> Pasa a **Aceptado** cuando el CI quede en verde con estos cambios. Un ADR aceptado no se edita.
+> Aceptado el 2026-11-22 con la suite del backend en verde (153 pruebas). Un ADR aceptado no se edita.
 
 ## 1. Contexto y descripción del problema
 
@@ -83,7 +83,7 @@ El estudiante veía una lista plana de requisitos. La ficha del problema promete
 
 ## 7. Estado de la decisión
 
-**Propuesto.** No reemplaza ningún ADR: complementa [ADR-0011](0011-historial-de-cambios-transaccional.md) y [ADR-0014](0014-extension-historial-datos-estudiante.md).
+**Aceptado.** No reemplaza ningún ADR: complementa [ADR-0011](0011-historial-de-cambios-transaccional.md) y [ADR-0014](0014-extension-historial-datos-estudiante.md).
 
 ## 8. Trazabilidad
 

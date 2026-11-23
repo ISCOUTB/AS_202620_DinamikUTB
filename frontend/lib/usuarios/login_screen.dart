@@ -7,13 +7,17 @@ import 'package:provider/provider.dart';
 import 'package:frontend/core/network/api_exception.dart';
 import 'package:frontend/core/theme/app_colors.dart';
 import 'package:frontend/core/validators.dart';
-import 'account_screen.dart';
 import 'auth_controller.dart';
+import 'recover_screen.dart';
 
 /// Inicio de sesión.
 ///
 /// Coreografía de entrada (una sola secuencia, ~3 s):
-
+/// 1. El muñeco sube desde detrás del panel de cristal, centrado.
+/// 2. El conjunto se desplaza a la derecha.
+/// 3. En la izquierda se despliega el rectángulo con el título.
+/// Todo lo ambiental (orbes, íconos flotantes, garabatos) se mueve en bucle
+/// lento y se desactiva si el sistema pide reducir animaciones.
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -690,26 +694,32 @@ class _LoginScreenState extends State<LoginScreen>
                     ),
                   ],
                 ),
-                TextButton(
-                  onPressed: _cargando
-                      ? null
-                      : () => Navigator.push(
-                          context,
-                          MaterialPageRoute<void>(
-                            builder: (_) => const AccountScreen(
-                              page: AccountPage.recuperar,
-                            ),
-                          ),
-                        ),
-                  style: TextButton.styleFrom(
-                    foregroundColor: const Color(0xFF7DD3FC),
-                    padding: const EdgeInsets.symmetric(horizontal: 4),
-                    minimumSize: Size.zero,
-                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  ),
-                  child: const Text(
-                    '¿Olvidaste tu contraseña?',
-                    style: TextStyle(fontFamily: 'Outfit', fontSize: 12),
+                // El círculo de la transición nace del propio enlace.
+                Builder(
+                  builder: (botonContext) => TextButton(
+                    onPressed: _cargando
+                        ? null
+                        : () {
+                            final caja =
+                                botonContext.findRenderObject()! as RenderBox;
+                            final origen = caja.localToGlobal(
+                              caja.size.center(Offset.zero),
+                            );
+                            Navigator.push(
+                              context,
+                              RecoverScreen.ruta(origen: origen),
+                            );
+                          },
+                    style: TextButton.styleFrom(
+                      foregroundColor: const Color(0xFF7DD3FC),
+                      padding: const EdgeInsets.symmetric(horizontal: 4),
+                      minimumSize: Size.zero,
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    ),
+                    child: const Text(
+                      '¿Olvidaste tu contraseña?',
+                      style: TextStyle(fontFamily: 'Outfit', fontSize: 12),
+                    ),
                   ),
                 ),
               ],

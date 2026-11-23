@@ -63,7 +63,11 @@ void main() {
         ),
       ),
     );
-    await tester.pumpAndSettle();
+    // Hay animaciones en bucle (mascota, chispas y el punto «aquí»):
+    // no usar pumpAndSettle. Se avanza el reloj hasta que el tablero termine
+    // de entrar y de centrar el nivel del estudiante.
+    await tester.pump(const Duration(seconds: 2));
+    await tester.pump(const Duration(seconds: 3));
 
     expect(tester.takeException(), isNull);
     expect(find.text('Malla curricular'), findsOneWidget);

@@ -31,6 +31,10 @@ flutter:
     - assets/images/login_swirl.png
     - assets/images/login_sparks.png
     - assets/images/recover_scene.jpg
+    - assets/images/dash_head.png
+    - assets/images/dash_guide.png
+    - assets/images/dash_siluetas.png
+    - assets/images/mascota_graduada.png
 
   fonts:
     - family: Syne

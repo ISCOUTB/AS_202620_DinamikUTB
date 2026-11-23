@@ -47,7 +47,7 @@ Hay además una fecha que fuerza la decisión: la base de Render gratuita se cre
 
 El frontend de GitHub Pages usa la variable de repositorio `API_BASE_URL` con el valor `https://api-dinamikutb.iscoutb.dev`. El dominio API del laboratorio debe responder con `/health` HTTP 200 desde fuera de la universidad antes de considerar el despliegue operativo.
 
-Servicios (`deploy/compose.lab.yaml`): `api` (FastAPI, 0,5 CPU, 192 MB) y `db` (`postgres:16-alpine`, volumen `pgdata`, 0,5 CPU, 160 MB), detrás de Traefik. Variables obligatorias: `SECRET_KEY`, `CORS_ORIGINS`, `SEED_DEMO_PASSWORD`, `POSTGRES_*`, definidas en Dokploy, nunca en el repositorio.
+Servicios (`deploy/compose.lab.yaml`): `api` (FastAPI, 0,5 CPU, 192 MB) y `db` (`postgres:16-alpine`, volumen `pgdata`, 0,5 CPU, 160 MB), detrás de Traefik. Variables obligatorias: `SECRET_KEY`, `CORS_ORIGINS`, `METRICS_TOKEN`, `SEED_DEMO_PASSWORD`, `POSTGRES_*`, definidas en Dokploy, nunca en el repositorio. `METRICS_TOKEN` es obligatorio porque `GET /metrics` responde 404 en producción sin él; `LOG_FORMAT=json` activa el formateador estructurado del C4.
 
 ## 5. Consecuencias
 

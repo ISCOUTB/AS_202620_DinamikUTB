@@ -1,7 +1,7 @@
 
 # 6. Runtime View
 
-Esta sección describe cómo colaboran los bloques definidos en `05-building-block-view.md` durante los escenarios de ejecución más relevantes para **DinamikUTB**. Se priorizaron los escenarios que sustentan directamente los escenarios de calidad **[Q-01](./10-quality-requirements.md/#escenario-q-01--exactitud-de-la-informacion-academica)**, **[Q-02](./10-quality-requirements.md/#escenario-q-02--seguridad-y-aislamiento-de-la-informacion)** y **[Q-03](./10-quality-requirements.md/#escenario-q-03--facilidad-de-comprension-de-la-informacion)** (`10-quality-requirements.md`), en lugar de documentar todos los casos de uso posibles.
+Esta sección describe cómo colaboran los bloques definidos en `05-building-block-view.md` durante los escenarios de ejecución más relevantes para **DinamikUTB**. Se priorizaron los escenarios que sustentan directamente los escenarios de calidad **[Q-01](./10-quality-requirements.md#escenario-q-01--exactitud-de-la-información-académica)**, **[Q-02](./10-quality-requirements.md#escenario-q-02--seguridad-y-aislamiento-de-la-información)** y **[Q-03](./10-quality-requirements.md#escenario-q-03--facilidad-de-comprensión-de-la-información)** (`10-quality-requirements.md`), en lugar de documentar todos los casos de uso posibles.
 
 ---
 
@@ -9,8 +9,9 @@ Esta sección describe cómo colaboran los bloques definidos en `05-building-blo
 > `GET /requisitos/{estudiante_id}` exige autenticación JWT (responde 401 sin
 > token, verificado en `docs/evidencia-s12.md`) y consulta el estado real desde
 > PostgreSQL en el laboratorio (SQLite en local/CI). El módulo `usuarios/`
-> (login, RBAC, recuperación) está implementado según §8.3. El escenario 6.3
-> (centro de ayuda, módulo `ayuda/`) sigue siendo diseño previsto sin código.
+> (login, RBAC) está implementado según §8.3. El escenario 6.3 (centro de ayuda,
+> módulo `ayuda/`) está implementado y probado en `backend/tests/test_ayuda.py`
+> según [ADR-0016](../adr/0016-modulo-ayuda-y-aislamiento-por-programa.md).
 
 ## 6.1 Escenario: Estudiante consulta su progreso de graduación
 
@@ -61,6 +62,6 @@ Relacionado con **[RF-07](../arc42/01-introduction-and-goals.md/#funcionalidades
 
 ## 6.4 Notas sobre alcance
 
-- Los tres escenarios anteriores cubren los flujos que sustentan Q-01, Q-02 y Q-03, en esta sección deberá ampliarse con los runtime scenarios correspondientes.
-- Ningún escenario aquí descrito depende de un sistema externo, en línea con los límites definidos en `03-context-and-scope.md` .
+- Los tres escenarios descritos cubren los flujos que sustentan Q-01, Q-02 y Q-03 y se ampliarán con los escenarios de Q-04 a Q-08 a medida que se implementen.
+- Ninguno de estos tres escenarios depende de un sistema externo, en línea con `03-context-and-scope.md`. La recuperación de contraseña sí depende del servidor SMTP institucional; esa dependencia está modelada en el C4 y tratada como riesgo T-11 en `docs/evidencia-s13.md`.
 

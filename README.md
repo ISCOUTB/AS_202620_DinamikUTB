@@ -267,11 +267,15 @@ AS_202620_DinamikUTB/
 │   │   └── administracion/           # Panel administrativo completo
 │   └── test/                         # Pruebas de widgets y servicios
 └── docs/                             # Documentación de arquitectura
-    ├── adr/                          # Decisiones arquitectónicas (0001 a 0014)
+    ├── adr/                          # Decisiones arquitectónicas (0001 a 0016)
     ├── arc42/                        # Documentación arc42 (secciones 1 a 12)
-    ├── c4/                           # Diagramas C4 de contexto y contenedores
+    ├── c4/                           # Diagramas C4 de contexto, contenedores y componente
+    ├── api/                          # Contrato OpenAPI y evidencia de prueba de contrato
     ├── aspectos.md                   # Matriz de Aspect-Driven Development
-    └── evidencia-s12.md              # Evidencia de estrategia de datos y consistencia
+    ├── evidencia-s9.md               # Evidencia de verificación con IA
+    ├── evidencia-desafio-final.md    # Desafío real, línea base, degradación y contrafactuales
+    ├── evidencia-s12.md              # Evidencia de estrategia de datos y consistencia
+    └── evidencia-s13.md              # Evidencia de modelado de amenazas STRIDE
 ```
 
 ## Entorno desplegado
@@ -296,7 +300,7 @@ HTTP/2 200 OK
 
 ## Resiliencia y modos de fallo
 
-La integración entre el frontend Flutter, la API FastAPI y la base de datos está analizada en detalle en arc42 §11.5:
+La integración entre el frontend Flutter, la API FastAPI y la base de datos está analizada en detalle en [arc42 §11.1–11.3](docs/arc42/11-risks-and-technical-debt.md) y en `docs/evidencia-s13.md`:
 
 - Cliente HTTP resiliente: frontend/lib/requisitos/requisitos_service.dart aplica timeout de 25 s por intento y hasta 3 intentos con retroceso exponencial (backoff creciente) ante fallos de conexión o respuestas 5xx.
 - Idempotencia en escrituras: El endpoint PUT /requisitos/{id}/estado fija un valor absoluto; repetirlo conserva el mismo resultado sin duplicar registros.

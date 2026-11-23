@@ -1,6 +1,7 @@
 
 import hmac
 import logging
+import os
 import time
 
 from fastapi import FastAPI, HTTPException, Request
@@ -13,6 +14,7 @@ from sqlalchemy import text
 from app.core import metrics
 from app.core.config import get_settings
 from app.core.database import Base, DbSession, engine
+from app.core.logging_config import configurar_logging
 from app.curriculo.router import router as curriculo_router
 from app.estudiantes.router import router as estudiantes_router
 from app.programas.router import router as programas_router
@@ -25,8 +27,14 @@ from app.ayuda.router import router as ayuda_router
 from app.core.migraciones import asegurar_columnas
 
 settings = get_settings()
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger("dinamikutb")
+# LOG_FORMAT=json está declarado en deploy/compose.lab.yaml y en el C4 como
+# "Registro operativo"; activar el formateador aquí evita que la configuración
+# quede declarada pero inactiva. En local se conserva el formato legible.
+if os.getenv("LOG_FORMAT", "").lower() == "json":
+    logger = configurar_logging()
+else:
+    logging.basicConfig(level=logging.INFO)
+    logger = logging.getLogger("dinamikutb")
 
 app = FastAPI(
     title="DinamikUTB API",

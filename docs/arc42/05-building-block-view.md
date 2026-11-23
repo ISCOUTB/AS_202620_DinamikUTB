@@ -43,16 +43,16 @@ backend/app/
 ├── programas/      # Programas académicos
 ├── curriculo/      # Mallas curriculares, cursos y prerrequisitos
 ├── reportes/       # Exportación segura de reportes CSV
-└── ayuda/          # Centro de ayuda y gestión de solicitudes
+└── ayuda/          # Centro de ayuda y gestión de solicitudes (ADR-0016, test_ayuda.py)
 ```
 
 | Módulo | Responsabilidad | Depende de | Escenario(s) de calidad que sustenta |
 |---|---|---|---|
-| **core** | Configuración compartida (settings, conexión a base de datos, middleware transversal). No contiene lógica de negocio. | `En desarrollo` | Base para [Q-01](./10-quality-requirements.md/#escenario-q-01--exactitud-de-la-informacion-academica) y [Q-02](./10-quality-requirements.md/#escenario-q-02--seguridad-y-aislamiento-de-la-informacion) |
-| **usuarios** | Autenticar usuarios y resolver sus permisos como dependencia inyectable de FastAPI, reutilizada por el resto de los módulos. | `core` | [Q-02](./10-quality-requirements.md/#escenario-q-02--seguridad-y-aislamiento-de-la-informacion) |
-| **estudiantes** | Mantener y exponer el perfil académico y el avance de cada estudiante. | `core`, `usuarios` | [Q-01](./10-quality-requirements.md/#escenario-q-01--exactitud-de-la-informacion-academica) |
-| **requisitos** | Único lugar donde se calcula el estado de un requisito y el porcentaje de avance; valida los datos con Pydantic antes de persistirlos y agrupa actualizaciones múltiples en una transacción. | `core`, `usuarios`, `estudiantes`, `programas` | [Q-01](./10-quality-requirements.md/#escenario-q-01--exactitud-de-la-informacion-academica), [Q-02](./10-quality-requirements.md/#escenario-q-02--seguridad-y-aislamiento-de-la-informacion) |
-| **programas** | Gestionar los programas académicos y los requisitos que cada uno exige, permitiendo incorporar nuevas carreras sin modificar `requisitos/`. | `core`, `usuarios` | Soporta la extensibilidad ([RF-06](./01-introduction-and-goals.md/#funcionalidades-principales) / [A-06](../aspectos.md/#a-06---extensibilidad-para-multiples-programas-academicos)) |
+| **core** | Configuración compartida (settings, conexión a base de datos, middleware transversal). No contiene lógica de negocio. | `En desarrollo` | Base para [Q-01](./10-quality-requirements.md#escenario-q-01--exactitud-de-la-información-académica) y [Q-02](./10-quality-requirements.md#escenario-q-02--seguridad-y-aislamiento-de-la-información) |
+| **usuarios** | Autenticar usuarios y resolver sus permisos como dependencia inyectable de FastAPI, reutilizada por el resto de los módulos. | `core` | [Q-02](./10-quality-requirements.md#escenario-q-02--seguridad-y-aislamiento-de-la-información) |
+| **estudiantes** | Mantener y exponer el perfil académico y el avance de cada estudiante. | `core`, `usuarios` | [Q-01](./10-quality-requirements.md#escenario-q-01--exactitud-de-la-información-académica) |
+| **requisitos** | Único lugar donde se calcula el estado de un requisito y el porcentaje de avance; valida los datos con Pydantic antes de persistirlos y agrupa actualizaciones múltiples en una transacción. | `core`, `usuarios`, `estudiantes`, `programas` | [Q-01](./10-quality-requirements.md#escenario-q-01--exactitud-de-la-información-académica), [Q-02](./10-quality-requirements.md#escenario-q-02--seguridad-y-aislamiento-de-la-información) |
+| **programas** | Gestionar los programas académicos y los requisitos que cada uno exige, permitiendo incorporar nuevas carreras sin modificar `requisitos/`. | `core`, `usuarios` | Soporta la extensibilidad ([RF-06](./01-introduction-and-goals.md/#funcionalidades-principales) / [A-06](../aspectos.md#a-06--extensibilidad-para-múltiples-programas-académicos)) |
 | **ayuda** | Registrar y gestionar las solicitudes que estudiantes envían por posibles inconsistencias, y su atención por coordinadores. | `core`, `usuarios`, `estudiantes` | [RF-07](./01-introduction-and-goals.md/#funcionalidades-principales) |
 
 
@@ -81,10 +81,10 @@ frontend/lib/
 
 | Módulo | Responsabilidad | Escenario de calidad que sustenta |
 |---|---|---|
-| **core** | Cliente HTTP hacia el backend, manejo de sesión/token, widgets compartidos. | [Q-02](./10-quality-requirements.md/#escenario-q-02--seguridad-y-aislamiento-de-la-informacion) (nunca expone datos sin sesión válida) |
-| **usuarios** | Login y gestión de la sesión del usuario. | [Q-02](./10-quality-requirements.md/#escenario-q-02--seguridad-y-aislamiento-de-la-informacion) |
-| **estudiantes** | Pantalla principal: primer contenido visible tras iniciar sesión. | [Q-03](./10-quality-requirements.md/#escenario-q-03--facilidad-de-comprension-de-la-informacion)|
-| **requisitos** | Widgets que muestran el estado de cada requisito con estados explícitos (cargando, error, listo). | [Q-03](./10-quality-requirements.md/#escenario-q-03--facilidad-de-comprension-de-la-informacion) |
+| **core** | Cliente HTTP hacia el backend, manejo de sesión/token, widgets compartidos. | [Q-02](./10-quality-requirements.md#escenario-q-02--seguridad-y-aislamiento-de-la-información) (nunca expone datos sin sesión válida) |
+| **usuarios** | Login y gestión de la sesión del usuario. | [Q-02](./10-quality-requirements.md#escenario-q-02--seguridad-y-aislamiento-de-la-información) |
+| **estudiantes** | Pantalla principal: primer contenido visible tras iniciar sesión. | [Q-03](./10-quality-requirements.md#escenario-q-03--facilidad-de-comprensión-de-la-información)|
+| **requisitos** | Widgets que muestran el estado de cada requisito con estados explícitos (cargando, error, listo). | [Q-03](./10-quality-requirements.md#escenario-q-03--facilidad-de-comprensión-de-la-información) |
 | **programas** | Consulta y gestión de programas académicos, visible solo para coordinador/administrador. | [RF-06](./01-introduction-and-goals.md/#funcionalidades-principales) |
 | **ayuda** | Formulario de solicitudes y seguimiento de su estado. | [RF-07](./01-introduction-and-goals.md/#funcionalidades-principales) |
 

@@ -25,7 +25,7 @@ Para el **frontend** se podrá utilizar una de las siguientes tecnologías:
 
 Inicialmente, DinamikUTB utilizará una base de datos propia para almacenar la información necesaria para el funcionamiento del sistema.
 
-La elección entre una base de datos SQL o NoSQL aún no ha sido definida y será determinada posteriormente de acuerdo con las necesidades del sistema. Dado que el escenario de calidad Q-01 (exactitud) exige transacciones consistentes sobre actualizaciones de varios campos (ver `04-solution-strategy.md`, sección 4.8.1), una base de datos relacional es la opción que mejor se alinea con lo ya decidido.
+La elección quedó resuelta a favor de una base de datos relacional: SQLite en desarrollo/CI y PostgreSQL 16 en el ambiente del laboratorio, según [ADR-0003](../adr/0003-seleccion-motor-de-base-de-datos.md) y [ADR-0012](../adr/0012-despliegue-en-servidor-del-laboratorio.md). El escenario Q-01 (exactitud) exige transacciones consistentes sobre varios campos e historial atómico (ver `04-solution-strategy.md`, sección 4.8.1), por lo que un motor SQL es la opción alineada con la decisión vigente.
 
 ### Sin integración inicial con sistemas institucionales
 

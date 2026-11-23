@@ -65,7 +65,7 @@ Sin coincidencias de secretos reales en el repositorio.
 
 ## Despliegue en el laboratorio (Ambiente activo)
 
-El despliegue en Render expiró y fue retirado. El sistema de referencia activo corre en el laboratorio bajo Dokploy ([**ADR-0012**](https://www.google.com/url?sa=E\&q=adr/0012-despliegue-en-servidor-del-laboratorio.md)):
+El despliegue en Render expiró y fue retirado. El sistema de referencia activo corre en el laboratorio bajo Dokploy ([**ADR-0012**](adr/0012-despliegue-en-servidor-del-laboratorio.md)):
 
 | **Petición de comprobación** | **Resultado verificado** |
 |---|---|

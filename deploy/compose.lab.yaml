@@ -12,6 +12,7 @@ services:
       LOG_FORMAT: json
       APP_ENV: production
       SECRET_KEY: ${SECRET_KEY:?define SECRET_KEY}
+      METRICS_TOKEN: ${METRICS_TOKEN:?define METRICS_TOKEN}
       SEED_DEMO_PASSWORD: ${SEED_DEMO_PASSWORD:?define SEED_DEMO_PASSWORD}
       SMTP_HOST: ${SMTP_HOST:-}
       SMTP_PORT: ${SMTP_PORT:-587}
@@ -34,7 +35,7 @@ services:
       resources:
         limits:
           cpus: "0.50"
-          memory: 256M
+          memory: 192M
 
   db:
     image: postgres:16-alpine

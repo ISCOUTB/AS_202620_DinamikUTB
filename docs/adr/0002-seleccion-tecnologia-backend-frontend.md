@@ -32,9 +32,9 @@ Esta decisión es necesaria porque el equipo ya inició el desarrollo del backen
 | :--- | :--- |
 | **Curva de aprendizaje** | El equipo debe poder avanzar con la tecnología dentro del tiempo disponible del semestre. |
 | **Compatibilidad con el monolito modular** | La tecnología debe permitir organizar el código en módulos con límites claros (ver [ADR-0001](../adr/0001-seleccion-monolito-modular.md)). |
-| **Soporte para los escenarios de calidad** | Debe facilitar cumplir [Q-01](../arc42/10-quality-requirements.md/#escenario-q-01--exactitud-de-la-informacion-academica) (exactitud), [Q-02](../arc42/10-quality-requirements.md/#escenario-q-02--seguridad-y-aislamiento-de-la-informacion) (seguridad) y [Q-03](../arc42/10-quality-requirements.md/#escenario-q-03--facilidad-de-comprension-de-la-informacion) (usabilidad), definidos en `docs/arc42/10-quality-requirements.md`. |
+| **Soporte para los escenarios de calidad** | Debe facilitar cumplir [Q-01](../arc42/10-quality-requirements.md#escenario-q-01--exactitud-de-la-información-académica) (exactitud), [Q-02](../arc42/10-quality-requirements.md#escenario-q-02--seguridad-y-aislamiento-de-la-información) (seguridad) y [Q-03](../arc42/10-quality-requirements.md#escenario-q-03--facilidad-de-comprensión-de-la-información) (usabilidad), definidos en `docs/arc42/10-quality-requirements.md`. |
 | **Multiplataforma** | El frontend debe poder ejecutarse al menos en navegador, dado que el flujo de inicio (`start.bat`) despliega la interfaz en Google Chrome. |
-| **Tipado y validación de datos** | Relevante para [Q-01](../arc42/10-quality-requirements.md/#escenario-q-01--exactitud-de-la-informacion-academica), ya que reduce el riesgo de que datos inválidos lleguen a persistirse. |
+| **Tipado y validación de datos** | Relevante para [Q-01](../arc42/10-quality-requirements.md#escenario-q-01--exactitud-de-la-información-académica), ya que reduce el riesgo de que datos inválidos lleguen a persistirse. |
 | **Documentación automática de la API** | Facilita la integración entre backend y frontend y las pruebas manuales durante el desarrollo. |
  
 ---
@@ -49,7 +49,7 @@ Esta decisión es necesaria porque el equipo ya inició el desarrollo del backen
 * **Desventajas:** Mayor cantidad de configuración inicial (decoradores, inyección de dependencias, módulos) para el tamaño actual del proyecto; el equipo tiene menor experiencia previa con TypeScript en backend.
 **FastAPI**
  
-* **Ventajas:** Validación de datos declarativa mediante Pydantic, directamente alineada con la táctica de [Q-01](../arc42/10-quality-requirements.md/#escenario-q-01--exactitud-de-la-informacion-academica) de rechazar estados inválidos antes de persistirlos; generación automática de documentación interactiva (`/docs`); sintaxis más simple para un equipo con más experiencia en Python; buen soporte para dependencias inyectables (usado en la táctica de autenticación de [Q-02](../arc42/10-quality-requirements.md/#escenario-q-02--seguridad-y-aislamiento-de-la-informacion)).
+* **Ventajas:** Validación de datos declarativa mediante Pydantic, directamente alineada con la táctica de [Q-01](../arc42/10-quality-requirements.md#escenario-q-01--exactitud-de-la-información-académica) de rechazar estados inválidos antes de persistirlos; generación automática de documentación interactiva (`/docs`); sintaxis más simple para un equipo con más experiencia en Python; buen soporte para dependencias inyectables (usado en la táctica de autenticación de [Q-02](../arc42/10-quality-requirements.md#escenario-q-02--seguridad-y-aislamiento-de-la-información)).
 * **Desventajas:** Su modularidad depende de la disciplina del equipo para organizar routers y servicios por carpeta, ya que no impone una estructura de módulos tan explícita como NestJS.
 ### 3.2 Frontend: Flutter vs. Next.js
  
@@ -59,7 +59,7 @@ Esta decisión es necesaria porque el equipo ya inició el desarrollo del backen
 * **Desventajas:** Enfocado principalmente a web; extender a móvil implicaría herramientas adicionales fuera del alcance evaluado.
 **Flutter**
  
-* **Ventajas:** Un mismo código fuente permite ejecutar la aplicación en web y, a futuro, en dispositivos móviles, lo cual es relevante porque el estudiante es el usuario principal y podría necesitar consultar su progreso desde el celular; widgets con manejo explícito de estados de carga/error, alineados con la táctica de [Q-03](../arc42/10-quality-requirements.md/#escenario-q-03--facilidad-de-comprension-de-la-informacion) sobre mostrar el estado real de cada consulta.
+* **Ventajas:** Un mismo código fuente permite ejecutar la aplicación en web y, a futuro, en dispositivos móviles, lo cual es relevante porque el estudiante es el usuario principal y podría necesitar consultar su progreso desde el celular; widgets con manejo explícito de estados de carga/error, alineados con la táctica de [Q-03](../arc42/10-quality-requirements.md#escenario-q-03--facilidad-de-comprensión-de-la-información) sobre mostrar el estado real de cada consulta.
 * **Desventajas:** Lenguaje (Dart) distinto al del backend, lo que no permite compartir tipos o validaciones entre frontend y backend.
 ---
  

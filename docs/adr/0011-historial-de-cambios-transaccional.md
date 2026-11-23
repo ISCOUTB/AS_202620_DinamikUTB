@@ -16,7 +16,7 @@ deciders: Equipo de arquitectura DinamikUTB
 
 ## 1. Contexto y descripción del problema
 
-El aspecto [A-08](../aspectos.md#a-08--historial-de-cambios-sobre-la-información-académica) y el escenario [Q-08](../arc42/10-quality-requirements.md#escenario-q-08--historial-de-cambios-sobre-la-información-académica) exigen que el **100 % de las modificaciones** académicas queden registradas (quién, cuándo, valor anterior y nuevo) y sean consultables. Desde el [ADR-0003](0003-seleccion-motor-de-base-de-datos.md) el mecanismo quedó marcado como pendiente de un ADR propio, y [arc42 §11.6](../arc42/11-risks-and-technical-debt.md) dejó para este ADR la interacción entre historial e idempotencia.
+El aspecto [A-08](../aspectos.md#a-08--historial-de-cambios-sobre-la-información-académica) y el escenario [Q-08](../arc42/10-quality-requirements.md#escenario-q-08--historial-de-cambios-sobre-la-información-académica) exigen que el **100 % de las modificaciones** académicas queden registradas (quién, cuándo, valor anterior y nuevo) y sean consultables. Desde el [ADR-0003](0003-seleccion-motor-de-base-de-datos.md) el mecanismo quedó marcado como pendiente de un ADR propio, y [arc42 §11.2](../arc42/11-risks-and-technical-debt.md) dejó para este ADR la interacción entre historial e idempotencia.
 
 Estado antes de este ADR: `actualizar_estado_requisito` escribía una línea de log JSON (`auditoria_cambio_estado`) **después** del `commit`. Ese registro:
 
@@ -59,7 +59,7 @@ Este ranking es cualitativo (no se midió): se apoya en la evidencia de costo de
 | **Atomicidad dato-historial** | No debe existir un cambio sin su registro ni un registro sin su cambio. |
 | **Costo cero** | Sin infraestructura nueva ([02-architecture-constraints.md](../arc42/02-architecture-constraints.md), [docs/costos.md](../costos.md)). |
 | **Propiedad de datos** | Cada entidad tiene un solo módulo dueño ([08-cross-cutting-concepts.md](../arc42/08-cross-cutting-concepts.md), 8.4). |
-| **Idempotencia** | Repetir un `PUT` con el mismo valor no debe ensuciar el historial ([11-risks-and-technical-debt.md](../arc42/11-risks-and-technical-debt.md), 11.6). |
+| **Idempotencia** | Repetir un `PUT` con el mismo valor no debe ensuciar el historial ([11-risks-and-technical-debt.md](../arc42/11-risks-and-technical-debt.md), 11.2). |
 | **Consistencia inmediata** | Coherente con [ADR-0004](0004-comunicacion-sincrona-frontend-backend.md): el cliente sabe de inmediato si el cambio y su registro se aplicaron. |
 
 ---
@@ -111,7 +111,7 @@ Se adopta la alternativa **4.3**. Cada módulo dueño de datos que modifique inf
 Reglas:
 
 1. `requisitos/` es dueño de `requisitos_historial` (`id`, `requisito_id`, `estudiante_id`, `campo`, `valor_anterior`, `valor_nuevo`, `actor_id`, `creado_en`). Un solo `commit` confirma el cambio y su fila.
-2. **No se registra nada si el valor no cambia** (resuelve lo dejado pendiente en 11.6: un `PUT` repetido no genera filas).
+2. **No se registra nada si el valor no cambia** (resuelve lo dejado pendiente en 11.2: un `PUT` repetido no genera filas).
 3. Las filas **nunca se actualizan ni se borran** desde la aplicación.
 4. `actor_id` y `estudiante_id` son valores, no claves foráneas hacia otros módulos (propiedad de datos); `requisito_id` sí es clave foránea porque es el mismo módulo.
 5. El log JSON `auditoria_cambio_estado` se mantiene como telemetría, no como registro de auditoría.

@@ -2,3 +2,9 @@
 relative_files = True
 source = backend/app
 omit = backend/app/seed.py
+
+[report]
+# Umbral reproducible en local y en CI: el Quality Gate de SonarCloud exige
+# 80 % sobre código nuevo; aquí se aplica el mismo piso a todo el backend.
+fail_under = 80
+show_missing = True

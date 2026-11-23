@@ -65,6 +65,19 @@ jobs:
       - name: Run tests
         run: flutter test --coverage
 
+  docs-trazabilidad:
+    name: Enlaces y trazabilidad C4
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+
+      - uses: actions/setup-python@0b93645e9fea7318ecaed2b359559ac225c90a2b # v5.3.0
+        with:
+          python-version: "3.12"
+
+      - name: Validar enlaces Markdown y reglas del C4
+        run: python scripts/check_docs.py
+
   sonarcloud:
     name: SonarCloud Analysis
     runs-on: ubuntu-latest

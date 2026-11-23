@@ -2,7 +2,7 @@
 
 Esta sección describe dónde se ejecuta cada pieza de **DinamikUTB** en el ambiente desplegado, siguiendo las decisiones aceptadas en [ADR-0005](../adr/0005-plataforma-despliegue-backend.md) (backend), [ADR-0006](../adr/0006-plataforma-despliegue-frontend.md) (frontend) y [ADR-0007](../adr/0007-persistencia-render-postgres.md) (persistencia).
 
-> **Estado de implementación:** la infraestructura está descrita como código (`render.yaml` y `.github/workflows/deploy-pages.yml`) y el ambiente fue desplegado el 27/09/2026. Las URLs y la fecha de creación de la base se confirmaron con la comprobación externa registrada en el [README](../../README.md#entorno-desplegado).
+> **Estado de implementación:** la infraestructura vigente está descrita como código (`deploy/compose.lab.yaml` y `.github/workflows/deploy-pages.yml`); `render.yaml` se conserva como registro del ambiente experimental retirado. La URL vigente y su comprobación externa están documentadas en [ADR-0012](../adr/0012-despliegue-en-servidor-del-laboratorio.md#comprobación-del-despliegue) y en el [README](../../README.md#entorno-desplegado).
 
 > **Topología vigente:** el entorno de referencia es el servidor del laboratorio
 > (Dokploy + Traefik, PostgreSQL 16 en volumen `pgdata`), según
@@ -50,7 +50,7 @@ El costo detallado, sus supuestos y el punto de ruptura de cada capa gratuita es
 
 | Escenario | Elemento de infraestructura | Cómo lo sostiene | ADR |
 |---|---|---|---|
-| [Q-01](./10-quality-requirements.md#escenario-q-01--exactitud-de-la-información-académica) | Render Postgres (Free) | Persiste los datos entre reinicios del backend; SQLite en el filesystem efímero de Render los habría perdido. | [ADR-0007](../adr/0007-persistencia-render-postgres.md) |
+| [Q-01](./10-quality-requirements.md#escenario-q-01--exactitud-de-la-información-académica) | PostgreSQL 16 del laboratorio (volumen `pgdata`) | Persiste datos e historial sin la expiración de 30 días de Render; SQLite en un filesystem efímero no sobreviviría a la recreación del contenedor. | [ADR-0012](../adr/0012-despliegue-en-servidor-del-laboratorio.md) (histórico: [ADR-0007](../adr/0007-persistencia-render-postgres.md)) |
 | [Q-03](./10-quality-requirements.md#escenario-q-03--facilidad-de-comprensión-de-la-información) | GitHub Pages | El frontend está siempre disponible sin latencia de arranque, para no confundir un *spin down* del backend con un error de la interfaz. | [ADR-0006](../adr/0006-plataforma-despliegue-frontend.md) |
 | [Q-05](./10-quality-requirements.md#escenario-q-05--disponibilidad-del-sistema) | Backend en Dokploy (laboratorio), `GET /health` y `GET /metrics` | Sin *spin down*: el contenedor `api` corre siempre con `restart: unless-stopped` y healthcheck cada 30 s (`deploy/compose.lab.yaml`). El riesgo vigente es la disponibilidad del propio laboratorio, fuera del control del equipo ([ADR-0012](../adr/0012-despliegue-en-servidor-del-laboratorio.md) §5). La métrica `dinamikutb_http_request_duration_seconds` y el contador `dinamikutb_http_requests_total` (por estado) permiten observar latencia y errores 5xx. | [ADR-0012](../adr/0012-despliegue-en-servidor-del-laboratorio.md) |
 | [Q-04](./10-quality-requirements.md#escenario-q-04--alertas-tempranas-de-requisitos-pendientes) | GitHub Actions (`schedule:`) | Es la pieza donde correría, a futuro, el disparo periódico de alertas tempranas una vez A-03 tenga código. | Pendiente |
@@ -61,9 +61,10 @@ El costo detallado, sus supuestos y el punto de ruptura de cada capa gratuita es
 
 | Variable | Propósito | Dónde vive | Valor |
 |---|---|---|---|
-| `DATABASE_URL` | Cadena de conexión a PostgreSQL. Sin definir, el backend usa SQLite local. | Secreto configurado en Dokploy. Nunca en el repositorio. | Secreto del proveedor |
-| `CORS_ORIGINS` | Orígenes permitidos por CORS (lista separada por comas). | Variable configurada en Dokploy. | `https://iscoutb.github.io` |
-| `API_BASE_URL` | URL del backend usada por el frontend al compilar (`--dart-define`). | Variable de repositorio de GitHub Actions. | `https://api-dinamikutb.iscoutb.dev` |
+| `DATABASE_URL` | Cadena de conexión a PostgreSQL. Sin definir, el backend usa SQLite local. | Inyectada por Dokploy en `deploy/compose.lab.yaml` desde `POSTGRES_*`. Nunca se guarda en el repositorio. | Secreto del proveedor |
+| `CORS_ORIGINS` | Orígenes permitidos por CORS (lista separada por comas). | Configurada en `deploy/compose.lab.yaml` de Dokploy. No es un secreto porque contiene un origen público. | `https://iscoutb.github.io` |
+| `API_BASE_URL` | URL del backend que el frontend utiliza al compilar (`--dart-define`). | Variable de repositorio de GitHub Actions (opcional; tiene un valor por defecto en `deploy-pages.yml`). | `https://api-dinamikutb.iscoutb.dev` |
+| `METRICS_TOKEN` | Protege `GET /metrics`; sin él, el endpoint responde 404 en producción. | Variable obligatoria en `deploy/compose.lab.yaml`, definida en Dokploy. | Secreto del proveedor |
 | `SONAR_TOKEN` | Autenticación del análisis de SonarCloud. | Secreto de GitHub Actions | Secreto del proveedor |
 
 `.env.example` declara las variables del backend; `.env` está en `.gitignore`. Ninguna credencial se escribe en el código ni en `docs/`.

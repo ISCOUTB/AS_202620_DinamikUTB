@@ -79,7 +79,7 @@ La usabilidad ocupa el tercer nivel porque el sistema debe permitir que los estu
 | **Herramienta** | **Pytest**, mediante pruebas automatizadas de los datos y reglas de cálculo. |
 | **Carga** | **20 casos de prueba** con diferentes estados de requisitos académicos. |
 
-**Prioridad:** Alta  
+**Prioridad:** Alta
 **Atributo:** Exactitud / Consistencia
 
 ---
@@ -97,7 +97,7 @@ La usabilidad ocupa el tercer nivel porque el sistema debe permitir que los estu
 | **Herramienta** | **Pytest + FastAPI TestClient**, mediante pruebas de acceso autorizado y no autorizado. |
 | **Carga** | **20 intentos de acceso**, combinando solicitudes autorizadas y no autorizadas. |
 
-**Prioridad:** Alta  
+**Prioridad:** Alta
 **Atributo:** Seguridad
 
 ---
@@ -115,7 +115,7 @@ La usabilidad ocupa el tercer nivel porque el sistema debe permitir que los estu
 | **Herramienta** | **Prueba de usabilidad**, mediante una tarea guiada y observación de resultados. |
 | **Carga** | **5 usuarios evaluados** realizando la tarea de consultar su progreso sin asistencia. |
 
-**Prioridad:** Alta  
+**Prioridad:** Alta
 **Atributo:** Usabilidad
 
 ---
@@ -133,7 +133,7 @@ La usabilidad ocupa el tercer nivel porque el sistema debe permitir que los estu
 | **Herramienta** | **Pytest**, con casos que combinan distintos semestres y estados de requisitos críticos. |
 | **Carga** | **15 casos de prueba**, cubriendo estudiantes en diferentes semestres y con distintos requisitos críticos pendientes. |
 
-**Prioridad:** Media  
+**Prioridad:** Media
 **Atributo:** Exactitud / Consistencia (la alerta depende de que el cálculo de "pendiente" sea correcto), con relación directa a Usabilidad por la oportunidad de la información.
 
 ---
@@ -145,13 +145,13 @@ La usabilidad ocupa el tercer nivel porque el sistema debe permitir que los estu
 | **Fuente** | Estudiante, coordinador o administrador |
 | **Estímulo** | El usuario intenta acceder al sistema para consultar o gestionar información, incluyendo momentos de mayor demanda (por ejemplo, cierre de semestre). |
 | **Artefacto** | Backend de DinamikUTB desplegado como monolito modular. |
-| **Entorno** | Ambiente desplegado en Render (Free Web Service), según [ADR-0005](../adr/0005-plataforma-despliegue-backend.md). |
+| **Entorno** | Ambiente desplegado en el servidor del laboratorio (Dokploy), según [ADR-0012](../adr/0012-despliegue-en-servidor-del-laboratorio.md). |
 | **Respuesta** | El sistema responde a las solicitudes sin interrupciones prolongadas; si ocurre un fallo, no debe dejar el sistema completo inaccesible más allá de un tiempo acotado. |
-| **Medida** | El sistema debe mantenerse disponible durante la ventana de prueba definida por el equipo, con una recuperación ante fallos en menos de **5 minutos**. El *spin down* de ~15 minutos de inactividad y ~1 minuto de reactivación del plan gratuito de Render, documentado en [ADR-0005](../adr/0005-plataforma-despliegue-backend.md) y en `11-risks-and-technical-debt.md`, se acepta como una interrupción conocida dentro de esta medida. |
+| **Medida** | El sistema debe mantenerse disponible durante la ventana de prueba definida por el equipo, con una recuperación ante fallos en menos de **5 minutos**. En el laboratorio no aplica *spin down*; la interrupción histórica de Render (~15 min de inactividad, ~1 min de reactivación) quedó resuelta con la migración de [ADR-0012](../adr/0012-despliegue-en-servidor-del-laboratorio.md). |
 | **Herramienta** | Prueba de carga o monitoreo simple sobre el ambiente desplegado (por ejemplo, un script que reintenta solicitudes y registra tiempos de caída). |
 | **Carga** | Ventana de prueba definida por el equipo (por ejemplo, 100 solicitudes concurrentes sostenidas durante 10 minutos). |
 
-**Prioridad:** Media  
+**Prioridad:** Media
 **Atributo:** Disponibilidad
 
 ---
@@ -169,7 +169,7 @@ La usabilidad ocupa el tercer nivel porque el sistema debe permitir que los estu
 | **Herramienta** | Prueba manual o script de verificación, apoyado en la suite de **Pytest** ya existente para `requisitos/`. |
 | **Carga** | **1 programa académico de prueba**, con al menos **5 requisitos** distintos configurados. |
 
-**Prioridad:** Baja  
+**Prioridad:** Baja
 **Atributo:** Mantenibilidad (relacionado directamente con la extensibilidad exigida en `02-architecture-constraints.md`, sección 2.1).
 
 ---
@@ -187,7 +187,7 @@ La usabilidad ocupa el tercer nivel porque el sistema debe permitir que los estu
 | **Herramienta** | **Pytest + FastAPI TestClient**. |
 | **Carga** | **15 solicitudes de prueba**, distribuidas entre al menos dos programas académicos distintos, para verificar el aislamiento por programa. |
 
-**Prioridad:** Media  
+**Prioridad:** Media
 **Atributo:** Trazabilidad (registro completo de la solicitud), con relación directa a Seguridad (visibilidad limitada al coordinador del programa correspondiente, en línea con Q-02).
 
 ---
@@ -205,7 +205,7 @@ La usabilidad ocupa el tercer nivel porque el sistema debe permitir que los estu
 | **Herramienta** | **Pytest**, verificando que cada operación de escritura sobre `requisitos/` o `estudiantes/` genere su entrada correspondiente de historial. |
 | **Carga** | **20 operaciones de modificación de prueba**, sobre distintos campos y estudiantes. |
 
-**Prioridad:** Baja  
+**Prioridad:** Baja
 **Atributo:** Trazabilidad
 
 ---

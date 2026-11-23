@@ -1,6 +1,6 @@
 # 5. Building Block View
 
-Esta sección descompone **DinamikUTB** en sus bloques de construcción, siguiendo la decisión de **monolito modular** documentada en [ADR-0001](../adr/0001-seleccion-monolito-modular.md) y la estrategia de solución de `04-solution-strategy.md`. 
+Esta sección descompone **DinamikUTB** en sus bloques de construcción, siguiendo la decisión de **monolito modular** documentada en [ADR-0001](../adr/0001-seleccion-monolito-modular.md) y la estrategia de solución de `04-solution-strategy.md`.
 
 ---
 
@@ -16,17 +16,17 @@ Esta sección descompone **DinamikUTB** en sus bloques de construcción, siguien
 └─────────────────────────┘                              └───────────┬─────────────┘
                                                                       │
                                                                       ▼
-                                                          ┌─────────────────────────┐
-                                                          │      Base de datos       │
-                                                          │ PostgreSQL / SQLite (SQLAlchemy) │
-                                                          └─────────────────────────┘
+                                                          ┌──────────────────────────────────────┐
+                                                          │      Base de datos                   │
+                                                          │  PostgreSQL 16 / SQLite (SQLAlchemy) │
+                                                          └──────────────────────────────────────┘
 ```
 
 | Bloque | Responsabilidad | Tecnología |
 |---|---|---|
 | **Frontend** | Presentar la información al usuario según su rol y capturar sus interacciones (consultas, solicitudes al centro de ayuda). | Flutter |
 | **Backend** | Concentrar la lógica de negocio: autenticación, cálculo de requisitos, gestión de programas y centro de ayuda. Expone la API que consume el frontend. | FastAPI (Python) |
-| **Base de datos** | Persistir usuarios, estudiantes, requisitos, programas y solicitudes. | SQLAlchemy sobre PostgreSQL 16 en el entorno desplegado del laboratorio y SQLite en desarrollo local y CI (ver `backend/app/core/database.py`, [ADR-0003](../adr/0003-seleccion-motor-de-base-de-datos.md) y [ADR-0012](../adr/0012-despliegue-en-servidor-del-laboratorio.md)) |
+| **Base de datos** | Persistir usuarios, estudiantes, requisitos, programas y solicitudes. | SQLite en local/CI y PostgreSQL 16 en el laboratorio, a través de SQLAlchemy (ver `backend/app/core/database.py`, [ADR-0012](../adr/0012-despliegue-en-servidor-del-laboratorio.md)) |
 
 El backend es, internamente, un **monolito modular**: se despliega como una sola aplicación, pero está dividido en módulos con responsabilidades delimitadas, descritos en el nivel 2.
 
@@ -40,8 +40,10 @@ backend/app/
 ├── usuarios/       # Autenticación, autorización, gestión de cuentas y roles
 ├── estudiantes/    # Perfil académico y datos de avance del estudiante
 ├── requisitos/     # Cálculo y consulta del estado de los requisitos de grado
-├── programas/      # Programas académicos y mallas curriculares
-└── ayuda/          # Centro de ayuda y gestión de solicitudes
+├── programas/      # Programas académicos
+├── curriculo/      # Mallas curriculares, cursos y prerrequisitos
+├── reportes/       # Exportación segura de reportes CSV
+└── ayuda/          # Centro de ayuda y gestión de solicitudes (pendiente de código)
 ```
 
 | Módulo | Responsabilidad | Depende de | Escenario(s) de calidad que sustenta |

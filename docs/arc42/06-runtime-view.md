@@ -5,12 +5,12 @@ Esta sección describe cómo colaboran los bloques definidos en `05-building-blo
 
 ---
 
-> **Estado de implementación:** de los tres escenarios siguientes, solo una parte de 6.1
-> está implementada hoy: el endpoint `GET /requisitos/{estudiante_id}` (sin autenticación
-> todavía) que consulta el estado de los requisitos desde SQLite y lo muestra en la
-> pantalla de Flutter (`frontend/lib/requisitos/`). Los pasos de login/token en 6.1, y los
-> escenarios 6.2 y 6.3 completos, describen el diseño previsto para los módulos `usuarios/`
-> y `ayuda/`, que todavía no tienen código.
+**Estado de implementación:** el escenario 6.1 está implementado completo:
+> `GET /requisitos/{estudiante_id}` exige autenticación JWT (responde 401 sin
+> token, verificado en `docs/evidencia-s12.md`) y consulta el estado real desde
+> PostgreSQL en el laboratorio (SQLite en local/CI). El módulo `usuarios/`
+> (login, RBAC, recuperación) está implementado según §8.3. El escenario 6.3
+> (centro de ayuda, módulo `ayuda/`) sigue siendo diseño previsto sin código.
 
 ## 6.1 Escenario: Estudiante consulta su progreso de graduación
 
@@ -46,7 +46,7 @@ Relacionado con **[RF-05](../arc42/01-introduction-and-goals.md/#funcionalidades
 
 ## 6.3 Escenario: Coordinador corrige un requisito reportado por un estudiante
 
-Relacionado con **[RF-07](../arc42/01-introduction-and-goals.md/#funcionalidades-principales)** 
+Relacionado con **[RF-07](../arc42/01-introduction-and-goals.md/#funcionalidades-principales)**
 
 1. El estudiante detecta una inconsistencia y envía una solicitud desde el módulo `ayuda/` del frontend.
 2. El módulo `ayuda/` del backend registra la solicitud asociada al estudiante y su estado (`pendiente`).
@@ -63,4 +63,4 @@ Relacionado con **[RF-07](../arc42/01-introduction-and-goals.md/#funcionalidades
 
 - Los tres escenarios anteriores cubren los flujos que sustentan Q-01, Q-02 y Q-03, en esta sección deberá ampliarse con los runtime scenarios correspondientes.
 - Ningún escenario aquí descrito depende de un sistema externo, en línea con los límites definidos en `03-context-and-scope.md` .
- 
+

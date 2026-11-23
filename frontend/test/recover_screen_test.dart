@@ -20,10 +20,11 @@ AuthController _auth(int status) {
   return AuthController(service: AuthService(api), storage: almacen);
 }
 
-Widget _app(AuthController auth) => ChangeNotifierProvider<AuthController>.value(
-  value: auth,
-  child: MaterialApp(theme: AppTheme.light, home: const RecoverScreen()),
-);
+Widget _app(AuthController auth) =>
+    ChangeNotifierProvider<AuthController>.value(
+      value: auth,
+      child: MaterialApp(theme: AppTheme.light, home: const RecoverScreen()),
+    );
 
 void main() {
   testWidgets('valida el correo antes de enviar', (tester) async {
@@ -31,26 +32,44 @@ void main() {
     // Hay animaciones en bucle: no usar pumpAndSettle.
     await tester.pump(const Duration(seconds: 4));
 
-    await tester.ensureVisible(find.text('Enviar instrucciones'));
-    await tester.tap(find.text('Enviar instrucciones'));
+    await tester.enterText(find.byType(TextFormField), '');
+    await tester.testTextInput.receiveAction(TextInputAction.done);
     await tester.pump();
 
     expect(find.text('Ingresa tu correo'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('explica que no hay correo configurado si el servidor responde 503', (
-    tester,
-  ) async {
-    await tester.pumpWidget(_app(_auth(503)));
-    await tester.pump(const Duration(seconds: 4));
+  testWidgets(
+    'explica que no hay correo configurado si el servidor responde 503',
+    (tester) async {
+      await tester.pumpWidget(_app(_auth(503)));
+      await tester.pump(const Duration(seconds: 4));
 
-    await tester.enterText(find.byType(TextFormField), 'ana@utb.edu.co');
-    await tester.ensureVisible(find.text('Enviar instrucciones'));
-    await tester.tap(find.text('Enviar instrucciones'));
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 100));
+      await tester.enterText(find.byType(TextFormField), 'ana@utb.edu.co');
+      await tester.testTextInput.receiveAction(TextInputAction.done);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
 
-    expect(find.textContaining('no tiene correo de recuperación'), findsOneWidget);
-  });
+      expect(
+        find.textContaining('no tiene correo de recuperación'),
+        findsOneWidget,
+      );
+    },
+  );
+
+  testWidgets(
+    'confirma el envío cuando el servidor acepta la solicitud',
+    (tester) async {
+      await tester.pumpWidget(_app(_auth(200)));
+      await tester.pump(const Duration(seconds: 4));
+
+      await tester.enterText(find.byType(TextFormField), 'ana@utb.edu.co');
+      await tester.testTextInput.receiveAction(TextInputAction.done);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
+
+      expect(find.textContaining('recibirás instrucciones'), findsOneWidget);
+    },
+  );
 }

@@ -121,7 +121,14 @@ def perfil(usuario: CurrentUser, db: DbSession):
     )
 
 
-@router.put("/mi-perfil")
+@router.put(
+    "/mi-perfil",
+    responses={
+        400: {"description": "El usuario no tiene estudiante asociado"},
+        404: {"description": "Estudiante no encontrado"},
+        422: {"description": "Programa o semestre inválidos"},
+    },
+)
 def actualizar_mi_perfil(
     payload: PerfilUpdateIn,
     usuario: CurrentUser,
@@ -197,7 +204,10 @@ def cambiar_password(
     return {"status": "ok"}
 
 
-@router.post("/password/recuperar")
+@router.post(
+    "/password/recuperar",
+    responses={503: {"description": "Servicio de correo no configurado"}},
+)
 def recuperar_password(payload: PasswordRecoverIn):
     raise HTTPException(
         status_code=503,

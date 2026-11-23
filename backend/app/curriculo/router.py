@@ -26,7 +26,11 @@ _PROTEGIDAS = {
 }
 
 
-@router.get("", response_model=MallaOut)
+@router.get(
+    "",
+    response_model=MallaOut,
+    responses={404: {"description": "Estudiante, programa o curso no encontrado"}},
+)
 def consultar_malla(
     db: DbSession,
     programa: Annotated[str, Query(min_length=3, max_length=120)],

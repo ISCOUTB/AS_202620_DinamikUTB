@@ -8,6 +8,7 @@ import 'core/network/api_client.dart';
 import 'core/not_found_screen.dart';
 import 'core/storage/token_storage.dart';
 import 'core/theme/app_theme.dart';
+
 import 'administracion/service/admin_service.dart';
 import 'curriculo/malla_service.dart';
 import 'estudiantes/estudiantes_service.dart';
@@ -20,7 +21,7 @@ import 'usuarios/login_screen.dart';
 
 final _navigatorKey = GlobalKey<NavigatorState>();
 
-/// Construye las dependencias compartidas de la aplicación.
+/// Construye y conserva las dependencias compartidas de la aplicación.
 class AppDependencias {
   AppDependencias._(
     this.api,
@@ -37,14 +38,17 @@ class AppDependencias {
     http.Client? client,
   }) {
     final almacen = storage ?? SecureTokenStorage();
+
     final api = ApiClient(
       baseUrl: baseUrl,
       tokenStorage: almacen,
       client: client,
     );
+
     final auth = AuthController(service: AuthService(api), storage: almacen);
-    api.onUnauthorized = () =>
-        auth.cerrarSesion(); // sesión vencida → vuelve al login
+
+    api.onUnauthorized = () => auth.cerrarSesion();
+
     return AppDependencias._(
       api,
       auth,
@@ -65,6 +69,7 @@ class AppDependencias {
 
 void main() {
   validarConfiguracion();
+
   runApp(
     DinamikApp(
       dependencias: AppDependencias.crear(),
@@ -73,11 +78,16 @@ void main() {
   );
 }
 
+/// Obtiene el token de recuperación desde la URL.
 String? _tokenRecuperacion(Uri uri) {
   final queryToken = uri.queryParameters['reset_token'];
+
   if (queryToken != null) return queryToken;
+
   final fragment = uri.fragment;
+
   if (fragment.isEmpty) return null;
+
   return Uri.splitQueryString(fragment)['reset_token'];
 }
 
@@ -101,11 +111,12 @@ class _DinamikAppState extends State<DinamikApp> {
   @override
   Widget build(BuildContext context) {
     final deps = widget.dependencias;
+
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<AuthController>.value(value: deps.auth),
         Provider<ApiClient>.value(value: deps.api),
-        Provider<AdminService>.value(value: AdminService(deps.api)),
+        Provider<AdminService>(create: (_) => AdminService(deps.api)),
         Provider<EstudiantesService>.value(value: deps.estudiantes),
         Provider<RequisitosService>.value(value: deps.requisitos),
         Provider<ProgresoService>.value(value: deps.progreso),

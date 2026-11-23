@@ -16,11 +16,14 @@ import 'package:frontend/usuarios/login_screen.dart';
 import 'package:frontend/usuarios/models.dart';
 import 'package:frontend/usuarios/perfil_screen.dart';
 import 'package:frontend/usuarios/welcome_screen.dart';
+
 import 'widgets/app_shell.dart';
 
-/// Muestra la pantalla según la sesión y el rol; el backend aplica los permisos.
-/// La bienvenida animada se ve una vez por apertura de la app: al cerrar
-/// sesión se va directo al login.
+/// Muestra la pantalla según la sesión y el rol.
+/// El backend aplica los permisos.
+///
+/// La bienvenida animada se ve una vez por apertura de la app.
+/// Al cerrar sesión se va directamente al login.
 class AuthGate extends StatefulWidget {
   const AuthGate({super.key});
 
@@ -35,19 +38,22 @@ class _AuthGateState extends State<AuthGate> {
   Widget build(BuildContext context) {
     final auth = context.watch<AuthController>();
     final usuario = auth.usuario;
+
     switch (auth.status) {
       case AuthStatus.desconocido:
         return const Scaffold(body: Center(child: CircularProgressIndicator()));
+
       case AuthStatus.noAutenticado:
         return AnimatedSwitcher(
           duration: const Duration(milliseconds: 800),
           transitionBuilder: (child, animation) {
-            // La bienvenida "se zambulle" (zoom + fundido) y el login entra suave.
             final esBienvenida = child.key == const ValueKey('bienvenida');
+
             final curva = CurvedAnimation(
               parent: animation,
               curve: Curves.easeInOut,
             );
+
             return FadeTransition(
               opacity: curva,
               child: ScaleTransition(
@@ -63,11 +69,19 @@ class _AuthGateState extends State<AuthGate> {
               ? const LoginScreen(key: ValueKey('login'))
               : WelcomeScreen(
                   key: const ValueKey('bienvenida'),
-                  onIniciar: () => setState(() => _bienvenidaVista = true),
+                  onIniciar: () {
+                    setState(() {
+                      _bienvenidaVista = true;
+                    });
+                  },
                 ),
         );
+
       case AuthStatus.autenticado:
-        if (usuario == null) return const LoginScreen();
+        if (usuario == null) {
+          return const LoginScreen();
+        }
+
         if (usuario.rol == Rol.administrador) {
           return AdminPanelScreen(
             key: ValueKey(usuario.id),
@@ -76,6 +90,7 @@ class _AuthGateState extends State<AuthGate> {
             service: context.read<AdminService>(),
           );
         }
+
         return AppShell(
           key: ValueKey(usuario.id),
           destinations: _destinosPara(context, usuario),
@@ -88,6 +103,7 @@ class _AuthGateState extends State<AuthGate> {
     final requisitos = context.read<RequisitosService>();
     final progreso = context.read<ProgresoService>();
     final malla = context.read<MallaService>();
+
     final perfil = ShellDestination(
       label: 'Perfil',
       icon: Icons.person_outline,
@@ -112,24 +128,30 @@ class _AuthGateState extends State<AuthGate> {
     }
 
     final codigo = usuario.codigoEstudiantil;
+    final programa = usuario.programa;
+
     Widget sinCodigo(BuildContext _) => const Center(
       child: Padding(
         padding: EdgeInsets.all(24),
         child: Text(
-          'Tu cuenta no tiene un código estudiantil asociado. Contacta a coordinación.',
+          'Tu cuenta no tiene un código estudiantil asociado. '
+          'Contacta a coordinación.',
           textAlign: TextAlign.center,
         ),
       ),
     );
+
     Widget sinPrograma(BuildContext _) => const Center(
       child: Padding(
         padding: EdgeInsets.all(24),
         child: Text(
-          'Tu cuenta no tiene un programa académico asociado para consultar la malla.',
+          'Tu cuenta no tiene un programa académico asociado '
+          'para consultar la malla.',
           textAlign: TextAlign.center,
         ),
       ),
     );
+
     return [
       ShellDestination(
         label: 'Inicio',
@@ -144,18 +166,20 @@ class _AuthGateState extends State<AuthGate> {
                 codigoEstudiantil: codigo,
               ),
       ),
+
       ShellDestination(
         label: 'Malla',
         icon: Icons.account_tree_outlined,
         selectedIcon: Icons.account_tree,
-        builder: usuario.programa == null
+        builder: programa == null
             ? sinPrograma
             : (_) => MallaScreen(
                 service: malla,
-                programa: usuario.programa!,
+                programa: programa,
                 semestreActual: usuario.semestre,
               ),
       ),
+
       ShellDestination(
         label: 'Requisitos',
         icon: Icons.checklist_outlined,
@@ -165,6 +189,7 @@ class _AuthGateState extends State<AuthGate> {
             : (_) =>
                   RequisitosScreen(service: requisitos, estudianteId: codigo),
       ),
+
       perfil,
     ];
   }

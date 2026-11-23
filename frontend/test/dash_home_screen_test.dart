@@ -198,10 +198,8 @@ ApiClient _api({required bool Function() falla}) {
   );
 }
 
-/// Monta el inicio del estudiante y deja terminar las animaciones.
-///
-/// Hay animaciones en bucle (fondo, mascota y giro del astrolabio), así
-/// que no se puede usar `pumpAndSettle`: se avanza el reloj a tramos.
+/// Monta el inicio del estudiante.
+/// Hay animaciones en bucle, así que no se usa pumpAndSettle.
 Future<void> _montar(
   WidgetTester tester, {
   bool Function() falla = _nunca,
@@ -272,6 +270,10 @@ void main() {
     tester,
   ) async {
     await _montar(tester);
+
+    // El contenido se crea después de resolver las peticiones asíncronas.
+    // Se deja terminar la animación del contador del Astrolabio (1.6 s).
+    await tester.pump(const Duration(seconds: 2));
 
     expect(tester.takeException(), isNull);
     expect(find.byType(DashBackground), findsOneWidget);

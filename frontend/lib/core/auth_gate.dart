@@ -6,9 +6,8 @@ import 'package:frontend/administracion/admin_panel_screen.dart';
 import 'package:frontend/administracion/service/admin_service.dart';
 import 'package:frontend/curriculo/malla_screen.dart';
 import 'package:frontend/curriculo/malla_service.dart';
-import 'package:frontend/estudiantes/dash_home_screen.dart';
+import 'package:frontend/estudiantes/dashboard_screen.dart';
 import 'package:frontend/estudiantes/estudiantes_service.dart';
-import 'package:frontend/estudiantes/progreso_service.dart';
 import 'package:frontend/requisitos/gestion_requisitos_screen.dart';
 import 'package:frontend/requisitos/requisitos_screen.dart';
 import 'package:frontend/requisitos/requisitos_service.dart';
@@ -114,7 +113,6 @@ class _AuthGateState extends State<AuthGate> {
     final estudiantes = context.read<EstudiantesService>();
     final requisitos = context.read<RequisitosService>();
     final malla = context.read<MallaService>();
-    final progreso = context.read<ProgresoService>();
 
     final perfil = ShellDestination(
       label: 'Perfil',
@@ -173,10 +171,9 @@ class _AuthGateState extends State<AuthGate> {
         selectedIcon: Icons.dashboard,
         builder: codigo == null
             ? sinCodigo
-            : (_) => DashHomeScreen(
+            : (_) => DashboardScreen(
                   estudiantes: estudiantes,
                   requisitos: requisitos,
-                  progreso: progreso,
                   codigoEstudiantil: codigo,
                 ),
       ),

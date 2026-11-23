@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
@@ -29,8 +28,8 @@ class AppDependencias {
     this.auth,
     this.estudiantes,
     this.requisitos,
-    this.malla,
     this.progreso,
+    this.malla,
   );
 
   factory AppDependencias.crear({
@@ -46,10 +45,7 @@ class AppDependencias {
       client: client,
     );
 
-    final auth = AuthController(
-      service: AuthService(api),
-      storage: almacen,
-    );
+    final auth = AuthController(service: AuthService(api), storage: almacen);
 
     api.onUnauthorized = () => auth.cerrarSesion();
 
@@ -58,8 +54,8 @@ class AppDependencias {
       auth,
       EstudiantesService(api),
       RequisitosService(api),
-      MallaService(api),
       ProgresoService(api),
+      MallaService(api),
     );
   }
 
@@ -67,8 +63,8 @@ class AppDependencias {
   final AuthController auth;
   final EstudiantesService estudiantes;
   final RequisitosService requisitos;
-  final MallaService malla;
   final ProgresoService progreso;
+  final MallaService malla;
 }
 
 void main() {
@@ -96,11 +92,7 @@ String? _tokenRecuperacion(Uri uri) {
 }
 
 class DinamikApp extends StatefulWidget {
-  const DinamikApp({
-    super.key,
-    required this.dependencias,
-    this.resetToken,
-  });
+  const DinamikApp({super.key, required this.dependencias, this.resetToken});
 
   final AppDependencias dependencias;
   final String? resetToken;
@@ -122,27 +114,13 @@ class _DinamikAppState extends State<DinamikApp> {
 
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider<AuthController>.value(
-          value: deps.auth,
-        ),
-        Provider<ApiClient>.value(
-          value: deps.api,
-        ),
-        Provider<AdminService>(
-          create: (_) => AdminService(deps.api),
-        ),
-        Provider<EstudiantesService>.value(
-          value: deps.estudiantes,
-        ),
-        Provider<RequisitosService>.value(
-          value: deps.requisitos,
-        ),
-        Provider<MallaService>.value(
-          value: deps.malla,
-        ),
-        Provider<ProgresoService>.value(
-          value: deps.progreso,
-        ),
+        ChangeNotifierProvider<AuthController>.value(value: deps.auth),
+        Provider<ApiClient>.value(value: deps.api),
+        Provider<AdminService>(create: (_) => AdminService(deps.api)),
+        Provider<EstudiantesService>.value(value: deps.estudiantes),
+        Provider<RequisitosService>.value(value: deps.requisitos),
+        Provider<ProgresoService>.value(value: deps.progreso),
+        Provider<MallaService>.value(value: deps.malla),
       ],
       child: MaterialApp(
         title: 'DinamikUTB',

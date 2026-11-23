@@ -1,4 +1,3 @@
-
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
@@ -48,8 +47,7 @@ class Astrolabio extends StatefulWidget {
   State<Astrolabio> createState() => _AstrolabioState();
 }
 
-class _AstrolabioState extends State<Astrolabio>
-    with TickerProviderStateMixin {
+class _AstrolabioState extends State<Astrolabio> with TickerProviderStateMixin {
   late final AnimationController _intro = AnimationController(
     vsync: this,
     duration: const Duration(milliseconds: 2000),
@@ -168,10 +166,7 @@ class _AstrolabioState extends State<Astrolabio>
                             style: Dash.display(54),
                           ),
                           Padding(
-                            padding: const EdgeInsets.only(
-                              bottom: 8,
-                              left: 2,
-                            ),
+                            padding: const EdgeInsets.only(bottom: 8, left: 2),
                             child: Text(
                               '%',
                               style: Dash.display(22, color: Dash.sky),
@@ -179,10 +174,7 @@ class _AstrolabioState extends State<Astrolabio>
                           ),
                         ],
                       ),
-                      Text(
-                        'del plan aprobado',
-                        style: Dash.body(13),
-                      ),
+                      Text('del plan aprobado', style: Dash.body(13)),
                       const SizedBox(height: 2),
                       Text(
                         '${widget.creditosAprobados} / '
@@ -194,11 +186,7 @@ class _AstrolabioState extends State<Astrolabio>
                 ),
               ),
               if (widget.adorno != null)
-                Positioned(
-                  top: 4,
-                  right: 4,
-                  child: widget.adorno!,
-                ),
+                Positioned(top: 4, right: 4, child: widget.adorno!),
             ],
           ),
         ),
@@ -301,11 +289,7 @@ class _AstrolabioState extends State<Astrolabio>
 }
 
 class _Tile extends StatelessWidget {
-  const _Tile({
-    required this.etiqueta,
-    required this.hijo,
-    this.pie,
-  });
+  const _Tile({required this.etiqueta, required this.hijo, this.pie});
 
   final String etiqueta;
   final Widget hijo;
@@ -313,41 +297,30 @@ class _Tile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        constraints: const BoxConstraints(minWidth: 140),
-        padding: const EdgeInsets.symmetric(
-          horizontal: 16,
-          vertical: 12,
+    constraints: const BoxConstraints(minWidth: 140),
+    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+    decoration: BoxDecoration(
+      color: Colors.white.withValues(alpha: 0.08),
+      borderRadius: BorderRadius.circular(18),
+      border: Border.all(color: Colors.white.withValues(alpha: 0.14)),
+    ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          etiqueta,
+          style: Dash.body(12, color: Colors.white.withValues(alpha: 0.7)),
         ),
-        decoration: BoxDecoration(
-          color: Colors.white.withValues(alpha: 0.08),
-          borderRadius: BorderRadius.circular(18),
-          border: Border.all(
-            color: Colors.white.withValues(alpha: 0.14),
-          ),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              etiqueta,
-              style: Dash.body(
-                12,
-                color: Colors.white.withValues(alpha: 0.7),
-              ),
-            ),
-            const SizedBox(height: 4),
-            hijo,
-            if (pie != null) ...[
-              const SizedBox(height: 2),
-              Text(
-                pie!,
-                style: Dash.body(11.5, color: Dash.sky),
-              ),
-            ],
-          ],
-        ),
-      );
+        const SizedBox(height: 4),
+        hijo,
+        if (pie != null) ...[
+          const SizedBox(height: 2),
+          Text(pie!, style: Dash.body(11.5, color: Dash.sky)),
+        ],
+      ],
+    ),
+  );
 }
 
 class _Leyenda extends StatelessWidget {
@@ -367,64 +340,50 @@ class _Leyenda extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Semantics(
-        button: true,
-        selected: activo,
-        label: '$titulo: $valor',
-        child: InkWell(
+    button: true,
+    selected: activo,
+    label: '$titulo: $valor',
+    child: InkWell(
+      borderRadius: BorderRadius.circular(20),
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        decoration: BoxDecoration(
+          color: activo
+              ? color.withValues(alpha: 0.22)
+              : Colors.white.withValues(alpha: 0.08),
           borderRadius: BorderRadius.circular(20),
-          onTap: onTap,
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
-            padding: const EdgeInsets.symmetric(
-              horizontal: 12,
-              vertical: 8,
-            ),
-            decoration: BoxDecoration(
-              color: activo
-                  ? color.withValues(alpha: 0.22)
-                  : Colors.white.withValues(alpha: 0.08),
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(
-                color: activo
-                    ? color
-                    : Colors.white.withValues(alpha: 0.2),
-              ),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  width: 10,
-                  height: 10,
-                  decoration: BoxDecoration(
-                    color: color,
-                    shape: BoxShape.circle,
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Flexible(
-                  fit: FlexFit.loose,
-                  child: Text(
-                    titulo,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    softWrap: false,
-                    style: Dash.body(
-                      12.5,
-                      weight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Text(
-                  valor,
-                  style: Dash.code(12.5, color: color),
-                ),
-              ],
-            ),
+          border: Border.all(
+            color: activo ? color : Colors.white.withValues(alpha: 0.2),
           ),
         ),
-      );
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 10,
+              height: 10,
+              decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+            ),
+            const SizedBox(width: 8),
+            Flexible(
+              fit: FlexFit.loose,
+              child: Text(
+                titulo,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                softWrap: false,
+                style: Dash.body(12.5, weight: FontWeight.w600),
+              ),
+            ),
+            const SizedBox(width: 8),
+            Text(valor, style: Dash.code(12.5, color: color)),
+          ],
+        ),
+      ),
+    ),
+  );
 }
 
 class _AstrolabioPainter extends CustomPainter {
@@ -455,33 +414,17 @@ class _AstrolabioPainter extends CustomPainter {
     final rExt = radio - 34;
     final rInt = rExt - 32;
 
-    _anillo(
-      canvas,
-      c,
-      rExt,
-      16,
-      cred / 100 * avance,
-      const [
-        Dash.aqua,
-        Dash.sky,
-        Dash.aqua,
-      ],
-      atenuado: foco == 2,
-    );
+    _anillo(canvas, c, rExt, 16, cred / 100 * avance, const [
+      Dash.aqua,
+      Dash.sky,
+      Dash.aqua,
+    ], atenuado: foco == 2);
 
-    _anillo(
-      canvas,
-      c,
-      rInt,
-      12,
-      req / 100 * avance,
-      const [
-        Dash.amber,
-        Color(0xFFFB923C),
-        Dash.amber,
-      ],
-      atenuado: foco == 1,
-    );
+    _anillo(canvas, c, rInt, 12, req / 100 * avance, const [
+      Dash.amber,
+      Color(0xFFFB923C),
+      Dash.amber,
+    ], atenuado: foco == 1);
 
     // Hitos de créditos sobre el anillo exterior.
     for (final h in hitos) {
@@ -495,9 +438,7 @@ class _AstrolabioPainter extends CustomPainter {
         Paint()
           ..strokeWidth = 2.5
           ..strokeCap = StrokeCap.round
-          ..color = Colors.white.withValues(
-            alpha: alcanzado ? 0.95 : 0.5,
-          ),
+          ..color = Colors.white.withValues(alpha: alcanzado ? 0.95 : 0.5),
       );
     }
 
@@ -510,17 +451,10 @@ class _AstrolabioPainter extends CustomPainter {
       13,
       Paint()
         ..color = Dash.aqua.withValues(alpha: 0.45)
-        ..maskFilter = const MaskFilter.blur(
-          BlurStyle.normal,
-          7,
-        ),
+        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 7),
     );
 
-    canvas.drawCircle(
-      punta,
-      7,
-      Paint()..color = Colors.white,
-    );
+    canvas.drawCircle(punta, 7, Paint()..color = Colors.white);
 
     // Retícula interior, como la de una carta de navegación.
     final fino = Paint()
@@ -529,23 +463,11 @@ class _AstrolabioPainter extends CustomPainter {
 
     final rRet = rInt - 22;
 
-    canvas.drawLine(
-      c + Offset(-rRet, 0),
-      c + Offset(rRet, 0),
-      fino,
-    );
+    canvas.drawLine(c + Offset(-rRet, 0), c + Offset(rRet, 0), fino);
 
-    canvas.drawLine(
-      c + Offset(0, -rRet),
-      c + Offset(0, rRet),
-      fino,
-    );
+    canvas.drawLine(c + Offset(0, -rRet), c + Offset(0, rRet), fino);
 
-    canvas.drawCircle(
-      c,
-      rRet,
-      fino..style = PaintingStyle.stroke,
-    );
+    canvas.drawCircle(c, rRet, fino..style = PaintingStyle.stroke);
   }
 
   void _marcas(Canvas canvas, Offset c, double radio) {
@@ -585,11 +507,7 @@ class _AstrolabioPainter extends CustomPainter {
       canvas.rotate(a + math.pi / 4);
 
       canvas.drawRect(
-        Rect.fromCenter(
-          center: Offset.zero,
-          width: 7,
-          height: 7,
-        ),
+        Rect.fromCenter(center: Offset.zero, width: 7, height: 7),
         rombo,
       );
 
@@ -640,10 +558,7 @@ class _AstrolabioPainter extends CustomPainter {
         ..strokeWidth = grosor + 8
         ..strokeCap = StrokeCap.round
         ..color = colores.first.withValues(alpha: 0.28)
-        ..maskFilter = const MaskFilter.blur(
-          BlurStyle.normal,
-          8,
-        )
+        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 8)
         ..colorFilter = filtro,
     );
 

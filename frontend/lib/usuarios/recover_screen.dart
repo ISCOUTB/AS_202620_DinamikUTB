@@ -165,15 +165,22 @@ class _RecoverScreenState extends State<RecoverScreen>
     return Interval(a, b, curve: c).transform(_intro.value);
   }
 
+  // CORRECCIÓN: cada elemento escucha los cambios de la animación.
   Widget _aparece(double a, double b, Widget child) {
-    final v = _v(a, b);
+    return AnimatedBuilder(
+      animation: _intro,
+      child: child,
+      builder: (context, child) {
+        final v = _v(a, b);
 
-    return Opacity(
-      opacity: v,
-      child: Transform.translate(
-        offset: Offset(0, (1 - v) * 18),
-        child: child,
-      ),
+        return Opacity(
+          opacity: v,
+          child: Transform.translate(
+            offset: Offset(0, (1 - v) * 18),
+            child: child,
+          ),
+        );
+      },
     );
   }
 
@@ -332,10 +339,14 @@ class _RecoverScreenState extends State<RecoverScreen>
   Widget _contenido(BuildContext context) {
     const pasos = [
       (Icons.mail_outline, 'Escribes tu correo institucional'),
-      (Icons.verified_user_outlined,
-          'Administración verifica tu identidad'),
-      (Icons.link_rounded,
-          'Recibes un enlace de un solo uso, válido 15 minutos'),
+      (
+        Icons.verified_user_outlined,
+        'Administración verifica tu identidad'
+      ),
+      (
+        Icons.link_rounded,
+        'Recibes un enlace de un solo uso, válido 15 minutos'
+      ),
     ];
 
     return Form(

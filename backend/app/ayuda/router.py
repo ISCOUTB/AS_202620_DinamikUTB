@@ -53,7 +53,11 @@ def consultar_coordinador(
     "/solicitudes",
     response_model=SolicitudOut,
     status_code=status.HTTP_201_CREATED,
-    responses={**_PROTEGIDAS, 400: {"description": "La cuenta no tiene perfil de estudiante"}},
+    responses={
+        **_PROTEGIDAS,
+        400: {"description": "La cuenta no tiene perfil de estudiante"},
+        422: {"description": "Datos de la solicitud inválidos"},
+    },
 )
 def crear_solicitud(payload: SolicitudIn, usuario: EstudianteUser, db: DbSession):
     estudiante = obtener_estudiante(db, usuario.codigo_estudiantil) if usuario.codigo_estudiantil else None

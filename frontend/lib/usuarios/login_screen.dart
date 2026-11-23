@@ -167,7 +167,7 @@ class _LoginScreenState extends State<LoginScreen>
       (Icons.checklist_rounded, 0.97, 0.88, 0.35),
       (Icons.school_rounded, 0.2, 0.92, 0.7),
     ];
-    final tau = 2 * math.pi;
+    const tau = 2 * math.pi;
     return Stack(
       fit: StackFit.expand,
       children: [
@@ -566,7 +566,9 @@ class _LoginScreenState extends State<LoginScreen>
             child: AnimatedBuilder(
               animation: _ambient,
               builder: (context, child) => Transform.scale(
-                scale: pop * (1 + 0.07 * math.sin(2 * math.pi * 6 * _ambient.value)),
+                scale:
+                    pop *
+                    (1 + 0.07 * math.sin(2 * math.pi * 6 * _ambient.value)),
                 child: child,
               ),
               child: Image.asset(

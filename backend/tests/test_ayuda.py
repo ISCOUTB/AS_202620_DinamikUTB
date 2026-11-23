@@ -115,7 +115,8 @@ def test_el_estudiante_solo_ve_las_suyas(escenario):
 
     mias = client.get("/ayuda/solicitudes", headers=_alumno()).json()
 
-    assert len(mias) == 1 and mias[0]["estudiante_id"] == "T000111111"
+    assert len(mias) == 1
+    assert mias[0]["estudiante_id"] == "T000111111"
     assert client.get("/ayuda/solicitudes").status_code == 401
 
 

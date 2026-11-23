@@ -2046,15 +2046,14 @@
             },
             "description": "Successful Response"
           },
+          "400": {
+            "description": "El usuario no tiene estudiante asociado"
+          },
+          "404": {
+            "description": "Estudiante no encontrado"
+          },
           "422": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            },
-            "description": "Validation Error"
+            "description": "Programa o semestre inválidos"
           }
         },
         "security": [
@@ -2143,6 +2142,9 @@
               }
             },
             "description": "Validation Error"
+          },
+          "503": {
+            "description": "Servicio de correo no configurado"
           }
         },
         "summary": "Recuperar Password",
@@ -2378,14 +2380,7 @@
             "description": "Sin permisos sobre este recurso"
           },
           "422": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            },
-            "description": "Validation Error"
+            "description": "Datos de la solicitud inválidos"
           }
         },
         "security": [
@@ -2603,6 +2598,9 @@
             },
             "description": "Successful Response"
           },
+          "409": {
+            "description": "Código estudiantil o correo ya registrado"
+          },
           "422": {
             "content": {
               "application/json": {
@@ -2791,6 +2789,9 @@
               }
             },
             "description": "Successful Response"
+          },
+          "404": {
+            "description": "Estudiante, programa o curso no encontrado"
           },
           "422": {
             "content": {
@@ -3273,7 +3274,7 @@
             "description": "Sin permisos sobre este recurso"
           },
           "404": {
-            "description": "Requisito o programa no encontrado"
+            "description": "Requisito no encontrado"
           },
           "422": {
             "description": "No se puede mover un requisito a otro programa"

@@ -6,6 +6,9 @@ deben contrastarse con la UTB antes de usarse fuera del proyecto del curso.
 
 OFICINA_REGISTRO = "Registro y Control Académico"
 OFICINA_COORD = "Coordinación de tu programa"
+PORTAL_UTB = "https://www.utb.edu.co"
+OFICINA_IDIOMAS = "Centro de Idiomas UTB"
+OFICINA_BIENESTAR = "Bienestar Universitario"
 
 # codigo_interno -> (estado, fecha_cumplimiento, periodo, evidencia) del estudiante demo
 # La fecha del demo es una fecha de ejemplo.
@@ -28,7 +31,7 @@ REQUISITOS_UTB = [
         "categoria": "Idiomas",
         "semestre_recomendado": 8,
         "porcentaje_creditos_requerido": None,
-        "portal_oficial": "https://www.utb.edu.co",
+        "portal_oficial": PORTAL_UTB,
         "tiempo_estimado": "1 a 3 meses según la ruta",
         "guia_resumen": (
             "Se acredita con un certificado B2 de una prueba internacional o con la prueba "
@@ -40,17 +43,17 @@ REQUISITOS_UTB = [
                 "titulo": "Elige la ruta",
                 "detalle": "Opción 1: certificado B2 de una prueba internacional de competencia. "
                 "Opción 2: prueba de suficiencia del Centro de Idiomas con nivel B2.",
-                "oficina": "Centro de Idiomas UTB",
+                "oficina": OFICINA_IDIOMAS,
             },
             {
                 "titulo": "Consulta costos y fechas",
                 "detalle": "Escribe a idiomas@utb.edu.co para costos, fechas y proceso de registro.",
-                "oficina": "Centro de Idiomas UTB",
+                "oficina": OFICINA_IDIOMAS,
             },
             {
                 "titulo": "Presenta la prueba o radica el certificado",
                 "detalle": "Entrega el certificado vigente o presenta la suficiencia en la fecha asignada.",
-                "oficina": "Centro de Idiomas UTB",
+                "oficina": OFICINA_IDIOMAS,
             },
             {
                 "titulo": "Verifica el registro",
@@ -107,7 +110,7 @@ REQUISITOS_UTB = [
         "categoria": "Proyeccion",
         "semestre_recomendado": 10,
         "porcentaje_creditos_requerido": 75,
-        "portal_oficial": "https://www.utb.edu.co",
+        "portal_oficial": PORTAL_UTB,
         "tiempo_estimado": "Un semestre académico",
         "guia_resumen": (
             "Se habilita con el 75 % de los créditos y los prerrequisitos del curso de práctica. "
@@ -148,7 +151,7 @@ REQUISITOS_UTB = [
         "categoria": "Academico",
         "semestre_recomendado": 10,
         "porcentaje_creditos_requerido": 80,
-        "portal_oficial": "https://www.utb.edu.co",
+        "portal_oficial": PORTAL_UTB,
         "tiempo_estimado": "1 a 2 semestres",
         "guia_resumen": (
             "Trabajo de grado u otra modalidad que permita el reglamento de tu facultad "
@@ -190,24 +193,24 @@ REQUISITOS_UTB = [
         "categoria": "Administrativo",
         "semestre_recomendado": 2,
         "porcentaje_creditos_requerido": None,
-        "portal_oficial": "https://www.utb.edu.co",
+        "portal_oficial": PORTAL_UTB,
         "tiempo_estimado": "Durante los primeros semestres",
         "guia_resumen": "Se cumple participando en las actividades de Bienestar y en la Cátedra UTB.",
         "pasos_guia": [
             {
                 "titulo": "Inscríbete en la Cátedra UTB",
                 "detalle": "Asiste a las sesiones y entrega las actividades.",
-                "oficina": "Bienestar Universitario",
+                "oficina": OFICINA_BIENESTAR,
             },
             {
                 "titulo": "Completa las actividades de Bienestar",
                 "detalle": "Participa en las actividades que exige tu programa.",
-                "oficina": "Bienestar Universitario",
+                "oficina": OFICINA_BIENESTAR,
             },
             {
                 "titulo": "Solicita la constancia",
                 "detalle": "Pídela al terminar para que quede registrada.",
-                "oficina": "Bienestar Universitario",
+                "oficina": OFICINA_BIENESTAR,
             },
         ],
     },
@@ -218,7 +221,7 @@ REQUISITOS_UTB = [
         "categoria": "Administrativo",
         "semestre_recomendado": 10,
         "porcentaje_creditos_requerido": None,
-        "portal_oficial": "https://www.utb.edu.co",
+        "portal_oficial": PORTAL_UTB,
         "tiempo_estimado": "5 a 10 días hábiles",
         "guia_resumen": "Es lo último que se tramita: se pide cuando ya cumpliste todo lo demás.",
         "pasos_guia": [

@@ -21,6 +21,7 @@ from app.requisitos.schemas import (
 from app.usuarios.dependencies import AdminUser, CurrentUser, GestorUser, verificar_acceso_estudiante
 
 router = APIRouter(prefix="/requisitos", tags=["requisitos"])
+REQUISITO_NO_ENCONTRADO = "Requisito no encontrado"
 
 _RESPUESTAS_PROTEGIDAS = {
     401: {"description": "No autenticado"},
@@ -91,7 +92,7 @@ def crear_requisito_catalogo(payload: RequisitoCatalogoIn, _admin: AdminUser, db
     "/catalogo/{catalogo_id}",
     responses={
         **_RESPUESTAS_PROTEGIDAS,
-        404: {"description": "Requisito o programa no encontrado"},
+        404: {"description": "Requisito no encontrado"},
         422: {"description": "No se puede mover un requisito a otro programa"},
     },
 )
@@ -103,7 +104,7 @@ def actualizar_requisito_catalogo(
 ):
     item = db.get(RequisitoPrograma, catalogo_id, with_for_update=True)
     if item is None:
-        raise HTTPException(status_code=404, detail="Requisito no encontrado")
+        raise HTTPException(status_code=404, detail=REQUISITO_NO_ENCONTRADO)
     prog = db.get(Programa, item.programa_id)
     if prog is None:
         raise HTTPException(status_code=404, detail="Programa no encontrado")
@@ -176,7 +177,7 @@ def actualizar_estado(
 ):
     requisito = service.actualizar_estado_requisito(db, requisito_id, payload.estado, actor_id=usuario.id)
     if requisito is None:
-        raise HTTPException(status_code=404, detail="Requisito no encontrado")
+        raise HTTPException(status_code=404, detail=REQUISITO_NO_ENCONTRADO)
     return requisito
 
 
@@ -207,5 +208,5 @@ def actualizar_detalle(
     except service.DetalleInvalido as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
     if requisito is None:
-        raise HTTPException(status_code=404, detail="Requisito no encontrado")
+        raise HTTPException(status_code=404, detail=REQUISITO_NO_ENCONTRADO)
     return requisito

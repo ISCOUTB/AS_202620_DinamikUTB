@@ -15,13 +15,15 @@ from sqlalchemy.orm import relationship
 
 from app.core.database import Base
 
+CURSO_ID_FK = "cursos.id"
+
 curso_prerrequisitos = Table(
     "curso_prerrequisitos",
     Base.metadata,
-    Column("curso_id", ForeignKey("cursos.id", ondelete="CASCADE"), primary_key=True),
+    Column("curso_id", ForeignKey(CURSO_ID_FK, ondelete="CASCADE"), primary_key=True),
     Column(
         "prerrequisito_id",
-        ForeignKey("cursos.id", ondelete="CASCADE"),
+        ForeignKey(CURSO_ID_FK, ondelete="CASCADE"),
         primary_key=True,
     ),
 )

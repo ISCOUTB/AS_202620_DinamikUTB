@@ -130,7 +130,11 @@ def listar_estudiantes(
     ]
 
 
-@router.post("", status_code=status.HTTP_201_CREATED)
+@router.post(
+    "",
+    status_code=status.HTTP_201_CREATED,
+    responses={409: {"description": "Código estudiantil o correo ya registrado"}},
+)
 def crear_estudiante(payload: EstudianteCreateIn, _gestor: GestorUser, db: DbSession):
     email_limpio = _correo_institucional(payload.email)
     prog = _programa_existente(db, payload.programa)

@@ -20,12 +20,14 @@ Cada pieza se despliega y opera de forma independiente; ninguna comparte proceso
 flowchart TD
     A[Internet<br>fuera de la universidad]
     B[GitHub Pages<br>Frontend Flutter web<br>Estático, siempre activo]
-    C[Traefit/Dockploy Proxy inverso del laboratorio]
-    D[Servidor del labortorio Backend FastAPI en Docker Siempre activo, sin spin dowm]
-    E[Postgre 16 en Docker Volumen pgdata, sin expiración]
- 
+    C[Traefik/Dockploy<br>Proxy inverso del laboratorio]
+    D[Servidor del laboratorio<br>Backend FastAPI en Docker<br>Siempre activo, sin spin down]
+    E[PostgreSQL 16 en Docker<br>Volumen pgdata, sin expiración]
+
     A --> B
+    A --> C
     B <-->|"HTTP/JSON fetch"| C
+    C --> D
     D <-->|"SQL vía SQLAlchemy"| E
 ```
 

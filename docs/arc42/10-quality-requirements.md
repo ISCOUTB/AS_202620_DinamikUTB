@@ -235,13 +235,13 @@ Con la incorporación de `05-building-block-view.md`, `06-runtime-view.md` y `07
 
 | Escenario | Módulo(s) responsable(s) (sección 5) | Runtime scenario (sección 6) | Infraestructura (sección 7) |
 |---|---|---|---|
-| Q-01 | `requisitos/`, `estudiantes/`, `programas/` | 6.1 Estudiante consulta su progreso; 6.3 Coordinador corrige un requisito | Render Postgres (Free) — [ADR-0005](../adr/0005-plataforma-despliegue-backend.md) |
-| Q-02 | `usuarios/` | 6.1 (paso de autenticación); 6.2 Control de acceso a información académica | No resuelto en el ambiente desplegado — ver `11-risks-and-technical-debt.md` |
+| Q-01 | `requisitos/`, `estudiantes/`, `programas/` | 6.1 Estudiante consulta su progreso; 6.3 Coordinador corrige un requisito | PostgreSQL 16 en Dokploy — [ADR-0012](../adr/0012-despliegue-en-servidor-del-laboratorio.md) |
+| Q-02 | `usuarios/` | 6.1 (paso de autenticación); 6.2 Control de acceso a información académica | Dokploy y PostgreSQL — [ADR-0013](../adr/0013-controles-estructurales-de-seguridad-y-autenticacion.md) |
 | Q-03 | `estudiantes/`, `requisitos/` (frontend) | 6.1 Estudiante consulta su progreso | GitHub Pages — [ADR-0006](../adr/0006-plataforma-despliegue-frontend.md) |
 | Q-04 | `requisitos/`, `estudiantes/` | 6.1 Estudiante consulta su progreso (paso de cálculo de alertas, a incorporar) | GitHub Actions (`schedule:`), pendiente de un ADR propio |
-| Q-05 | Backend completo (todos los módulos) | No aplica a un flujo puntual; es una propiedad transversal del despliegue. | Render — Free Web Service — [ADR-0005](../adr/0005-plataforma-despliegue-backend.md) |
+| Q-05 | Backend completo (todos los módulos) | No aplica a un flujo puntual; es una propiedad transversal del despliegue. | Dokploy — servidor del laboratorio — [ADR-0012](../adr/0012-despliegue-en-servidor-del-laboratorio.md) |
 | Q-06 | `programas/`, `requisitos/` | No requiere un runtime scenario de usuario final; se verifica en tiempo de configuración/administración. | No aplica |
-| Q-07 | `ayuda/`, `usuarios/` | 6.3 Coordinador corrige un requisito reportado por un estudiante | No aplica todavía (módulo sin código) |
-| Q-08 | `requisitos/`, `estudiantes/` (transversal) | 6.3 Coordinador corrige un requisito reportado por un estudiante (paso de registro en historial) | Misma base de datos del ambiente (Render Postgres / SQLite local), tabla `requisitos_historial` — [ADR-0011](../adr/0011-historial-de-cambios-transaccional.md) |
+| Q-07 | `ayuda/`, `usuarios/` | 6.3 Coordinador corrige un requisito reportado por un estudiante | Dokploy / PostgreSQL — [ADR-0016](../adr/0016-modulo-ayuda-y-aislamiento-por-programa.md) |
+| Q-08 | `requisitos/`, `estudiantes/` (transversal) | 6.3 Coordinador corrige un requisito reportado por un estudiante (paso de registro en historial) | PostgreSQL del laboratorio / SQLite local, tablas de historial — [ADR-0011](../adr/0011-historial-de-cambios-transaccional.md) |
 
 ---

@@ -283,9 +283,9 @@ El entorno principal de la aplicación se encuentra desplegado en el servidor de
 | Frontend Web | https://iscoutb.github.io/AS_202620_DinamikUTB/ | Activo (GitHub Pages) |
 | Backend API | https://api-dinamikutb.iscoutb.dev | Activo (FastAPI) |
 | Health check | https://api-dinamikutb.iscoutb.dev/health | 200 {"status":"ok"} |
-| Métricas (Q-05) | https://api-dinamikutb.iscoutb.dev/metrics | Formato Prometheus |
+| Métricas (Q-05) | https://api-dinamikutb.iscoutb.dev/metrics | Protegida o deshabilitada por `METRICS_TOKEN` en producción |
 | Base de datos | PostgreSQL 16 (Dokploy) | Persistencia en volumen pgdata |
-| Análisis estático | SonarCloud | Quality Gate en verde |
+| Análisis estático | SonarCloud | Último run rojo; pendiente corregir el Quality Gate |
 
 Comprobación externa verificada (red móvil fuera de la universidad):
 

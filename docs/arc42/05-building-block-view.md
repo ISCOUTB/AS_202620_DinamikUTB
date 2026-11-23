@@ -26,7 +26,7 @@ Esta sección descompone **DinamikUTB** en sus bloques de construcción, siguien
 |---|---|---|
 | **Frontend** | Presentar la información al usuario según su rol y capturar sus interacciones (consultas, solicitudes al centro de ayuda). | Flutter |
 | **Backend** | Concentrar la lógica de negocio: autenticación, cálculo de requisitos, gestión de programas y centro de ayuda. Expone la API que consume el frontend. | FastAPI (Python) |
-| **Base de datos** | Persistir usuarios, estudiantes, requisitos, programas y solicitudes. | SQLite, a través de SQLAlchemy (ver `backend/app/core/database.py`) |
+| **Base de datos** | Persistir usuarios, estudiantes, requisitos, programas y solicitudes. | SQLite en local/CI y PostgreSQL 16 en el laboratorio, a través de SQLAlchemy (ver `backend/app/core/database.py`, [ADR-0012](../adr/0012-despliegue-en-servidor-del-laboratorio.md)) |
 
 El backend es, internamente, un **monolito modular**: se despliega como una sola aplicación, pero está dividido en módulos con responsabilidades delimitadas, descritos en el nivel 2.
 
@@ -35,13 +35,15 @@ El backend es, internamente, un **monolito modular**: se despliega como una sola
 ## 5.2 Whitebox Backend — Nivel 2
 
 ```text
-backend/app/
-├── core/           # Configuración compartida, middleware, conexión a base de datos
-├── usuarios/       # Autenticación, autorización, gestión de cuentas y roles
-├── estudiantes/    # Perfil académico y datos de avance del estudiante
-├── requisitos/     # Cálculo y consulta del estado de los requisitos de grado
-├── programas/      # Programas académicos y mallas curriculares
-└── ayuda/          # Centro de ayuda y gestión de solicitudes
+backend/app/  
+├── core/           # Configuración compartida, middleware, conexión a base de datos  
+├── usuarios/       # Autenticación, autorización, gestión de cuentas y roles  
+├── estudiantes/    # Perfil académico y datos de avance del estudiante  
+├── requisitos/     # Cálculo y consulta del estado de los requisitos de grado  
+├── programas/      # Programas académicos  
+├── curriculo/      # Mallas curriculares, cursos y prerrequisitos  
+├── reportes/       # Exportación segura de reportes CSV  
+└── ayuda/          # Centro de ayuda y gestión de solicitudes (pendiente de código)
 ```
 
 | Módulo | Responsabilidad | Depende de | Escenario(s) de calidad que sustenta |

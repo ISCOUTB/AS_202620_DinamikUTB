@@ -1,3 +1,4 @@
+
 import pytest
 
 from fastapi.testclient import TestClient
@@ -189,7 +190,9 @@ def test_resumen_calcula_el_avance_solo_con_cumplidos():
     response = client.get("/requisitos/T000123456/resumen", headers=headers)
 
     assert response.status_code == 200
-    assert response.json() == {
+    cuerpo = response.json()
+    assert cuerpo.pop("elegibilidad") == []
+    assert cuerpo == {
         "total": 4,
         "cumplidos": 2,
         "en_proceso": 1,

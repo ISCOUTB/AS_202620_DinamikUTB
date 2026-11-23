@@ -1,3 +1,4 @@
+
 # 10. Quality Requirements
 
 ## 10.1 Quality Requirements Overview
@@ -135,7 +136,6 @@ La usabilidad ocupa el tercer nivel porque el sistema debe permitir que los estu
 **Prioridad:** Media  
 **Atributo:** Exactitud / Consistencia (la alerta depende de que el cálculo de "pendiente" sea correcto), con relación directa a Usabilidad por la oportunidad de la información.
 
-
 ---
 
 ### Escenario Q-05 — Disponibilidad del sistema
@@ -172,8 +172,6 @@ La usabilidad ocupa el tercer nivel porque el sistema debe permitir que los estu
 **Prioridad:** Baja  
 **Atributo:** Mantenibilidad (relacionado directamente con la extensibilidad exigida en `02-architecture-constraints.md`, sección 2.1).
 
-
-
 ---
 
 ### Escenario Q-07 — Gestión de solicitudes del centro de ayuda
@@ -191,7 +189,6 @@ La usabilidad ocupa el tercer nivel porque el sistema debe permitir que los estu
 
 **Prioridad:** Media  
 **Atributo:** Trazabilidad (registro completo de la solicitud), con relación directa a Seguridad (visibilidad limitada al coordinador del programa correspondiente, en línea con Q-02).
-
 
 ---
 
@@ -211,7 +208,6 @@ La usabilidad ocupa el tercer nivel porque el sistema debe permitir que los estu
 **Prioridad:** Baja  
 **Atributo:** Trazabilidad
 
-
 ---
 
 ## 10.4 Relación entre escenarios y aspectos
@@ -226,7 +222,7 @@ Los escenarios de calidad se relacionan con los aspectos definidos en `docs/aspe
 | Q-04 | Exactitud / Consistencia, Usabilidad | [A-03](../aspectos.md/#a-03---alertas-tempranas-de-requisitos-pendientes) Alertas tempranas de requisitos pendientes | Pendiente: mecanismo de disparo de la alerta sin ADR (ver `09-architecture-decisions.md`). |
 | Q-05 | Disponibilidad | [A-04](../aspectos.md/#a-04---disponibilidad-del-sistema) Disponibilidad del sistema | [ADR-0001](../adr/0001-seleccion-monolito-modular.md) (despliegue como aplicación única), [ADR-0005](../adr/0005-plataforma-despliegue-backend.md) (plataforma de despliegue y su riesgo de *spin down*), [ADR-0012](../adr/0012-despliegue-en-servidor-del-laboratorio.md) (despliegue en el laboratorio, sin *spin down*). |
 | Q-06 | Mantenibilidad | [A-06](../aspectos.md/#a-06---extensibilidad-para-multiples-programas-academicos) Extensibilidad para múltiples programas académicos | [ADR-0001](../adr/0001-seleccion-monolito-modular.md) |
-| Q-07 | Trazabilidad, Seguridad | [A-07](../aspectos.md/#a-07---gestion-de-solicitudes-de-estudiantes-en-el-centro-de-ayuda) Gestión de solicitudes de estudiantes en el centro de ayuda | [ADR-0001](../adr/0001-seleccion-monolito-modular.md) (módulo `ayuda/`). |
+| Q-07 | Trazabilidad, Seguridad | [A-07](../aspectos.md/#a-07---gestion-de-solicitudes-de-estudiantes-en-el-centro-de-ayuda) Gestión de solicitudes de estudiantes en el centro de ayuda | [ADR-0001](../adr/0001-seleccion-monolito-modular.md), [ADR-0016](../adr/0016-modulo-ayuda-y-aislamiento-por-programa.md) |
 | Q-08 | Trazabilidad | [A-08](../aspectos.md/#a-08---historial-de-cambios-sobre-la-informacion-academica) Historial de cambios sobre la información académica | [ADR-0011](../adr/0011-historial-de-cambios-transaccional.md) (mecanismo de almacenamiento del historial). |
 
 > Estos escenarios podrán ser refinados posteriormente a medida que se implementen los componentes del sistema y se definan las pruebas correspondientes.

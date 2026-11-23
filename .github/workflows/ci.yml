@@ -87,6 +87,9 @@ jobs:
         working-directory: frontend
         run: flutter test --coverage
 
+      - name: Fix Flutter coverage paths for SonarCloud
+        run: sed -i 's|^SF:lib/|SF:frontend/lib/|g' frontend/coverage/lcov.info
+
       - name: SonarCloud Scan
         uses: SonarSource/sonarqube-scan-action@0303d6b62e310685c0e34d0b9cde218036885c4d # v5.0.0
         env:

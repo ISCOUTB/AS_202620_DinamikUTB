@@ -9,6 +9,7 @@ import 'core/network/api_client.dart';
 import 'core/not_found_screen.dart';
 import 'core/storage/token_storage.dart';
 import 'core/theme/app_theme.dart';
+
 import 'administracion/service/admin_service.dart';
 import 'curriculo/malla_service.dart';
 import 'estudiantes/estudiantes_service.dart';
@@ -21,7 +22,7 @@ import 'usuarios/login_screen.dart';
 
 final _navigatorKey = GlobalKey<NavigatorState>();
 
-/// Construye las dependencias compartidas de la aplicación.
+/// Construye y conserva las dependencias compartidas de la aplicación.
 class AppDependencias {
   AppDependencias._(
     this.api,
@@ -81,6 +82,7 @@ void main() {
   );
 }
 
+/// Obtiene el token de recuperación desde la URL.
 String? _tokenRecuperacion(Uri uri) {
   final queryToken = uri.queryParameters['reset_token'];
 
@@ -126,8 +128,8 @@ class _DinamikAppState extends State<DinamikApp> {
         Provider<ApiClient>.value(
           value: deps.api,
         ),
-        Provider<AdminService>.value(
-          value: AdminService(deps.api),
+        Provider<AdminService>(
+          create: (_) => AdminService(deps.api),
         ),
         Provider<EstudiantesService>.value(
           value: deps.estudiantes,

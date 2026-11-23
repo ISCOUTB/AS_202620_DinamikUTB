@@ -7,6 +7,18 @@ on:
     branches: ["**"]
 
 jobs:
+  documentation:
+    name: Documentacion arquitectonica
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+      - name: Set up Python
+        uses: actions/setup-python@0b93645e9fea7318ecaed2b359559ac225c90a2b # v5.3.0
+        with:
+          python-version: "3.12"
+      - name: Validar enlaces y marcadores pendientes
+        run: python scripts/validate_docs.py
+
   backend-tests:
     name: Backend (pytest)
     runs-on: ubuntu-latest

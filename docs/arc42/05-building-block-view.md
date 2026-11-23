@@ -43,7 +43,7 @@ backend/app/
 ├── programas/      # Programas académicos
 ├── curriculo/      # Mallas curriculares, cursos y prerrequisitos
 ├── reportes/       # Exportación segura de reportes CSV
-└── ayuda/          # Centro de ayuda y gestión de solicitudes (pendiente de código)
+└── ayuda/          # Centro de ayuda y gestión de solicitudes
 ```
 
 | Módulo | Responsabilidad | Depende de | Escenario(s) de calidad que sustenta |

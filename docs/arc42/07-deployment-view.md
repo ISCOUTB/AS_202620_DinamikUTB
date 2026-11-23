@@ -61,9 +61,9 @@ El costo detallado, sus supuestos y el punto de ruptura de cada capa gratuita es
 
 | Variable | Propósito | Dónde vive | Valor |
 |---|---|---|---|
-| `DATABASE_URL` | Cadena de conexión a la base. Sin definir, el backend usa SQLite local. | Inyectada por Render desde la base gestionada (`fromDatabase` en `render.yaml`). Nunca en el repositorio. | Secreto del proveedor |
-| `CORS_ORIGINS` | Orígenes permitidos por CORS (lista separada por comas). | `render.yaml` (no es secreto: es un origen público) | `https://iscoutb.github.io` |
-| `API_BASE_URL` | URL del backend que el frontend usa al compilar (`--dart-define`). | Variable de repositorio de GitHub Actions (opcional; tiene valor por defecto en `deploy-pages.yml`) | `https://dinamikutb-api.onrender.com` |
+| `DATABASE_URL` | Cadena de conexión a PostgreSQL. Sin definir, el backend usa SQLite local. | Secreto configurado en Dokploy. Nunca en el repositorio. | Secreto del proveedor |
+| `CORS_ORIGINS` | Orígenes permitidos por CORS (lista separada por comas). | Variable configurada en Dokploy. | `https://iscoutb.github.io` |
+| `API_BASE_URL` | URL del backend usada por el frontend al compilar (`--dart-define`). | Variable de repositorio de GitHub Actions. | `https://api-dinamikutb.iscoutb.dev` |
 | `SONAR_TOKEN` | Autenticación del análisis de SonarCloud. | Secreto de GitHub Actions | Secreto del proveedor |
 
 `.env.example` declara las variables del backend; `.env` está en `.gitignore`. Ninguna credencial se escribe en el código ni en `docs/`.

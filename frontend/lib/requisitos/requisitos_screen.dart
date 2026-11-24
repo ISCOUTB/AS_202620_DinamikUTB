@@ -18,8 +18,8 @@ import 'requisitos_service.dart';
 /// Consulta los requisitos del estudiante.
 ///
 /// Cuando la pantalla se abre desde el shell autenticado se muestra la ruta
-/// completa de grado con las mismas tarjetas del inicio, sobre el fondo de la
-/// pantalla de recuperación y con un encabezado al estilo de la malla.
+/// completa de grado con las mismas tarjetas del inicio, sobre un degradado
+/// cálido y con un encabezado al estilo de la malla.
 class RequisitosScreen extends StatefulWidget {
   const RequisitosScreen({
     super.key,
@@ -122,7 +122,7 @@ class _RequisitosScreenState extends State<RequisitosScreen> {
 }
 
 // ---------------------------------------------------------------------------
-// Fondo de la pantalla de recuperación
+// Fondo cálido de la pantalla
 // ---------------------------------------------------------------------------
 
 class _FondoRequisitos extends StatelessWidget {
@@ -135,27 +135,21 @@ class _FondoRequisitos extends StatelessWidget {
     fit: StackFit.expand,
     children: [
       const DecoratedBox(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Color(0xFFE13B44),
-              Color(0xFFFC673F),
-              Color(0xFFFD7A38),
-            ],
-          ),
-        ),
+        decoration: BoxDecoration(color: Color(0xFFE00D3B)),
       ),
       Image.asset(
-        'assets/images/recover_scene.jpg',
+        'assets/images/requisitos_fondo.png',
         fit: BoxFit.cover,
-        alignment: Alignment.topCenter,
+        alignment: Alignment.center,
         errorBuilder: (context, error, stack) => const SizedBox.shrink(),
       ),
       const DecoratedBox(
         decoration: BoxDecoration(
-          color: Color(0x2A2A0A3F),
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Color(0x14000000), Color(0x52000000)],
+          ),
         ),
       ),
       SafeArea(child: child),
@@ -304,7 +298,7 @@ class _HeroRequisitosState extends State<_HeroRequisitos>
         borderRadius: BorderRadius.circular(26),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFFDB2777).withValues(alpha: 0.35),
+            color: Colors.black.withValues(alpha: 0.45),
             blurRadius: 30,
             offset: const Offset(0, 16),
           ),
@@ -421,7 +415,7 @@ class _HeroRequisitosState extends State<_HeroRequisitos>
                 SizedBox(height: altoHero * 0.82, child: caja),
                 const SizedBox(height: 10),
                 Center(
-                  child: _Mascota(ancho: 260, flota: _flota),
+                  child: _Mascota(ancho: 230, flota: _flota),
                 ),
               ],
             )
@@ -430,18 +424,18 @@ class _HeroRequisitosState extends State<_HeroRequisitos>
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Expanded(child: caja),
-                  const SizedBox(width: 14),
                   Expanded(
                     child: FittedBox(
                       fit: BoxFit.contain,
-                      alignment: Alignment.topCenter,
+                      alignment: Alignment.center,
                       child: _Mascota(
-                        ancho: altoHero * 1.5,
+                        ancho: altoHero,
                         flota: _flota,
                       ),
                     ),
                   ),
+                  const SizedBox(width: 14),
+                  Expanded(child: caja),
                 ],
               ),
             ),
@@ -466,16 +460,16 @@ class _Aurora extends StatelessWidget {
             end: Alignment.bottomRight,
             colors: [
               Color.lerp(
-                const Color(0xFFDB2777),
-                const Color(0xFF7C3AED),
+                const Color(0xFF9CA3AF),
+                const Color(0xFF4B5563),
                 t,
-              )!.withValues(alpha: 0.85),
+              )!.withValues(alpha: 0.55),
               Color.lerp(
-                const Color(0xFF7C3AED),
-                const Color(0xFFF472B6),
+                const Color(0xFF4B5563),
+                const Color(0xFF1F2937),
                 t,
-              )!.withValues(alpha: 0.65),
-              const Color(0xFF2A0A3F).withValues(alpha: 0.9),
+              )!.withValues(alpha: 0.5),
+              const Color(0xFF050505).withValues(alpha: 0.95),
             ],
           ),
         ),
@@ -544,7 +538,7 @@ class _Dato extends StatelessWidget {
     child: Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(icono, size: 17, color: const Color(0xFFF9A8D4)),
+        Icon(icono, size: 17, color: const Color(0xFFE2E8F0)),
         const SizedBox(width: 7),
         Text(
           valor,
@@ -577,7 +571,7 @@ class _Mascota extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final alto = ancho / 1.5;
+    final alto = ancho;
     return SizedBox(
       width: ancho,
       height: alto,
@@ -588,7 +582,7 @@ class _Mascota extends StatelessWidget {
           child: child,
         ),
         child: Image.asset(
-          'assets/images/mascota_graduada.png',
+          'assets/images/mascota_requisitos.png',
           width: ancho,
           height: alto,
           fit: BoxFit.contain,

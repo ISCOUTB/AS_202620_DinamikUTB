@@ -33,7 +33,7 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.text('Ana Torres'), findsOneWidget);
+    expect(find.text('Ana Torres'), findsNWidgets(2));
     expect(find.text('T00012345'), findsOneWidget);
     await tester.scrollUntilVisible(
       find.text('Actualizar contraseña'),

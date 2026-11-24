@@ -7,6 +7,8 @@ import 'account_screen.dart';
 import 'auth_controller.dart';
 import 'models.dart';
 
+/// Perfil con fondo oscuro iluminado en las esquinas, la mascota confundida a
+/// la derecha y toda la información disponible de la cuenta debajo.
 class PerfilScreen extends StatelessWidget {
   const PerfilScreen({super.key, required this.usuario});
 
@@ -60,69 +62,111 @@ class PerfilScreen extends StatelessWidget {
         : nombre;
     final iniciales = _iniciales(nombreVisible);
 
-    return PageList(
-      maxWidth: 900,
+    return Stack(
       children: [
-        _ProfileHeader(
-          nombre: nombreVisible,
-          iniciales: iniciales,
-          rol: usuario.rol.etiqueta,
-          programa: usuario.programa,
-          codigo: usuario.codigoEstudiantil,
-          semestre: usuario.semestre,
-        ),
-        const SizedBox(height: 20),
-        Card(
-          child: Padding(
-            padding: const EdgeInsets.all(22),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+        const Positioned.fill(child: CustomPaint(painter: _FondoPerfil())),
+        PageList(
+          maxWidth: 980,
+          children: [
+            LayoutBuilder(
+              builder: (context, constraints) {
+                final cabecera = _EncabezadoPerfil(
+                  nombre: nombreVisible,
+                  iniciales: iniciales,
+                  usuario: usuario,
+                );
+                final mascota = const _MascotaConfundida();
+                if (constraints.maxWidth < 640) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      cabecera,
+                      const SizedBox(height: 16),
+                      Center(child: mascota),
+                    ],
+                  );
+                }
+                return Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(child: cabecera),
+                    const SizedBox(width: 24),
+                    SizedBox(width: 250, child: mascota),
+                  ],
+                );
+              },
+            ),
+            const SizedBox(height: 18),
+            _PanelOscuro(
+              titulo: 'Información del estudiante',
+              subtitulo: 'Todo lo que sabemos de tu cuenta institucional.',
+              accion: _BotonAccion(
+                texto: 'Editar datos',
+                icono: Icons.edit_outlined,
+                relleno: false,
+                onPressed: () => _abrirCuenta(context, AccountPage.perfil),
+              ),
               children: [
-                _SectionHeader(
-                  title: 'Datos personales y académicos',
-                  subtitle: 'Información asociada a tu cuenta institucional.',
-                  action: OutlinedButton.icon(
-                    onPressed: () => _abrirCuenta(context, AccountPage.perfil),
-                    icon: const Icon(Icons.edit_outlined, size: 18),
-                    label: const Text('Editar datos'),
-                  ),
-                ),
-                const SizedBox(height: 18),
                 LayoutBuilder(
                   builder: (context, constraints) {
-                    final columns = constraints.maxWidth >= 620 ? 2 : 1;
-                    const gap = 12.0;
-                    final width =
-                        (constraints.maxWidth - gap * (columns - 1)) / columns;
+                    final columnas = constraints.maxWidth >= 640 ? 2 : 1;
+                    const hueco = 12.0;
+                    final ancho =
+                        (constraints.maxWidth - hueco * (columnas - 1)) /
+                        columnas;
                     return Wrap(
-                      spacing: gap,
-                      runSpacing: gap,
+                      spacing: hueco,
+                      runSpacing: hueco,
                       children: [
-                        _ProfileField(
-                          width: width,
-                          label: 'Correo institucional',
-                          value: usuario.email,
-                          icon: Icons.mail_outline_rounded,
+                        _DatoPerfil(
+                          ancho: ancho,
+                          etiqueta: 'Nombre completo',
+                          valor: nombreVisible,
+                          icono: Icons.person_outline_rounded,
                         ),
-                        _ProfileField(
-                          width: width,
-                          label: 'Código estudiantil',
-                          value: usuario.codigoEstudiantil ?? 'No asociado',
-                          icon: Icons.badge_outlined,
+                        _DatoPerfil(
+                          ancho: ancho,
+                          etiqueta: 'Correo institucional',
+                          valor: usuario.email,
+                          icono: Icons.mail_outline_rounded,
                         ),
-                        _ProfileField(
-                          width: width,
-                          label: 'Programa académico',
-                          value: usuario.programa ?? 'No asignado',
-                          icon: Icons.school_outlined,
+                        _DatoPerfil(
+                          ancho: ancho,
+                          etiqueta: 'Dominio del correo',
+                          valor: _dominio(usuario.email),
+                          icono: Icons.alternate_email_rounded,
                         ),
-                        _ProfileField(
-                          width: width,
-                          label: 'Semestre',
-                          value: usuario.semestre == null
+                        _DatoPerfil(
+                          ancho: ancho,
+                          etiqueta: 'Código estudiantil',
+                          valor: usuario.codigoEstudiantil ?? 'No asociado',
+                          icono: Icons.badge_outlined,
+                        ),
+                        _DatoPerfil(
+                          ancho: ancho,
+                          etiqueta: 'Programa académico',
+                          valor: usuario.programa ?? 'No asignado',
+                          icono: Icons.school_outlined,
+                        ),
+                        _DatoPerfil(
+                          ancho: ancho,
+                          etiqueta: 'Semestre actual',
+                          valor: usuario.semestre == null
                               ? 'No registrado'
-                              : '${usuario.semestre}',
-                          icon: Icons.calendar_month_outlined,
+                              : '${usuario.semestre} de 12',
+                          icono: Icons.calendar_month_outlined,
+                        ),
+                        _DatoPerfil(
+                          ancho: ancho,
+                          etiqueta: 'Rol en la plataforma',
+                          valor: usuario.rol.etiqueta,
+                          icono: Icons.verified_user_outlined,
+                        ),
+                        _DatoPerfil(
+                          ancho: ancho,
+                          etiqueta: 'Estado de la cuenta',
+                          valor: 'Activo actualmente',
+                          icono: Icons.check_circle_outline_rounded,
                         ),
                       ],
                     );
@@ -130,20 +174,11 @@ class PerfilScreen extends StatelessWidget {
                 ),
               ],
             ),
-          ),
-        ),
-        const SizedBox(height: 16),
-        Card(
-          child: Padding(
-            padding: const EdgeInsets.all(22),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            const SizedBox(height: 16),
+            _PanelOscuro(
+              titulo: 'Seguridad y acceso',
+              subtitulo: 'Mantén tu contraseña segura y controla tu sesión.',
               children: [
-                const _SectionHeader(
-                  title: 'Seguridad y acceso',
-                  subtitle: 'Mantén tu contraseña segura y controla tu sesión.',
-                ),
-                const SizedBox(height: 16),
                 Wrap(
                   spacing: 12,
                   runSpacing: 12,
@@ -156,16 +191,17 @@ class PerfilScreen extends StatelessWidget {
                       icon: const Icon(Icons.lock_outline_rounded),
                       label: const Text('Actualizar contraseña'),
                     ),
-                    OutlinedButton.icon(
+                    _BotonAccion(
+                      texto: _etiquetaCerrarSesion,
+                      icono: Icons.logout_rounded,
+                      relleno: true,
                       onPressed: () => _confirmarSalida(context),
-                      icon: const Icon(Icons.logout_rounded),
-                      label: const Text(_etiquetaCerrarSesion),
                     ),
                   ],
                 ),
               ],
             ),
-          ),
+          ],
         ),
       ],
     );
@@ -179,31 +215,109 @@ class PerfilScreen extends StatelessWidget {
         .take(2);
     return partes.map((parte) => parte[0].toUpperCase()).join();
   }
+
+  String _dominio(String email) {
+    final corte = email.indexOf('@');
+    if (corte < 0 || corte == email.length - 1) return 'Institucional';
+    return email.substring(corte);
+  }
 }
 
-class _ProfileHeader extends StatelessWidget {
-  const _ProfileHeader({
+// ---------------------------------------------------------------------------
+// Fondo oscuro con luces en las esquinas
+// ---------------------------------------------------------------------------
+
+class _FondoPerfil extends CustomPainter {
+  const _FondoPerfil();
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final rect = Offset.zero & size;
+    canvas.drawRect(
+      rect,
+      Paint()
+        ..shader = const LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [Color(0xFF05050B), Color(0xFF0A0913), Color(0xFF06060D)],
+        ).createShader(rect),
+    );
+
+    // Luces en las esquinas: rosa, morado, azul y magenta.
+    _luz(canvas, size, const Alignment(-1, -1), const Color(0xFFF472B6), 0.34);
+    _luz(canvas, size, const Alignment(1, -1), const Color(0xFFA855F7), 0.32);
+    _luz(canvas, size, const Alignment(-1, 1), const Color(0xFF38BDF8), 0.22);
+    _luz(canvas, size, const Alignment(1, 1), const Color(0xFFDB2777), 0.28);
+    // Bruma tenue central para que el negro no se vea plano.
+    _luz(canvas, size, Alignment.center, const Color(0xFF7C3AED), 0.12);
+  }
+
+  void _luz(
+    Canvas canvas,
+    Size size,
+    Alignment alineacion,
+    Color color,
+    double intensidad,
+  ) {
+    final centro = Offset(
+      size.width * (alineacion.x + 1) / 2,
+      size.height * (alineacion.y + 1) / 2,
+    );
+    final radio = size.shortestSide * 0.75 + size.longestSide * 0.18;
+    canvas.drawCircle(
+      centro,
+      radio,
+      Paint()
+        ..blendMode = BlendMode.plus
+        ..shader = RadialGradient(
+          colors: [
+            color.withValues(alpha: intensidad),
+            color.withValues(alpha: 0),
+          ],
+        ).createShader(Rect.fromCircle(center: centro, radius: radio)),
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant _FondoPerfil antiguo) => false;
+}
+
+// ---------------------------------------------------------------------------
+// Cabecera con la mascota a la derecha
+// ---------------------------------------------------------------------------
+
+class _EncabezadoPerfil extends StatelessWidget {
+  const _EncabezadoPerfil({
     required this.nombre,
     required this.iniciales,
-    required this.rol,
-    required this.programa,
-    required this.codigo,
-    required this.semestre,
+    required this.usuario,
   });
 
   final String nombre;
   final String iniciales;
-  final String rol;
-  final String? programa;
-  final String? codigo;
-  final int? semestre;
+  final Usuario usuario;
 
   @override
   Widget build(BuildContext context) => Container(
-    padding: const EdgeInsets.all(24),
+    padding: const EdgeInsets.all(22),
     decoration: BoxDecoration(
-      color: AppColors.navy,
-      borderRadius: BorderRadius.circular(18),
+      borderRadius: BorderRadius.circular(22),
+      gradient: LinearGradient(
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        colors: [
+          Colors.white.withValues(alpha: 0.09),
+          Colors.white.withValues(alpha: 0.04),
+        ],
+      ),
+      border: Border.all(color: Colors.white.withValues(alpha: 0.12)),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black.withValues(alpha: 0.45),
+          blurRadius: 26,
+          offset: const Offset(0, 12),
+        ),
+      ],
     ),
     child: LayoutBuilder(
       builder: (context, constraints) {
@@ -217,85 +331,126 @@ class _ProfileHeader extends StatelessWidget {
                 fontWeight: FontWeight.w800,
               ),
             ),
-            const SizedBox(height: 5),
+            const SizedBox(height: 6),
             Text(
-              programa ?? rol,
+              usuario.programa ?? usuario.rol.etiqueta,
               style: Theme.of(
                 context,
               ).textTheme.bodyMedium?.copyWith(color: Colors.white70),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 14),
             Wrap(
               spacing: 8,
               runSpacing: 8,
               children: [
-                _HeaderTag(label: rol, icon: Icons.verified_user_outlined),
-                if (codigo != null)
-                  _HeaderTag(
-                    label: 'Código $codigo',
-                    icon: Icons.badge_outlined,
+                _Etiqueta(
+                  texto: usuario.rol == Rol.estudiante
+                      ? 'Estudiante de pregrado'
+                      : '${usuario.rol.etiqueta} con acceso de gestión',
+                  icono: Icons.school_outlined,
+                  tono: const Color(0xFFC4B5FD),
+                ),
+                const _Etiqueta(
+                  texto: 'Activo actualmente',
+                  icono: Icons.verified_outlined,
+                  tono: Color(0xFF34D399),
+                ),
+                if (usuario.codigoEstudiantil != null)
+                  _Etiqueta(
+                    texto: 'Código ${usuario.codigoEstudiantil}',
+                    icono: Icons.badge_outlined,
+                    tono: const Color(0xFF38BDF8),
                   ),
-                if (semestre != null)
-                  _HeaderTag(
-                    label: 'Semestre $semestre',
-                    icon: Icons.calendar_month_outlined,
+                if (usuario.semestre != null)
+                  _Etiqueta(
+                    texto: 'Semestre ${usuario.semestre}',
+                    icono: Icons.calendar_month_outlined,
+                    tono: const Color(0xFFF472B6),
                   ),
+                _Etiqueta(
+                  texto: usuario.email.contains('@')
+                      ? usuario.email.substring(usuario.email.indexOf('@'))
+                      : 'Correo institucional',
+                  icono: Icons.alternate_email_rounded,
+                  tono: const Color(0xFFFCD34D),
+                ),
               ],
             ),
           ],
         );
-        final avatar = CircleAvatar(
-          radius: 34,
-          backgroundColor: Colors.white,
-          child: Text(
-            iniciales.isEmpty ? '?' : iniciales,
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              color: AppColors.navy,
-              fontWeight: FontWeight.w800,
+
+        final avatar = Container(
+          padding: const EdgeInsets.all(3),
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            gradient: const LinearGradient(
+              colors: [Color(0xFFF472B6), Color(0xFFA855F7), Color(0xFF38BDF8)],
+            ),
+          ),
+          child: CircleAvatar(
+            radius: 32,
+            backgroundColor: const Color(0xFF101828),
+            child: Text(
+              iniciales.isEmpty ? '?' : iniciales,
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                color: Colors.white,
+                fontWeight: FontWeight.w800,
+              ),
             ),
           ),
         );
-        return constraints.maxWidth < 540
-            ? Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [avatar, const SizedBox(height: 16), detalles],
-              )
-            : Row(
-                children: [
-                  avatar,
-                  const SizedBox(width: 20),
-                  Expanded(child: detalles),
-                ],
-              );
+
+        if (constraints.maxWidth < 460) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [avatar, const SizedBox(height: 16), detalles],
+          );
+        }
+        return Row(
+          children: [
+            avatar,
+            const SizedBox(width: 18),
+            Expanded(child: detalles),
+          ],
+        );
       },
     ),
   );
 }
 
-class _HeaderTag extends StatelessWidget {
-  const _HeaderTag({required this.label, required this.icon});
+class _Etiqueta extends StatelessWidget {
+  const _Etiqueta({
+    required this.texto,
+    required this.icono,
+    required this.tono,
+  });
 
-  final String label;
-  final IconData icon;
+  final String texto;
+  final IconData icono;
+  final Color tono;
 
   @override
   Widget build(BuildContext context) => Container(
-    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+    padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 7),
     decoration: BoxDecoration(
-      color: Colors.white.withValues(alpha: 0.12),
-      borderRadius: BorderRadius.circular(8),
+      color: tono.withValues(alpha: 0.15),
+      borderRadius: BorderRadius.circular(999),
+      border: Border.all(color: tono.withValues(alpha: 0.45)),
     ),
     child: Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(icon, size: 14, color: AppColors.cyanLight),
+        Icon(icono, size: 14, color: tono),
         const SizedBox(width: 6),
-        Text(
-          label,
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 12,
-            fontWeight: FontWeight.w600,
+        Flexible(
+          child: Text(
+            texto,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+            ),
           ),
         ),
       ],
@@ -303,100 +458,195 @@ class _HeaderTag extends StatelessWidget {
   );
 }
 
-class _SectionHeader extends StatelessWidget {
-  const _SectionHeader({
-    required this.title,
-    required this.subtitle,
-    this.action,
+class _MascotaConfundida extends StatelessWidget {
+  const _MascotaConfundida();
+
+  @override
+  Widget build(BuildContext context) => Stack(
+    alignment: Alignment.center,
+    children: [
+      Positioned.fill(
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(28),
+            gradient: RadialGradient(
+              center: const Alignment(0, 0.05),
+              radius: 0.75,
+              colors: [const Color(0x8CA855F7), const Color(0x00A855F7)],
+            ),
+          ),
+        ),
+      ),
+      Image.asset(
+        'assets/images/mascota_confundida.png',
+        fit: BoxFit.contain,
+        // En las pruebas de widget el PNG no llega a decodificar; se deja un
+        // hueco del mismo tamaño para no mover el resto del diseño.
+        errorBuilder: (context, error, stackTrace) => const SizedBox(
+          width: double.infinity,
+          height: 240,
+          child: Center(
+            child: Text(
+              '?',
+              style: TextStyle(
+                color: Color(0xFFC4B5FD),
+                fontSize: 96,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+          ),
+        ),
+      ),
+    ],
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Paneles y datos sobre fondo oscuro
+// ---------------------------------------------------------------------------
+
+class _PanelOscuro extends StatelessWidget {
+  const _PanelOscuro({
+    required this.titulo,
+    required this.subtitulo,
+    required this.children,
+    this.accion,
   });
 
-  final String title;
-  final String subtitle;
-  final Widget? action;
+  final String titulo;
+  final String subtitulo;
+  final Widget? accion;
+  final List<Widget> children;
+
+  @override
+  Widget build(BuildContext context) => Container(
+    padding: const EdgeInsets.all(22),
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(18),
+      gradient: const LinearGradient(
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        colors: [Color(0xFF15151F), Color(0xFF0C0C15)],
+      ),
+      border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black.withValues(alpha: 0.4),
+          blurRadius: 24,
+          offset: const Offset(0, 10),
+        ),
+      ],
+    ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _EncabezadoSeccion(
+          titulo: titulo,
+          subtitulo: subtitulo,
+          accion: accion,
+        ),
+        const SizedBox(height: 18),
+        ...children,
+      ],
+    ),
+  );
+}
+
+class _EncabezadoSeccion extends StatelessWidget {
+  const _EncabezadoSeccion({
+    required this.titulo,
+    required this.subtitulo,
+    this.accion,
+  });
+
+  final String titulo;
+  final String subtitulo;
+  final Widget? accion;
 
   @override
   Widget build(BuildContext context) => LayoutBuilder(
     builder: (context, constraints) {
-      final titleBlock = Column(
+      final bloque = Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            title,
-            style: Theme.of(
-              context,
-            ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
+            titulo,
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+              color: Colors.white,
+              fontWeight: FontWeight.w700,
+            ),
           ),
           const SizedBox(height: 4),
           Text(
-            subtitle,
+            subtitulo,
             style: Theme.of(
               context,
-            ).textTheme.bodySmall?.copyWith(color: AppColors.textMuted),
+            ).textTheme.bodySmall?.copyWith(color: const Color(0xFF94A3B8)),
           ),
         ],
       );
-      if (action == null) return titleBlock;
+      if (accion == null) return bloque;
       if (constraints.maxWidth < 520) {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [titleBlock, const SizedBox(height: 12), action!],
+          children: [bloque, const SizedBox(height: 12), accion!],
         );
       }
       return Row(
         children: [
-          Expanded(child: titleBlock),
+          Expanded(child: bloque),
           const SizedBox(width: 12),
-          action!,
+          accion!,
         ],
       );
     },
   );
 }
 
-class _ProfileField extends StatelessWidget {
-  const _ProfileField({
-    required this.width,
-    required this.label,
-    required this.value,
-    required this.icon,
+class _DatoPerfil extends StatelessWidget {
+  const _DatoPerfil({
+    required this.ancho,
+    required this.etiqueta,
+    required this.valor,
+    required this.icono,
   });
 
-  final double width;
-  final String label;
-  final String value;
-  final IconData icon;
+  final double ancho;
+  final String etiqueta;
+  final String valor;
+  final IconData icono;
 
   @override
   Widget build(BuildContext context) => SizedBox(
-    width: width,
+    width: ancho,
     child: Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: AppColors.background,
+        color: Colors.white.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
       ),
       child: Row(
         children: [
-          Icon(icon, color: AppColors.cyan, size: 20),
+          Icon(icono, color: AppColors.cyanLight, size: 20),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  label.toUpperCase(),
+                  etiqueta.toUpperCase(),
                   style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                    color: AppColors.textMuted,
+                    color: const Color(0xFF94A3B8),
                     fontWeight: FontWeight.w700,
                     letterSpacing: 0.3,
                   ),
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  value,
+                  valor,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: AppColors.navy,
+                    color: Colors.white,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -407,4 +657,45 @@ class _ProfileField extends StatelessWidget {
       ),
     ),
   );
+}
+
+class _BotonAccion extends StatelessWidget {
+  const _BotonAccion({
+    required this.texto,
+    required this.icono,
+    required this.relleno,
+    required this.onPressed,
+  });
+
+  final String texto;
+  final IconData icono;
+  final bool relleno;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    final icon = Icon(icono, size: 18);
+    if (relleno) {
+      return OutlinedButton.icon(
+        onPressed: onPressed,
+        icon: icon,
+        label: Text(texto),
+        style: OutlinedButton.styleFrom(
+          foregroundColor: Colors.white,
+          side: BorderSide(color: Colors.white.withValues(alpha: 0.35)),
+          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 13),
+        ),
+      );
+    }
+    return OutlinedButton.icon(
+      onPressed: onPressed,
+      icon: icon,
+      label: Text(texto),
+      style: OutlinedButton.styleFrom(
+        foregroundColor: AppColors.cyanLight,
+        side: BorderSide(color: AppColors.cyanLight.withValues(alpha: 0.5)),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      ),
+    );
+  }
 }

@@ -23,7 +23,6 @@ class Astrolabio extends StatefulWidget {
     required this.hitos,
     this.promedio,
     this.periodoGrado,
-    this.adorno,
   });
 
   final double creditosPct;
@@ -39,10 +38,6 @@ class Astrolabio extends StatefulWidget {
   final double? promedio;
   final String? periodoGrado;
 
-  /// Pieza que se posa sobre el reloj, en la esquina superior derecha de
-  /// los anillos (la cara de la mascota, en el inicio del estudiante).
-  final Widget? adorno;
-
   @override
   State<Astrolabio> createState() => _AstrolabioState();
 }
@@ -52,22 +47,18 @@ class _AstrolabioState extends State<Astrolabio> with TickerProviderStateMixin {
     vsync: this,
     duration: const Duration(milliseconds: 2000),
   );
-
   late final AnimationController _giro = AnimationController(
     vsync: this,
     duration: const Duration(seconds: 120),
   );
-
   int _foco = 0; // 0 ninguno, 1 créditos, 2 requisitos
   bool _iniciada = false;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-
     if (_iniciada) return;
     _iniciada = true;
-
     if (MediaQuery.disableAnimationsOf(context)) {
       _intro.value = 1;
     } else {
@@ -83,16 +74,11 @@ class _AstrolabioState extends State<Astrolabio> with TickerProviderStateMixin {
     super.dispose();
   }
 
-  void _alternar(int valor) {
-    setState(() {
-      _foco = _foco == valor ? 0 : valor;
-    });
-  }
+  void _alternar(int valor) => setState(() => _foco = _foco == valor ? 0 : valor);
 
   @override
   Widget build(BuildContext context) {
     final compacto = esCompacto(context);
-
     return GlassPanel(
       padding: EdgeInsets.all(compacto ? 18 : 26),
       child: LayoutBuilder(
@@ -101,7 +87,6 @@ class _AstrolabioState extends State<Astrolabio> with TickerProviderStateMixin {
           final lado = math.min(ancho ? 380.0 : c.maxWidth, 400.0);
           final anillo = _anillo(lado);
           final datos = _datos();
-
           if (ancho) {
             return Row(
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -112,12 +97,9 @@ class _AstrolabioState extends State<Astrolabio> with TickerProviderStateMixin {
               ],
             );
           }
-
           return Column(
             children: [
-              Center(
-                child: SizedBox(width: lado, child: anillo),
-              ),
+              Center(child: SizedBox(width: lado, child: anillo)),
               const SizedBox(height: 20),
               datos,
             ],
@@ -167,26 +149,20 @@ class _AstrolabioState extends State<Astrolabio> with TickerProviderStateMixin {
                           ),
                           Padding(
                             padding: const EdgeInsets.only(bottom: 8, left: 2),
-                            child: Text(
-                              '%',
-                              style: Dash.display(22, color: Dash.sky),
-                            ),
+                            child: Text('%', style: Dash.display(22, color: Dash.sky)),
                           ),
                         ],
                       ),
                       Text('del plan aprobado', style: Dash.body(13)),
                       const SizedBox(height: 2),
                       Text(
-                        '${widget.creditosAprobados} / '
-                        '${widget.creditosTotales} cr',
+                        '${widget.creditosAprobados} / ${widget.creditosTotales} cr',
                         style: Dash.code(13, color: Dash.sky),
                       ),
                     ],
                   ),
                 ),
               ),
-              if (widget.adorno != null)
-                Positioned(top: 4, right: 4, child: widget.adorno!),
             ],
           ),
         ),
@@ -206,8 +182,7 @@ class _AstrolabioState extends State<Astrolabio> with TickerProviderStateMixin {
             _Leyenda(
               color: Dash.amber,
               titulo: 'Requisitos de grado',
-              valor:
-                  '${widget.requisitosCumplidos} de ${widget.requisitosTotal}',
+              valor: '${widget.requisitosCumplidos} de ${widget.requisitosTotal}',
               activo: _foco == 2,
               onTap: () => _alternar(2),
             ),
@@ -221,16 +196,12 @@ class _AstrolabioState extends State<Astrolabio> with TickerProviderStateMixin {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // El título "Tu brújula académica" ya está en DashHomeScreen.
-        // Se evita repetirlo aquí.
+        Text('Tu brújula académica', style: Dash.display(26)),
+        const SizedBox(height: 6),
         Text(
           'El anillo de afuera mide tus créditos; el de adentro, los requisitos '
           'institucionales. Toca la leyenda para resaltar uno.',
-          style: Dash.body(
-            14,
-            color: Colors.white.withValues(alpha: 0.8),
-            height: 1.4,
-          ),
+          style: Dash.body(14, color: Colors.white.withValues(alpha: 0.8), height: 1.4),
         ),
         const SizedBox(height: 18),
         Wrap(
@@ -350,13 +321,9 @@ class _Leyenda extends StatelessWidget {
         duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         decoration: BoxDecoration(
-          color: activo
-              ? color.withValues(alpha: 0.22)
-              : Colors.white.withValues(alpha: 0.08),
+          color: activo ? color.withValues(alpha: 0.22) : Colors.white.withValues(alpha: 0.08),
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-            color: activo ? color : Colors.white.withValues(alpha: 0.2),
-          ),
+          border: Border.all(color: activo ? color : Colors.white.withValues(alpha: 0.2)),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
@@ -367,16 +334,7 @@ class _Leyenda extends StatelessWidget {
               decoration: BoxDecoration(color: color, shape: BoxShape.circle),
             ),
             const SizedBox(width: 8),
-            Flexible(
-              fit: FlexFit.loose,
-              child: Text(
-                titulo,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                softWrap: false,
-                style: Dash.body(12.5, weight: FontWeight.w600),
-              ),
-            ),
+            Text(titulo, style: Dash.body(12.5, weight: FontWeight.w600)),
             const SizedBox(width: 8),
             Text(valor, style: Dash.code(12.5, color: color)),
           ],
@@ -414,24 +372,30 @@ class _AstrolabioPainter extends CustomPainter {
     final rExt = radio - 34;
     final rInt = rExt - 32;
 
-    _anillo(canvas, c, rExt, 16, cred / 100 * avance, const [
-      Dash.aqua,
-      Dash.sky,
-      Dash.aqua,
-    ], atenuado: foco == 2);
-
-    _anillo(canvas, c, rInt, 12, req / 100 * avance, const [
-      Dash.amber,
-      Color(0xFFFB923C),
-      Dash.amber,
-    ], atenuado: foco == 1);
+    _anillo(
+      canvas,
+      c,
+      rExt,
+      16,
+      cred / 100 * avance,
+      const [Dash.aqua, Dash.sky, Dash.aqua],
+      atenuado: foco == 2,
+    );
+    _anillo(
+      canvas,
+      c,
+      rInt,
+      12,
+      req / 100 * avance,
+      const [Dash.amber, Color(0xFFFB923C), Dash.amber],
+      atenuado: foco == 1,
+    );
 
     // Hitos de créditos sobre el anillo exterior.
     for (final h in hitos) {
       final a = -math.pi / 2 + 2 * math.pi * h / 100;
       final dir = Offset(math.cos(a), math.sin(a));
       final alcanzado = cred >= h && avance > 0.98;
-
       canvas.drawLine(
         c + dir * (rExt - 15),
         c + dir * (rExt + 15),
@@ -445,7 +409,6 @@ class _AstrolabioPainter extends CustomPainter {
     // Punta luminosa del anillo exterior.
     final fin = -math.pi / 2 + 2 * math.pi * cred / 100 * avance;
     final punta = c + Offset(math.cos(fin), math.sin(fin)) * rExt;
-
     canvas.drawCircle(
       punta,
       13,
@@ -453,20 +416,15 @@ class _AstrolabioPainter extends CustomPainter {
         ..color = Dash.aqua.withValues(alpha: 0.45)
         ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 7),
     );
-
     canvas.drawCircle(punta, 7, Paint()..color = Colors.white);
 
     // Retícula interior, como la de una carta de navegación.
     final fino = Paint()
       ..strokeWidth = 1
       ..color = Colors.white.withValues(alpha: 0.1);
-
     final rRet = rInt - 22;
-
     canvas.drawLine(c + Offset(-rRet, 0), c + Offset(rRet, 0), fino);
-
     canvas.drawLine(c + Offset(0, -rRet), c + Offset(0, rRet), fino);
-
     canvas.drawCircle(c, rRet, fino..style = PaintingStyle.stroke);
   }
 
@@ -474,46 +432,29 @@ class _AstrolabioPainter extends CustomPainter {
     canvas.save();
     canvas.translate(c.dx, c.dy);
     canvas.rotate(giro.value * 2 * math.pi);
-
     final corta = Paint()
       ..strokeWidth = 1.2
       ..color = Colors.white.withValues(alpha: 0.2);
-
     final larga = Paint()
       ..strokeWidth = 2
       ..strokeCap = StrokeCap.round
       ..color = Colors.white.withValues(alpha: 0.5);
-
     for (var i = 0; i < 120; i++) {
       final a = i * 2 * math.pi / 120;
       final largo = i % 10 == 0;
       final d = Offset(math.cos(a), math.sin(a));
-
-      canvas.drawLine(
-        d * (radio - (largo ? 14 : 7)),
-        d * (radio - 1),
-        largo ? larga : corta,
-      );
+      canvas.drawLine(d * (radio - (largo ? 14 : 7)), d * (radio - 1), largo ? larga : corta);
     }
-
     final rombo = Paint()..color = Dash.amber;
-
     for (var k = 0; k < 4; k++) {
       final a = k * math.pi / 2;
       final o = Offset(math.cos(a), math.sin(a)) * (radio - 22);
-
       canvas.save();
       canvas.translate(o.dx, o.dy);
       canvas.rotate(a + math.pi / 4);
-
-      canvas.drawRect(
-        Rect.fromCenter(center: Offset.zero, width: 7, height: 7),
-        rombo,
-      );
-
+      canvas.drawRect(Rect.fromCenter(center: Offset.zero, width: 7, height: 7), rombo);
       canvas.restore();
     }
-
     canvas.restore();
   }
 
@@ -527,7 +468,6 @@ class _AstrolabioPainter extends CustomPainter {
     required bool atenuado,
   }) {
     final rect = Rect.fromCircle(center: c, radius: r);
-
     canvas.drawCircle(
       c,
       r,
@@ -536,18 +476,11 @@ class _AstrolabioPainter extends CustomPainter {
         ..strokeWidth = grosor
         ..color = Colors.white.withValues(alpha: 0.1),
     );
-
     final barrido = 2 * math.pi * c01(fraccion);
-
     if (barrido <= 0) return;
-
     final filtro = atenuado
-        ? ColorFilter.mode(
-            Colors.white.withValues(alpha: 0.3),
-            BlendMode.modulate,
-          )
+        ? ColorFilter.mode(Colors.white.withValues(alpha: 0.3), BlendMode.modulate)
         : null;
-
     canvas.drawArc(
       rect,
       -math.pi / 2,
@@ -561,7 +494,6 @@ class _AstrolabioPainter extends CustomPainter {
         ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 8)
         ..colorFilter = filtro,
     );
-
     canvas.drawArc(
       rect,
       -math.pi / 2,
@@ -581,8 +513,5 @@ class _AstrolabioPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(_AstrolabioPainter old) =>
-      old.cred != cred ||
-      old.req != req ||
-      old.foco != foco ||
-      old.hitos != hitos;
+      old.cred != cred || old.req != req || old.foco != foco || old.hitos != hitos;
 }

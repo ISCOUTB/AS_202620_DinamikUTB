@@ -154,13 +154,15 @@ void main() {
       expect(find.textContaining('Te faltan 25 créditos'), findsWidgets);
       expect(tester.takeException(), isNull);
 
+      // La ruta de grado ya no está en el inicio: se muestra en Requisitos.
+      expect(find.text('Examen Saber Pro (ICFES)'), findsNothing);
       await tester.scrollUntilVisible(
-        find.text('Examen Saber Pro (ICFES)'),
+        find.text('Qué sigue en tu malla'),
         400,
         scrollable: find.byType(Scrollable).first,
       );
       await tester.pump(const Duration(seconds: 1));
-      expect(find.text('Examen Saber Pro (ICFES)'), findsOneWidget);
+      expect(find.text('Qué sigue en tu malla'), findsOneWidget);
       expect(tester.takeException(), isNull);
     });
   }

@@ -389,7 +389,7 @@ class _HeroMallaState extends State<_HeroMalla> with TickerProviderStateMixin {
     // Altura del encabezado: lo justo para que el muñequito llene la
     // mitad derecha entera sin pisar la leyenda ni el tablero de abajo.
     final anchoUtil = math.min(MediaQuery.sizeOf(context).width - 48, 1180);
-    final altoHero = ((anchoUtil - 14) / 2 / 1.5).clamp(330.0, 360.0);
+    final altoHero = ((anchoUtil - 14) / 2 / 1.5).clamp(400.0, 430.0);
 
     return TweenAnimationBuilder<double>(
       tween: Tween<double>(begin: 0, end: 1),

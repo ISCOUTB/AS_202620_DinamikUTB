@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 
 import 'package:frontend/core/network/api_client.dart';
 import 'package:frontend/core/network/api_exception.dart';
-import 'package:frontend/core/widgets/responsive_grid.dart';
 import 'package:frontend/curriculo/malla_screen.dart';
 import 'package:frontend/curriculo/malla_service.dart';
 import 'package:frontend/requisitos/requisitos_service.dart';
@@ -18,12 +17,10 @@ import 'widgets/astrolabio.dart';
 import 'widgets/bitacora_logros.dart';
 import 'widgets/dash_background.dart';
 import 'widgets/dash_hero.dart';
-import 'widgets/dash_motion.dart';
 import 'widgets/dash_sheets.dart';
 import 'widgets/dash_style.dart';
 import 'widgets/elevation_chart.dart';
 import 'widgets/hito_bar.dart';
-import 'widgets/requisito_ruta_card.dart';
 
 class _Datos {
   const _Datos(this.estudiante, this.progreso, this.ruta);
@@ -294,27 +291,6 @@ class _DashboardScreenState extends State<DashboardScreen>
                 hitos: hitos,
               ),
             ),
-          ),
-          espacio,
-          seccion(
-            'Requisitos de grado',
-            'Despliega cada uno para ver cómo cumplirlo, a qué oficina ir y cuánto demora.',
-            d.ruta.isEmpty
-                ? Text(
-                    'Aún no tienes requisitos de grado asignados.',
-                    style: Dash.body(14.5),
-                  )
-                : ResponsiveGrid(
-                    minTileWidth: 340,
-                    spacing: 14,
-                    children: [
-                      for (var i = 0; i < d.ruta.length; i++)
-                        Reveal(
-                          delay: Duration(milliseconds: 60 * (i % 4)),
-                          child: RequisitoRutaCard(requisito: d.ruta[i]),
-                        ),
-                    ],
-                  ),
           ),
           espacio,
           seccion(

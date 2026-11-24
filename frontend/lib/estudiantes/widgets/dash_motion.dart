@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 /// Aparece (fundido + deslizamiento corto) cuando entra a la pantalla al hacer
@@ -24,6 +26,7 @@ class _RevealState extends State<Reveal> with SingleTickerProviderStateMixin {
     duration: const Duration(milliseconds: 600),
   );
   ScrollPosition? _pos;
+  Timer? _retraso;
   bool _visto = false;
 
   @override
@@ -50,7 +53,7 @@ class _RevealState extends State<Reveal> with SingleTickerProviderStateMixin {
     final arriba = caja.localToGlobal(Offset.zero).dy;
     if (arriba < MediaQuery.sizeOf(context).height * 0.94) {
       _visto = true;
-      Future<void>.delayed(widget.delay, () {
+      _retraso = Timer(widget.delay, () {
         if (mounted) _c.forward();
       });
     }
@@ -58,6 +61,7 @@ class _RevealState extends State<Reveal> with SingleTickerProviderStateMixin {
 
   @override
   void dispose() {
+    _retraso?.cancel();
     _pos?.removeListener(_revisar);
     _c.dispose();
     super.dispose();
@@ -102,8 +106,10 @@ class AnimatedCounter extends StatelessWidget {
       tween: Tween<double>(begin: 0, end: value),
       duration: reducir ? Duration.zero : const Duration(milliseconds: 1600),
       curve: Curves.easeOutCubic,
-      builder: (context, v, _) =>
-          Text('${v.toStringAsFixed(decimals).replaceAll('.', ',')}$suffix', style: style),
+      builder: (context, v, _) => Text(
+        '${v.toStringAsFixed(decimals).replaceAll('.', ',')}$suffix',
+        style: style,
+      ),
     );
   }
 }

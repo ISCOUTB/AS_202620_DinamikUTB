@@ -42,8 +42,12 @@ class _AsignaturasPanelState extends State<AsignaturasPanel>
   @override
   Widget build(BuildContext context) {
     final enCurso = widget.cursos.where((c) => c.enCurso).toList();
-    final disponibles = widget.cursos.where((c) => c.pendiente && c.desbloqueada).toList();
-    final bloqueadas = widget.cursos.where((c) => c.pendiente && !c.desbloqueada).toList();
+    final disponibles = widget.cursos
+        .where((c) => c.pendiente && c.desbloqueada)
+        .toList();
+    final bloqueadas = widget.cursos
+        .where((c) => c.pendiente && !c.desbloqueada)
+        .toList();
 
     final colDisponibles = _Columna(
       titulo: 'Disponibles hoy',
@@ -57,7 +61,9 @@ class _AsignaturasPanelState extends State<AsignaturasPanel>
           _Fila(
             curso: c,
             lider: _Pin(pulso: _pulso),
-            extra: c.desbloquea.isEmpty ? null : 'desbloquea ${c.desbloquea.length}',
+            extra: c.desbloquea.isEmpty
+                ? null
+                : 'desbloquea ${c.desbloquea.length}',
           ),
       ],
       vacio: 'No hay materias disponibles por ahora.',
@@ -73,7 +79,11 @@ class _AsignaturasPanelState extends State<AsignaturasPanel>
         for (final c in bloqueadas)
           _Fila(
             curso: c,
-            lider: const Icon(Icons.lock_outline_rounded, color: Colors.white54, size: 22),
+            lider: const Icon(
+              Icons.lock_outline_rounded,
+              color: Colors.white54,
+              size: 22,
+            ),
             faltantes: c.prerequisitosFaltantes,
           ),
       ],
@@ -92,7 +102,10 @@ class _AsignaturasPanelState extends State<AsignaturasPanel>
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Cursando ahora', style: Dash.body(16, weight: FontWeight.w700)),
+                Text(
+                  'Cursando ahora',
+                  style: Dash.body(16, weight: FontWeight.w700),
+                ),
                 const SizedBox(height: 10),
                 Wrap(
                   spacing: 8,
@@ -105,11 +118,19 @@ class _AsignaturasPanelState extends State<AsignaturasPanel>
                         side: const BorderSide(color: Dash.amber),
                         avatar: RotationTransition(
                           turns: _pulso,
-                          child: const Icon(Icons.autorenew_rounded, size: 16, color: Dash.amber),
+                          child: const Icon(
+                            Icons.autorenew_rounded,
+                            size: 16,
+                            color: Dash.ink,
+                          ),
                         ),
                         label: Text(
                           '${c.nombre} · ${c.periodo ?? ''}',
-                          style: Dash.body(12.5, weight: FontWeight.w600),
+                          style: Dash.body(
+                            12.5,
+                            weight: FontWeight.w600,
+                            color: Dash.ink,
+                          ),
                         ),
                       ),
                   ],
@@ -131,7 +152,13 @@ class _AsignaturasPanelState extends State<AsignaturasPanel>
                 ],
               );
             }
-            return Column(children: [colDisponibles, const SizedBox(height: 16), colBloqueadas]);
+            return Column(
+              children: [
+                colDisponibles,
+                const SizedBox(height: 16),
+                colBloqueadas,
+              ],
+            );
           },
         ),
       ],
@@ -175,9 +202,17 @@ class _Columna extends StatelessWidget {
         children: [
           Row(
             children: [
-              Expanded(child: Text(titulo, style: Dash.body(17, weight: FontWeight.w800))),
+              Expanded(
+                child: Text(
+                  titulo,
+                  style: Dash.body(17, weight: FontWeight.w800),
+                ),
+              ),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 3,
+                ),
                 decoration: BoxDecoration(
                   color: color.withValues(alpha: 0.22),
                   borderRadius: BorderRadius.circular(12),
@@ -187,7 +222,10 @@ class _Columna extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 4),
-          Text(subtitulo, style: Dash.body(12.5, color: Colors.white.withValues(alpha: 0.75))),
+          Text(
+            subtitulo,
+            style: Dash.body(12.5, color: Colors.white.withValues(alpha: 0.75)),
+          ),
           const SizedBox(height: 10),
           if (items.isEmpty) Text(vacio, style: Dash.body(14)),
           ...visibles,
@@ -196,7 +234,11 @@ class _Columna extends StatelessWidget {
               onPressed: onExpandir,
               child: Text(
                 expandida ? 'Ver menos' : 'Ver las ${items.length}',
-                style: Dash.body(13.5, weight: FontWeight.w700, color: Dash.aqua),
+                style: Dash.body(
+                  13.5,
+                  weight: FontWeight.w700,
+                  color: Dash.aqua,
+                ),
               ),
             ),
         ],
@@ -206,7 +248,12 @@ class _Columna extends StatelessWidget {
 }
 
 class _Fila extends StatelessWidget {
-  const _Fila({required this.curso, required this.lider, this.extra, this.faltantes});
+  const _Fila({
+    required this.curso,
+    required this.lider,
+    this.extra,
+    this.faltantes,
+  });
 
   final CursoProgreso curso;
   final Widget lider;
@@ -228,12 +275,19 @@ class _Fila extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(curso.nombre, style: Dash.body(14.5, weight: FontWeight.w600)),
+                Text(
+                  curso.nombre,
+                  style: Dash.body(14.5, weight: FontWeight.w600),
+                ),
                 const SizedBox(height: 2),
                 Text(
                   'S${curso.nivel} · ${curso.codigo} · ${curso.creditos} cr'
                   '${extra == null ? '' : ' · $extra'}',
-                  style: Dash.code(11.5, color: Colors.white70, weight: FontWeight.w500),
+                  style: Dash.code(
+                    11.5,
+                    color: Colors.white70,
+                    weight: FontWeight.w500,
+                  ),
                 ),
                 if (faltantes != null && faltantes!.isNotEmpty) ...[
                   const SizedBox(height: 6),
@@ -243,7 +297,10 @@ class _Fila extends StatelessWidget {
                     children: [
                       for (final f in faltantes!)
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 3,
+                          ),
                           decoration: BoxDecoration(
                             color: Dash.coral.withValues(alpha: 0.25),
                             borderRadius: BorderRadius.circular(8),

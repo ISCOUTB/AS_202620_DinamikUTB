@@ -35,6 +35,7 @@ flutter:
     - assets/images/dash_guide.png
     - assets/images/dash_siluetas.png
     - assets/images/mascota_graduada.png
+    - assets/images/mascota_confundida.png
     - assets/images/utb_logo.png
 
   fonts:

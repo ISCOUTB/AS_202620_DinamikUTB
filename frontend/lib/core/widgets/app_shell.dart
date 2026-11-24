@@ -19,7 +19,9 @@ class ShellDestination {
   final WidgetBuilder builder;
 }
 
-/// Adapta la navegación a móvil, tableta y escritorio.
+/// Navegación adaptativa: una sola barra inferior con solo iconos en todos
+/// los tamaños (al pasar el mouse crecen), el logo UTB encabeza la página y
+/// la cabecera conserva el título de la sección y el cierre de sesión.
 class AppShell extends StatefulWidget {
   const AppShell({super.key, required this.destinations});
 
@@ -37,9 +39,17 @@ class _AppShellState extends State<AppShell> {
     final tamano = Breakpoints.of(context);
     final destinos = widget.destinations;
     final actual = destinos[_indice];
+    final usuario = context.watch<AuthController>().usuario;
+    final mostrarCorreo = MediaQuery.sizeOf(context).width >= 900;
     final cuerpo = IndexedStack(
       index: _indice,
       children: [for (final d in destinos) Builder(builder: d.builder)],
+    );
+
+    final barra = _BarraInferior(
+      destinos: destinos,
+      indice: _indice,
+      onSeleccionar: (i) => setState(() => _indice = i),
     );
 
     if (tamano == ScreenSize.compact) {
@@ -47,7 +57,7 @@ class _AppShellState extends State<AppShell> {
         appBar: AppBar(
           title: Row(
             children: [
-              const _BrandIcon(size: 32),
+              const _LogoUTB(alto: 30),
               const SizedBox(width: 9),
               Expanded(
                 child: Column(
@@ -73,166 +83,165 @@ class _AppShellState extends State<AppShell> {
               ),
             ],
           ),
-        ),
-        body: cuerpo,
-        bottomNavigationBar: NavigationBar(
-          selectedIndex: _indice,
-          onDestinationSelected: (i) => setState(() => _indice = i),
-          destinations: [
-            for (final d in destinos)
-              NavigationDestination(
-                icon: Icon(d.icon),
-                selectedIcon: Icon(d.selectedIcon),
-                label: d.label,
-              ),
+          actions: [
+            IconButton(
+              tooltip: 'Cerrar sesión',
+              color: AppColors.textMuted,
+              icon: const Icon(Icons.logout),
+              onPressed: () => context.read<AuthController>().cerrarSesion(),
+            ),
           ],
         ),
+        body: cuerpo,
+        bottomNavigationBar: barra,
       );
     }
 
-    final extendido = tamano == ScreenSize.expanded;
-    final usuario = context.watch<AuthController>().usuario;
-    final mostrarCorreo = MediaQuery.sizeOf(context).width >= 900;
     return Scaffold(
-      body: Row(
+      body: Column(
         children: [
-          NavigationRail(
-            backgroundColor: Colors.white,
-            extended: extendido,
-            labelType: extendido ? null : NavigationRailLabelType.selected,
-            selectedIndex: _indice,
-            onDestinationSelected: (i) => setState(() => _indice = i),
-            indicatorColor: AppColors.surfaceLow,
-            selectedIconTheme: const IconThemeData(color: AppColors.navy),
-            unselectedIconTheme: const IconThemeData(
-              color: AppColors.textMuted,
-            ),
-            selectedLabelTextStyle: const TextStyle(
-              color: AppColors.navy,
-              fontWeight: FontWeight.w700,
-            ),
-            unselectedLabelTextStyle: const TextStyle(
-              color: AppColors.textMuted,
-            ),
-            leading: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 12),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const _BrandIcon(size: 36),
-                  if (extendido) ...[
-                    const SizedBox(width: 10),
-                    const Text(
-                      'DinamikUTB',
-                      style: TextStyle(
+          Container(
+            height: 64,
+            color: Colors.white,
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: Row(
+              children: [
+                const _LogoUTB(alto: 42),
+                const SizedBox(width: 12),
+                Text(
+                  actual.label,
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
+                ),
+                const Spacer(),
+                if (usuario != null) ...[
+                  CircleAvatar(
+                    radius: 17,
+                    backgroundColor: AppColors.surfaceLow,
+                    child: Text(
+                      usuario.email.isEmpty
+                          ? '?'
+                          : usuario.email[0].toUpperCase(),
+                      style: const TextStyle(
                         color: AppColors.navy,
-                        fontSize: 15,
-                        fontWeight: FontWeight.w800,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                  if (mostrarCorreo) ...[
+                    const SizedBox(width: 10),
+                    ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 240),
+                      child: Text(
+                        usuario.email,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(color: AppColors.textMuted),
                       ),
                     ),
                   ],
                 ],
-              ),
-            ),
-            trailing: Expanded(
-              child: Align(
-                alignment: Alignment.bottomCenter,
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 16),
-                  child: IconButton(
-                    tooltip: 'Cerrar sesión',
-                    color: AppColors.textMuted,
-                    icon: const Icon(Icons.logout),
-                    onPressed: () =>
-                        context.read<AuthController>().cerrarSesion(),
-                  ),
+                const SizedBox(width: 8),
+                IconButton(
+                  tooltip: 'Cerrar sesión',
+                  color: AppColors.textMuted,
+                  icon: const Icon(Icons.logout),
+                  onPressed: () =>
+                      context.read<AuthController>().cerrarSesion(),
                 ),
-              ),
-            ),
-            destinations: [
-              for (final d in destinos)
-                NavigationRailDestination(
-                  icon: Icon(d.icon),
-                  selectedIcon: Icon(d.selectedIcon),
-                  label: Text(d.label),
-                ),
-            ],
-          ),
-          Expanded(
-            child: Column(
-              children: [
-                Container(
-                  height: 64,
-                  color: Colors.white,
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
-                  child: Row(
-                    children: [
-                      Text(
-                        actual.label,
-                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                      const Spacer(),
-                      if (usuario != null) ...[
-                        CircleAvatar(
-                          radius: 17,
-                          backgroundColor: AppColors.surfaceLow,
-                          child: Text(
-                            usuario.email.isEmpty
-                                ? '?'
-                                : usuario.email[0].toUpperCase(),
-                            style: const TextStyle(
-                              color: AppColors.navy,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                        ),
-                        if (mostrarCorreo) ...[
-                          const SizedBox(width: 10),
-                          ConstrainedBox(
-                            constraints: const BoxConstraints(maxWidth: 240),
-                            child: Text(
-                              usuario.email,
-                              overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
-                                color: AppColors.textMuted,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ],
-                    ],
-                  ),
-                ),
-                const Divider(height: 1),
-                Expanded(child: cuerpo),
               ],
             ),
           ),
+          const Divider(height: 1),
+          Expanded(child: cuerpo),
         ],
       ),
+      bottomNavigationBar: barra,
     );
   }
 }
 
-class _BrandIcon extends StatelessWidget {
-  const _BrandIcon({required this.size});
+/// Barra inferior con solo iconos; cada uno crece al recibir el mouse.
+class _BarraInferior extends StatelessWidget {
+  const _BarraInferior({
+    required this.destinos,
+    required this.indice,
+    required this.onSeleccionar,
+  });
 
-  final double size;
+  final List<ShellDestination> destinos;
+  final int indice;
+  final ValueChanged<int> onSeleccionar;
 
   @override
-  Widget build(BuildContext context) => Container(
-    width: size,
-    height: size,
-    decoration: BoxDecoration(
-      color: AppColors.navy,
-      borderRadius: BorderRadius.circular(10),
+  Widget build(BuildContext context) => NavigationBar(
+    selectedIndex: indice,
+    onDestinationSelected: onSeleccionar,
+    labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
+    destinations: [
+      for (final d in destinos)
+        NavigationDestination(
+          icon: _IconoNav(icono: d.icon),
+          selectedIcon: _IconoNav(icono: d.selectedIcon),
+          label: d.label,
+        ),
+    ],
+  );
+}
+
+/// Icono de la barra que se agranda (y vuelve) al pasar el mouse.
+class _IconoNav extends StatefulWidget {
+  const _IconoNav({required this.icono});
+
+  final IconData icono;
+
+  @override
+  State<_IconoNav> createState() => _IconoNavState();
+}
+
+class _IconoNavState extends State<_IconoNav> {
+  bool _sobrevuelo = false;
+
+  @override
+  Widget build(BuildContext context) => MouseRegion(
+    cursor: SystemMouseCursors.click,
+    onEnter: (_) => setState(() => _sobrevuelo = true),
+    onExit: (_) => setState(() => _sobrevuelo = false),
+    child: AnimatedScale(
+      scale: _sobrevuelo ? 1.35 : 1,
+      duration: const Duration(milliseconds: 180),
+      curve: Curves.easeOut,
+      child: Icon(widget.icono, size: 26),
     ),
-    child: Icon(
-      Icons.school_rounded,
-      color: AppColors.cyanLight,
-      size: size * 0.58,
+  );
+}
+
+/// Logo UTB: las letras 3D junto al muñequito con birrete.
+class _LogoUTB extends StatelessWidget {
+  const _LogoUTB({required this.alto});
+
+  final double alto;
+
+  @override
+  Widget build(BuildContext context) => Image.asset(
+    'assets/images/utb_logo.png',
+    height: alto,
+    fit: BoxFit.contain,
+    // En las pruebas de widget el PNG no llega a decodificar; el hueco se
+    // reserva igual para no mover el resto del diseño.
+    errorBuilder: (context, error, stackTrace) => SizedBox(
+      width: alto * 1.5,
+      height: alto,
+      child: const Center(
+        child: Text(
+          'UTB',
+          style: TextStyle(
+            color: AppColors.navy,
+            fontSize: 15,
+            fontWeight: FontWeight.w800,
+          ),
+        ),
+      ),
     ),
   );
 }

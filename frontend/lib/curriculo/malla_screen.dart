@@ -53,62 +53,64 @@ class _MallaScreenState extends State<MallaScreen> {
   }
 
   @override
-  Widget build(BuildContext context) => AsyncView<MallaCurricular>(
-    load: () => widget.service.obtener(widget.programa),
-    builder: (context, malla) {
-      final cursosPorNivel = <int, List<CursoCurricular>>{};
-      for (final curso in malla.cursos) {
-        cursosPorNivel.putIfAbsent(curso.nivel, () => []).add(curso);
-      }
-      for (final cursos in cursosPorNivel.values) {
-        cursos.sort((a, b) => a.nombre.compareTo(b.nombre));
-      }
-      final niveles = cursosPorNivel.keys.toList()..sort();
-      _porCodigo = <String, CursoCurricular>{
-        for (final curso in malla.cursos) curso.codigo: curso,
-      };
+  Widget build(BuildContext context) => _FondoMalla(
+    child: AsyncView<MallaCurricular>(
+      load: () => widget.service.obtener(widget.programa),
+      builder: (context, malla) {
+        final cursosPorNivel = <int, List<CursoCurricular>>{};
+        for (final curso in malla.cursos) {
+          cursosPorNivel.putIfAbsent(curso.nivel, () => []).add(curso);
+        }
+        for (final cursos in cursosPorNivel.values) {
+          cursos.sort((a, b) => a.nombre.compareTo(b.nombre));
+        }
+        final niveles = cursosPorNivel.keys.toList()..sort();
+        _porCodigo = <String, CursoCurricular>{
+          for (final curso in malla.cursos) curso.codigo: curso,
+        };
 
-      // El tablero vive dentro de una lista, así que necesita una altura
-      // explícita: la tomo de la pantalla para que siempre quepa espacio
-      // para arrastrar en vertical sin tapar la leyenda ni el consejo.
-      final altoTablero = (MediaQuery.sizeOf(context).height * 0.55)
-          .clamp(380.0, 560.0)
-          .toDouble();
+        // El tablero vive dentro de una lista, así que necesita una altura
+        // explícita: la tomo de la pantalla para que siempre quepa espacio
+        // para arrastrar en vertical sin tapar la leyenda ni el consejo.
+        final altoTablero = (MediaQuery.sizeOf(context).height * 0.55)
+            .clamp(380.0, 560.0)
+            .toDouble();
 
-      return PageList(
-        maxWidth: 1180,
-        children: [
-          _HeroMalla(malla: malla),
-          const SizedBox(height: 14),
-          _LeyendaAreas(
-            malla: malla,
-            areaActiva: _area,
-            onCambiar: (id) => setState(() {
-              _area = id == null ? null : (_area == id ? null : id);
-            }),
-          ),
-          const SizedBox(height: 14),
-          SizedBox(
-            height: altoTablero,
-            child: MallaTablero(
-              niveles: niveles,
-              cursosPorNivel: cursosPorNivel,
-              semestreActual: widget.semestreActual,
-              seleccion: _seleccion,
+        return PageList(
+          maxWidth: 1180,
+          children: [
+            _HeroMalla(malla: malla),
+            const SizedBox(height: 14),
+            _LeyendaAreas(
+              malla: malla,
               areaActiva: _area,
-              control: _tablero,
-              onSeleccionar: (curso) {
-                setState(() => _seleccion = curso.codigo);
-                _abrirFicha(curso);
-              },
-              onLimpiar: () => setState(() => _seleccion = null),
+              onCambiar: (id) => setState(() {
+                _area = id == null ? null : (_area == id ? null : id);
+              }),
             ),
-          ),
-          const SizedBox(height: 14),
-          const _ConsejoRuta(),
-        ],
-      );
-    },
+            const SizedBox(height: 14),
+            SizedBox(
+              height: altoTablero,
+              child: MallaTablero(
+                niveles: niveles,
+                cursosPorNivel: cursosPorNivel,
+                semestreActual: widget.semestreActual,
+                seleccion: _seleccion,
+                areaActiva: _area,
+                control: _tablero,
+                onSeleccionar: (curso) {
+                  setState(() => _seleccion = curso.codigo);
+                  _abrirFicha(curso);
+                },
+                onLimpiar: () => setState(() => _seleccion = null),
+              ),
+            ),
+            const SizedBox(height: 14),
+            const _ConsejoRuta(),
+          ],
+        );
+      },
+    ),
   );
 
   /// Abre la ficha del curso. Si desde la ficha se salta a un prerrequisito
@@ -149,6 +151,67 @@ class _MallaScreenState extends State<MallaScreen> {
 }
 
 // ---------------------------------------------------------------------------
+// Fondo de la página
+// ---------------------------------------------------------------------------
+
+/// Pinta el fondo con el morado de la bienvenida y lo va aclarando hasta
+/// blanco a medida que se baja. Vive en su propio estado para que el
+/// desplazamiento no reconstruya la malla completa.
+class _FondoMalla extends StatefulWidget {
+  const _FondoMalla({required this.child});
+
+  final Widget child;
+
+  @override
+  State<_FondoMalla> createState() => _FondoMallaState();
+}
+
+class _FondoMallaState extends State<_FondoMalla> {
+  /// Avance del desplazamiento (0 arriba, 1 al fondo), redondeado al 1 %
+  /// para no reconstruir en cada píxel.
+  double _avance = 0;
+
+  static const _moradoAlto = Color(0xFF3A0090);
+  static const _moradoBajo = Color(0xFF6A00D8);
+
+  bool _alDesplazar(ScrollNotification notificacion) {
+    // Solo el desplazamiento vertical de la lista principal: la leyenda
+    // horizontal y el tablero no deben cambiar el tono del fondo.
+    if (notificacion.depth != 0 || notificacion.metrics.axis != Axis.vertical) {
+      return false;
+    }
+    final recorrido = notificacion.metrics.maxScrollExtent;
+    final bruto = recorrido <= 0
+        ? 0.0
+        : notificacion.metrics.pixels / recorrido;
+    final avance = (bruto.clamp(0.0, 1.0) * 100).round() / 100;
+    if (avance != _avance) {
+      setState(() => _avance = avance);
+    }
+    return false;
+  }
+
+  @override
+  Widget build(BuildContext context) =>
+      NotificationListener<ScrollNotification>(
+        onNotification: _alDesplazar,
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                Color.lerp(_moradoAlto, const Color(0xFFEDE4FF), _avance)!,
+                Color.lerp(_moradoBajo, Colors.white, _avance)!,
+              ],
+            ),
+          ),
+          child: widget.child,
+        ),
+      );
+}
+
+// ---------------------------------------------------------------------------
 // Encabezado
 // ---------------------------------------------------------------------------
 
@@ -174,10 +237,17 @@ class _HeroMallaState extends State<_HeroMalla> with TickerProviderStateMixin {
     duration: const Duration(milliseconds: 1700),
   )..repeat(reverse: true);
 
+  /// Aurora rosada en bucle del recuadro del título.
+  late final AnimationController _aurora = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 7000),
+  )..repeat();
+
   @override
   void dispose() {
     _flota.dispose();
     _chispas.dispose();
+    _aurora.dispose();
     super.dispose();
   }
 
@@ -185,6 +255,137 @@ class _HeroMallaState extends State<_HeroMalla> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     final malla = widget.malla;
     final compacto = MediaQuery.sizeOf(context).width < 640;
+
+    // Recuadro del título: llega apenas hasta la mitad de la pantalla,
+    // con alto justo y fondo aurora en los rosados del muñequito.
+    final caja = Container(
+      clipBehavior: Clip.antiAlias,
+      decoration: BoxDecoration(
+        color: const Color(0xFFEC4899),
+        borderRadius: BorderRadius.circular(26),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFFDB2777).withValues(alpha: 0.35),
+            blurRadius: 30,
+            offset: const Offset(0, 16),
+          ),
+        ],
+      ),
+      child: Stack(
+        clipBehavior: Clip.antiAlias,
+        children: [
+          Positioned.fill(child: _Aurora(control: _aurora)),
+          Padding(
+            padding: EdgeInsets.fromLTRB(
+              compacto ? 16 : 24,
+              compacto ? 16 : 20,
+              compacto ? 16 : 24,
+              compacto ? 14 : 16,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: [
+                    _Etiqueta(
+                      icono: Icons.school_rounded,
+                      texto: malla.programa,
+                      tono: const Color(0xFF7DD3FC),
+                    ),
+                    _Etiqueta(
+                      icono: Icons.assignment_turned_in_rounded,
+                      texto: 'Plan ${malla.plan}',
+                      tono: AppColors.gold,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                // Escala hacia abajo si hace falta: el título nunca
+                // desborda el medio ancho del recuadro.
+                FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    'Malla curricular',
+                    style: TextStyle(
+                      fontFamily: 'Syne',
+                      fontSize: compacto ? 28 : 42,
+                      fontWeight: FontWeight.w800,
+                      height: 1.03,
+                      letterSpacing: -0.8,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  compacto
+                      ? 'Arrastra, amplía y toca un curso para trazar su ruta.'
+                      : 'Mueve el tablero con el dedo o el mouse y toca cualquier curso para iluminar tu ruta.',
+                  style: TextStyle(
+                    fontFamily: 'Outfit',
+                    fontSize: compacto ? 12.5 : 13.5,
+                    fontWeight: FontWeight.w500,
+                    height: 1.4,
+                    color: Colors.white.withValues(alpha: 0.85),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    _Dato(
+                      valor: '${malla.niveles}',
+                      etiqueta: 'niveles',
+                      icono: Icons.view_week_rounded,
+                    ),
+                    _Dato(
+                      valor: '${malla.cursos.length}',
+                      etiqueta: 'cursos',
+                      icono: Icons.menu_book_rounded,
+                    ),
+                    _Dato(
+                      valor: '${malla.creditosTotales}',
+                      etiqueta: 'créditos',
+                      icono: Icons.bolt_rounded,
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+
+    // Derecha: el muñequito en grande y un pequeño texto que acople el
+    // recuadro del título con esta parte de la pantalla.
+    final derecha = Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        _Mascota(compacto: compacto, flota: _flota, chispas: _chispas),
+        const SizedBox(height: 8),
+        ConstrainedBox(
+          constraints: BoxConstraints(maxWidth: compacto ? 300 : 340),
+          child: Text(
+            compacto
+                ? 'Toca un curso y su ruta se ilumina.'
+                : 'Cada curso encadena su ruta: toca uno y verás qué necesitas aprobar y qué desbloquea.',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontFamily: 'Outfit',
+              fontSize: compacto ? 12 : 13,
+              fontWeight: FontWeight.w600,
+              height: 1.4,
+              color: Colors.white.withValues(alpha: 0.9),
+            ),
+          ),
+        ),
+      ],
+    );
 
     return TweenAnimationBuilder<double>(
       tween: Tween<double>(begin: 0, end: 1),
@@ -197,124 +398,16 @@ class _HeroMallaState extends State<_HeroMalla> with TickerProviderStateMixin {
           child: child,
         ),
       ),
-      child: Container(
-        clipBehavior: Clip.antiAlias,
-        decoration: BoxDecoration(
-          gradient: const LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [Color(0xFF0A1730), Color(0xFF12305F), Color(0xFF1E3A8A)],
-          ),
-          borderRadius: BorderRadius.circular(26),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.navy.withValues(alpha: 0.3),
-              blurRadius: 30,
-              offset: const Offset(0, 16),
+      child: compacto
+          ? Column(children: [caja, const SizedBox(height: 14), derecha])
+          : Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(child: caja),
+                const SizedBox(width: 14),
+                Expanded(child: derecha),
+              ],
             ),
-          ],
-        ),
-        child: Stack(
-          clipBehavior: Clip.antiAlias,
-          children: [
-            const Positioned(
-              top: -90,
-              right: -70,
-              child: _Halo(color: Color(0xFF38BDF8), tamano: 260),
-            ),
-            const Positioned(
-              bottom: -110,
-              left: -60,
-              child: _Halo(color: Color(0xFF7C3AED), tamano: 240),
-            ),
-            Padding(
-              padding: EdgeInsets.all(compacto ? 16 : 26),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    crossAxisAlignment: WrapCrossAlignment.center,
-                    children: [
-                      _Etiqueta(
-                        icono: Icons.school_rounded,
-                        texto: malla.programa,
-                        tono: const Color(0xFF7DD3FC),
-                      ),
-                      _Etiqueta(
-                        icono: Icons.assignment_turned_in_rounded,
-                        texto: 'Plan ${malla.plan}',
-                        tono: AppColors.gold,
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  Text(
-                    'Malla curricular',
-                    style: TextStyle(
-                      fontFamily: 'Syne',
-                      fontSize: compacto ? 30 : 46,
-                      fontWeight: FontWeight.w800,
-                      height: 1.03,
-                      letterSpacing: -0.8,
-                      color: Colors.white,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    compacto
-                        ? 'Arrastra, amplía y toca un curso para trazar su ruta.'
-                        : 'Mueve el tablero con el dedo o el mouse, amplía a tu gusto y toca cualquier curso para iluminar lo que necesitas aprobar y lo que desbloquea.',
-                    style: TextStyle(
-                      fontFamily: 'Outfit',
-                      fontSize: compacto ? 12.5 : 14,
-                      fontWeight: FontWeight.w500,
-                      height: 1.45,
-                      color: Colors.white.withValues(alpha: 0.78),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Expanded(
-                        child: Wrap(
-                          spacing: 8,
-                          runSpacing: 8,
-                          children: [
-                            _Dato(
-                              valor: '${malla.niveles}',
-                              etiqueta: 'niveles',
-                              icono: Icons.view_week_rounded,
-                            ),
-                            _Dato(
-                              valor: '${malla.cursos.length}',
-                              etiqueta: 'cursos',
-                              icono: Icons.menu_book_rounded,
-                            ),
-                            _Dato(
-                              valor: '${malla.creditosTotales}',
-                              etiqueta: 'créditos',
-                              icono: Icons.bolt_rounded,
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      _Mascota(
-                        compacto: compacto,
-                        flota: _flota,
-                        chispas: _chispas,
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }
@@ -415,12 +508,57 @@ class _Dato extends StatelessWidget {
   );
 }
 
-/// Resplandor difuso detrás de la mascota.
-class _Halo extends StatelessWidget {
-  const _Halo({required this.color, required this.tamano});
+/// Fondo animado tipo aurora en los rosados del muñequito: el degradado
+/// cambia de tono y de dirección en bucle, con dos brumas que se desplazan.
+class _Aurora extends StatelessWidget {
+  const _Aurora({required this.control});
 
-  final Color color;
+  final Animation<double> control;
+
+  @override
+  Widget build(BuildContext context) => AnimatedBuilder(
+    animation: control,
+    builder: (context, child) {
+      final t = control.value * 2 * math.pi;
+      final a = (math.sin(t) + 1) / 2;
+      final b = (math.cos(t) + 1) / 2;
+      return DecoratedBox(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment(-1 + 0.6 * math.sin(t), -1),
+            end: Alignment(1, -0.2 + 0.8 * b),
+            colors: [
+              Color.lerp(const Color(0xFFF472B6), const Color(0xFFFB7185), a)!,
+              Color.lerp(const Color(0xFFDB2777), const Color(0xFFF472B6), b)!,
+              Color.lerp(const Color(0xFFFB7185), const Color(0xFFF9A8D4), a)!,
+            ],
+          ),
+        ),
+        child: Stack(
+          children: [
+            Positioned(
+              left: -60 + 90 * a,
+              top: -70 + 60 * b,
+              child: _Bruma(tamano: 220, color: const Color(0xFFFFD9EC)),
+            ),
+            Positioned(
+              right: -70 + 80 * b,
+              bottom: -80 + 70 * a,
+              child: _Bruma(tamano: 240, color: const Color(0xFFFFC2DE)),
+            ),
+          ],
+        ),
+      );
+    },
+  );
+}
+
+/// Mancha suave que se desplaza dentro del recuadro (efecto aurora).
+class _Bruma extends StatelessWidget {
+  const _Bruma({required this.tamano, required this.color});
+
   final double tamano;
+  final Color color;
 
   @override
   Widget build(BuildContext context) => Container(
@@ -429,7 +567,7 @@ class _Halo extends StatelessWidget {
     decoration: BoxDecoration(
       shape: BoxShape.circle,
       gradient: RadialGradient(
-        colors: [color.withValues(alpha: 0.5), color.withValues(alpha: 0)],
+        colors: [color.withValues(alpha: 0.45), color.withValues(alpha: 0)],
       ),
     ),
   );
@@ -449,7 +587,8 @@ class _Mascota extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ancho = compacto ? 104.0 : 168.0;
+    // Enorme: ocupa la mitad derecha del encabezado y se hace notar.
+    final ancho = compacto ? 150.0 : 270.0;
     return SizedBox(
       width: ancho,
       child: Stack(
@@ -463,8 +602,8 @@ class _Mascota extends StatelessWidget {
               shape: BoxShape.circle,
               gradient: RadialGradient(
                 colors: [
-                  const Color(0xFF38BDF8).withValues(alpha: 0.55),
-                  const Color(0xFF38BDF8).withValues(alpha: 0),
+                  const Color(0xFFF9A8D4).withValues(alpha: 0.55),
+                  const Color(0xFFF9A8D4).withValues(alpha: 0),
                 ],
               ),
             ),

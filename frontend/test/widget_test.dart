@@ -120,7 +120,9 @@ void main() {
       ),
     );
 
-    await tester.ensureVisible(find.widgetWithText(FilledButton, 'Iniciar sesión'));
+    await tester.ensureVisible(
+      find.widgetWithText(FilledButton, 'Iniciar sesión'),
+    );
     await tester.tap(find.widgetWithText(FilledButton, 'Iniciar sesión'));
     await tester.pump();
 
@@ -148,7 +150,9 @@ void main() {
     expect(passwordField.keyboardType, TextInputType.visiblePassword);
 
     await tester.enterText(find.byType(TextFormField).last, '12345678');
-    await tester.ensureVisible(find.widgetWithText(FilledButton, 'Iniciar sesión'));
+    await tester.ensureVisible(
+      find.widgetWithText(FilledButton, 'Iniciar sesión'),
+    );
     await tester.tap(find.widgetWithText(FilledButton, 'Iniciar sesión'));
     await tester.pump();
 
@@ -157,7 +161,8 @@ void main() {
   });
 
   testWidgets(
-    'El shell es adaptativo: barra inferior en móvil, riel en escritorio',
+    'El shell es adaptativo: barra inferior con solo iconos en móvil y '
+    'escritorio',
     (tester) async {
       addTearDown(tester.view.reset);
       final destinos = [
@@ -186,8 +191,14 @@ void main() {
       tester.view.physicalSize = const Size(1280, 800);
       await tester.pumpWidget(app());
       await tester.pump();
-      expect(find.byType(NavigationRail), findsOneWidget);
-      expect(find.byType(NavigationBar), findsNothing);
+      // En escritorio sigue siendo la misma barra inferior, sin riel lateral.
+      expect(find.byType(NavigationBar), findsOneWidget);
+      expect(find.byType(NavigationRail), findsNothing);
+      // Las etiquetas no se pintan: solo se muestran los iconos.
+      expect(
+        tester.widget<NavigationBar>(find.byType(NavigationBar)).labelBehavior,
+        NavigationDestinationLabelBehavior.alwaysHide,
+      );
     },
   );
 

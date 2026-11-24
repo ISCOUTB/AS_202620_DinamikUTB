@@ -1,4 +1,3 @@
-// RUTA: frontend/lib/estudiantes/dashboard_screen.dart
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';

@@ -256,12 +256,12 @@ class _HeroMallaState extends State<_HeroMalla> with TickerProviderStateMixin {
     final malla = widget.malla;
     final compacto = MediaQuery.sizeOf(context).width < 640;
 
-    // Recuadro del título: llega apenas hasta la mitad de la pantalla,
-    // con alto justo y fondo aurora en los rosados del muñequito.
+    // Recuadro del título: media pantalla, letras blancas sobre negro y
+    // una aurora de tonos rosaceos y morados en bucle.
     final caja = Container(
       clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
-        color: const Color(0xFFEC4899),
+        color: Colors.black,
         borderRadius: BorderRadius.circular(26),
         boxShadow: [
           BoxShadow(
@@ -283,54 +283,60 @@ class _HeroMallaState extends State<_HeroMalla> with TickerProviderStateMixin {
               compacto ? 14 : 16,
             ),
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
-                  crossAxisAlignment: WrapCrossAlignment.center,
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _Etiqueta(
-                      icono: Icons.school_rounded,
-                      texto: malla.programa,
-                      tono: const Color(0xFF7DD3FC),
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      children: [
+                        _Etiqueta(
+                          icono: Icons.school_rounded,
+                          texto: malla.programa,
+                          tono: const Color(0xFF7DD3FC),
+                        ),
+                        _Etiqueta(
+                          icono: Icons.assignment_turned_in_rounded,
+                          texto: 'Plan ${malla.plan}',
+                          tono: AppColors.gold,
+                        ),
+                      ],
                     ),
-                    _Etiqueta(
-                      icono: Icons.assignment_turned_in_rounded,
-                      texto: 'Plan ${malla.plan}',
-                      tono: AppColors.gold,
+                    const SizedBox(height: 10),
+                    // Escala hacia abajo si hace falta: el título nunca
+                    // desborda el medio ancho del recuadro.
+                    FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        'Malla curricular',
+                        style: TextStyle(
+                          fontFamily: 'Syne',
+                          fontSize: compacto ? 28 : 42,
+                          fontWeight: FontWeight.w800,
+                          height: 1.03,
+                          letterSpacing: -0.8,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      compacto
+                          ? 'Arrastra, amplía y toca un curso para trazar su ruta.'
+                          : 'Mueve el tablero con el dedo o el mouse y toca cualquier curso para iluminar tu ruta.',
+                      style: TextStyle(
+                        fontFamily: 'Outfit',
+                        fontSize: compacto ? 12.5 : 13.5,
+                        fontWeight: FontWeight.w500,
+                        height: 1.4,
+                        color: Colors.white.withValues(alpha: 0.85),
+                      ),
                     ),
                   ],
-                ),
-                const SizedBox(height: 10),
-                // Escala hacia abajo si hace falta: el título nunca
-                // desborda el medio ancho del recuadro.
-                FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: Text(
-                    'Malla curricular',
-                    style: TextStyle(
-                      fontFamily: 'Syne',
-                      fontSize: compacto ? 28 : 42,
-                      fontWeight: FontWeight.w800,
-                      height: 1.03,
-                      letterSpacing: -0.8,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  compacto
-                      ? 'Arrastra, amplía y toca un curso para trazar su ruta.'
-                      : 'Mueve el tablero con el dedo o el mouse y toca cualquier curso para iluminar tu ruta.',
-                  style: TextStyle(
-                    fontFamily: 'Outfit',
-                    fontSize: compacto ? 12.5 : 13.5,
-                    fontWeight: FontWeight.w500,
-                    height: 1.4,
-                    color: Colors.white.withValues(alpha: 0.85),
-                  ),
                 ),
                 const SizedBox(height: 12),
                 Wrap(
@@ -361,31 +367,29 @@ class _HeroMallaState extends State<_HeroMalla> with TickerProviderStateMixin {
       ),
     );
 
-    // Derecha: el muñequito en grande y un pequeño texto que acople el
-    // recuadro del título con esta parte de la pantalla.
-    final derecha = Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        _Mascota(compacto: compacto, flota: _flota, chispas: _chispas),
-        const SizedBox(height: 8),
-        ConstrainedBox(
-          constraints: BoxConstraints(maxWidth: compacto ? 300 : 340),
-          child: Text(
-            compacto
-                ? 'Toca un curso y su ruta se ilumina.'
-                : 'Cada curso encadena su ruta: toca uno y verás qué necesitas aprobar y qué desbloquea.',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontFamily: 'Outfit',
-              fontSize: compacto ? 12 : 13,
-              fontWeight: FontWeight.w600,
-              height: 1.4,
-              color: Colors.white.withValues(alpha: 0.9),
-            ),
-          ),
+    // Texto debajo del recuadro: enlaza el título con el resto de la
+    // página, del lado izquierdo.
+    final pie = ConstrainedBox(
+      constraints: BoxConstraints(maxWidth: compacto ? 300 : 360),
+      child: Text(
+        compacto
+            ? 'Toca un curso y su ruta se ilumina.'
+            : 'Cada curso encadena su ruta: toca uno y verás qué necesitas aprobar y qué desbloquea.',
+        textAlign: TextAlign.left,
+        style: TextStyle(
+          fontFamily: 'Outfit',
+          fontSize: compacto ? 12 : 13,
+          fontWeight: FontWeight.w600,
+          height: 1.4,
+          color: Colors.white.withValues(alpha: 0.9),
         ),
-      ],
+      ),
     );
+
+    // Altura del encabezado: lo justo para que el muñequito llene la
+    // mitad derecha entera sin pisar la leyenda ni el tablero de abajo.
+    final anchoUtil = math.min(MediaQuery.sizeOf(context).width - 48, 1180);
+    final altoHero = ((anchoUtil - 14) / 2 / 1.5).clamp(330.0, 360.0);
 
     return TweenAnimationBuilder<double>(
       tween: Tween<double>(begin: 0, end: 1),
@@ -399,14 +403,48 @@ class _HeroMallaState extends State<_HeroMalla> with TickerProviderStateMixin {
         ),
       ),
       child: compacto
-          ? Column(children: [caja, const SizedBox(height: 14), derecha])
-          : Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+          ? Column(
               children: [
-                Expanded(child: caja),
-                const SizedBox(width: 14),
-                Expanded(child: derecha),
+                caja,
+                const SizedBox(height: 10),
+                pie,
+                const SizedBox(height: 14),
+                Center(
+                  child: _Mascota(ancho: 300, flota: _flota, chispas: _chispas),
+                ),
               ],
+            )
+          : ConstrainedBox(
+              constraints: BoxConstraints(maxHeight: altoHero),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  // El recuadro negro ocupa toda la altura: no queda
+                  // ningún espacio en blanco debajo.
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(child: caja),
+                        const SizedBox(height: 8),
+                        pie,
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 14),
+                  Expanded(
+                    child: FittedBox(
+                      fit: BoxFit.contain,
+                      alignment: Alignment.topCenter,
+                      child: _Mascota(
+                        ancho: altoHero * 1.5,
+                        flota: _flota,
+                        chispas: _chispas,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
     );
   }
@@ -508,8 +546,9 @@ class _Dato extends StatelessWidget {
   );
 }
 
-/// Fondo animado tipo aurora en los rosados del muñequito: el degradado
-/// cambia de tono y de dirección en bucle, con dos brumas que se desplazan.
+/// Fondo animado tipo aurora sobre el recuadro negro: tonos rosaceos y
+/// morados que cambian de dirección en bucle, con dos brumas que se
+/// desplazan.
 class _Aurora extends StatelessWidget {
   const _Aurora({required this.control});
 
@@ -528,9 +567,21 @@ class _Aurora extends StatelessWidget {
             begin: Alignment(-1 + 0.6 * math.sin(t), -1),
             end: Alignment(1, -0.2 + 0.8 * b),
             colors: [
-              Color.lerp(const Color(0xFFF472B6), const Color(0xFFFB7185), a)!,
-              Color.lerp(const Color(0xFFDB2777), const Color(0xFFF472B6), b)!,
-              Color.lerp(const Color(0xFFFB7185), const Color(0xFFF9A8D4), a)!,
+              Color.lerp(
+                const Color(0xFFF472B6),
+                const Color(0xFFFB7185),
+                a,
+              )!.withValues(alpha: 0.60),
+              Color.lerp(
+                const Color(0xFFA855F7),
+                const Color(0xFFDB2777),
+                b,
+              )!.withValues(alpha: 0.48),
+              Color.lerp(
+                const Color(0xFF7C3AED),
+                const Color(0xFFEC4899),
+                a,
+              )!.withValues(alpha: 0.55),
             ],
           ),
         ),
@@ -544,7 +595,7 @@ class _Aurora extends StatelessWidget {
             Positioned(
               right: -70 + 80 * b,
               bottom: -80 + 70 * a,
-              child: _Bruma(tamano: 240, color: const Color(0xFFFFC2DE)),
+              child: _Bruma(tamano: 240, color: const Color(0xFFE9D5FF)),
             ),
           ],
         ),
@@ -574,30 +625,33 @@ class _Bruma extends StatelessWidget {
 }
 
 /// Mascota de la promoción flotando sobre su resplandor, con chispas.
+///
+/// El widget mantiene la relación 1.5 de la imagen (1536×1024) para que
+/// no sobre ni un píxel de espacio vacío al escalado.
 class _Mascota extends StatelessWidget {
   const _Mascota({
-    required this.compacto,
+    required this.ancho,
     required this.flota,
     required this.chispas,
   });
 
-  final bool compacto;
+  final double ancho;
   final Animation<double> flota;
   final Animation<double> chispas;
 
   @override
   Widget build(BuildContext context) {
-    // Enorme: ocupa la mitad derecha del encabezado y se hace notar.
-    final ancho = compacto ? 150.0 : 270.0;
+    final alto = ancho / 1.5;
     return SizedBox(
       width: ancho,
+      height: alto,
       child: Stack(
         alignment: Alignment.center,
         clipBehavior: Clip.none,
         children: [
           Container(
-            width: ancho * 0.9,
-            height: ancho * 0.9,
+            width: ancho * 0.62,
+            height: ancho * 0.62,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               gradient: RadialGradient(
@@ -609,14 +663,14 @@ class _Mascota extends StatelessWidget {
             ),
           ),
           Positioned(
-            top: 0,
-            left: 2,
-            child: _Chispa(control: chispas, tamano: 16),
+            top: alto * 0.04,
+            left: ancho * 0.16,
+            child: _Chispa(control: chispas, tamano: ancho * 0.05),
           ),
           Positioned(
-            top: 22,
-            right: -2,
-            child: _Chispa(control: chispas, tamano: 13),
+            top: alto * 0.16,
+            right: ancho * 0.08,
+            child: _Chispa(control: chispas, tamano: ancho * 0.04),
           ),
           AnimatedBuilder(
             animation: flota,
@@ -627,12 +681,12 @@ class _Mascota extends StatelessWidget {
             child: Image.asset(
               'assets/images/mascota_graduada.png',
               width: ancho,
-              height: ancho * 1.12,
+              height: alto,
               fit: BoxFit.contain,
               // En las pruebas de widget el PNG puede no llegar a decodificar;
               // el hueco se reserva igual para no mover el resto del diseño.
               errorBuilder: (context, error, stackTrace) =>
-                  SizedBox(width: ancho, height: ancho * 1.12),
+                  SizedBox(width: ancho, height: alto),
             ),
           ),
         ],
